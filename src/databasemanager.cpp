@@ -84,7 +84,7 @@ void closeDatabase()
 void createDatabaseTable()
 {
     const char *sql = "CREATE TABLE IF NOT EXISTS MEDIA("  \
-       "ID INTEGER PRIMARY KEY AUTOINCREMENT," \
+       "ID INTEGER PRIMARY KEY," \
        "NAME           TEXT    NOT NULL," \
        "RATING         INT     NOT NULL);";
  
