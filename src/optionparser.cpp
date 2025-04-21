@@ -41,7 +41,7 @@ void po::parse(int argc, char *argv[])
     }
     if (result.count("version"))
     {
-        auto temp = std::string("Current version: " + std::string(VERSION));
+        auto temp = std::string("mTrack: " + std::string(VERSION) + "\n");
         printf(temp.c_str());
     }
     openDatabase();

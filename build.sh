@@ -22,6 +22,8 @@ FULL_VERSION="$VERSION$VERSION_SUFFIX"
 
 echo "Start building \"$BUILD_TYPE\" version \"$FULL_VERSION\"..."
 
+mkdir -p $BUILD_DIR 
+
 if ! g++ $CXXFLAGS -DVERSION="\"$FULL_VERSION\"" -I$INCLUDE_DIR $(find $SRC_DIR -name '*.cpp') -o $BUILD_DIR/mtrack -lsqlite3; then
     echo "Build failed"
     exit 1

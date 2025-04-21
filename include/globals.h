@@ -11,6 +11,10 @@
 #define VERSION "unknown"
 #endif
 
+/*
+    mTrack use a different location for the appdata itself. Right now
+    it's just a simple sqlite database and a (optional) log.
+*/
 #define DB_NAME "mtrack.db"
 #define LOG_NAME "debug.log"
 // Relative path from $HOME to the app data
