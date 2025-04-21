@@ -5,9 +5,9 @@
 
 #include <sqlite3.h>
 
-struct Media;
+#include "globals.h"
 
-void initDatabase(const std::string &db_path, bool exist);
+void initDatabase();
 
 /**
  * Open the database connection.
@@ -26,7 +26,7 @@ void closeDatabase();
 void createDatabaseTable();
 
 void showMedia();
-void addMedia(const Media &new_media);
+void addMedia(const media::Media &new_media);
 void rmMedia(int rm_id);
 
 #endif

@@ -7,10 +7,8 @@ namespace debug
 {
     enum DEBUG_LEVEL
     {
-        INFO, WARNING, ERROR
+        INFO, ERROR
     };
-
-    inline bool log_active = false;
 }
 
 namespace debug::print

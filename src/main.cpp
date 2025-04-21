@@ -2,13 +2,15 @@
 
 #include "optionparser.h"
 #include "databasemanager.h"
-#include "filesystem/utils.h"
+#include "storage/utils.h"
+#include "globals.h"
 
 int main(int argc, char *argv[])
 {
-    auto path = getDBPath();
-    bool exist = isCreated(path);
-    initDatabase(path, exist);
+    createPath(APPDATA_PATH);
+    if (log_active)
+        createPath(LOG_PATH);
+    initDatabase();
     try
     {
         po::parse(argc, argv);

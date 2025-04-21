@@ -1,13 +1,11 @@
 #include <sstream>
 
 #include "databasemanager.h"
-#include "media.h"
 #include "debug/debprint.h"
+#include "storage/utils.h"
 
 namespace
 {
-    std::string LIB_DB_PATH;
-
     sqlite3 *_lib_db;
 
     /**
@@ -41,14 +39,13 @@ namespace
     }
 }
 
-void initDatabase(const std::string &db_path, bool exist)
+void initDatabase()
 {
-    LIB_DB_PATH = db_path;
     // Create db only when starting for the first time so
     // the table creation process can be skiped
-    if (exist)
+    if (fileIsCreated(DB_PATH_STR))
     {
-        debug::print::deberr("Database already exists");
+        debug::print::debprint("Database already exists. Skip table creation.");
         return;
     }
     openDatabase();
@@ -63,15 +60,15 @@ void openDatabase()
     char *err_msg = 0;
     int ret;
 
-    ret = sqlite3_open(LIB_DB_PATH.c_str(), &_lib_db);
+    ret = sqlite3_open(DB_PATH_STR.c_str(), &_lib_db);
 
     if(ret)
     {
-        debug::print::fdebprint("Can't open database: %s\n", sqlite3_errmsg(_lib_db));
+        debug::print::fdeberr("Can't open database: %s", sqlite3_errmsg(_lib_db));
     }
     else
     {
-        debug::print::debprint("Opened database successfully\n");
+        debug::print::debprint("Opened database successfully");
     }
 }
 
@@ -97,7 +94,7 @@ void showMedia()
     execute_sql(sql);
 }
 
-void addMedia(const Media &new_media)
+void addMedia(const media::Media &new_media)
 {
     // scary SQL injection BOOO 
     std::ostringstream oss;

@@ -5,11 +5,7 @@
 #include "optionparser.h"
 #include "commands.h"
 #include "databasemanager.h"
-#include "debug/debprint.h"
-
-#ifndef VERSION
-#define VERSION "unknown"
-#endif
+#include "globals.h"
 
 void po::parse(int argc, char *argv[])
 {
@@ -37,17 +33,16 @@ void po::parse(int argc, char *argv[])
     auto result = options.parse(argc, argv);
     if (result.count("verbose"))
     {
-      debug::log_active = true;
+      log_active = true;
     }
     if (result.count("help"))
     {
-        // this is actually stupid because the app will close with
-        // exit code 1. But it should be 0
-        throw std::runtime_error(options.help());
+        printf(options.help().c_str());
     }
     if (result.count("version"))
     {
-      throw std::runtime_error("Current version: " + std::string(VERSION));
+        auto temp = std::string("Current version: " + std::string(VERSION));
+        printf(temp.c_str());
     }
     openDatabase();
     if (result.count("show"))
