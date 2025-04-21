@@ -4,13 +4,24 @@
 #include "databasemanager.h"
 #include "storage/utils.h"
 #include "globals.h"
+#include "buildenv.h"
 
 int main(int argc, char *argv[])
 {
-    createPath(APPDATA_PATH);
-    if (log_active)
-        createPath(LOG_PATH);
     initDatabase();
+
+    if (argc <= 1)
+    {
+        auto exec_python_gui = std::string(PYTHON_PATH) + " " + std::string(GUI_PY);
+        int ret = std::system(exec_python_gui.c_str());
+        if (ret != 0)
+        {
+            std::cerr << "Something went wrong trying open the gui.\n";
+            return ret;
+        }
+        return 0;
+    }
+
     try
     {
         po::parse(argc, argv);

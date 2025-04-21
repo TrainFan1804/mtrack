@@ -7,27 +7,19 @@
 #include <iomanip>
 #include <filesystem>
 
+#include "buildenv.h"
+
 #ifndef VERSION
 #define VERSION "unknown"
 #endif
 
-/*
-    mTrack use a different location for the appdata itself. Right now
-    it's just a simple sqlite database and a (optional) log.
-*/
 #define DB_NAME "mtrack.db"
 #define LOG_NAME "debug.log"
-// Relative path from $HOME to the app data
-#define REL_APPDATA_PATH ".local/share/mtrack"
-// Relative path from $REL_APPDATA_PATH to the log dir
-#define REL_LOG_PATH "log"
 
-inline const std::filesystem::path APPDATA_PATH = std::string(std::getenv("HOME"))
-    + "/" + std::string(REL_APPDATA_PATH);
-inline const std::filesystem::path LOG_PATH = (APPDATA_PATH / REL_LOG_PATH);
-
-inline const std::string DB_PATH_STR = (APPDATA_PATH / DB_NAME).string();
-inline const std::string LOG_PATH_STR = (LOG_PATH / LOG_NAME).string();
+inline const std::string DB_PATH_STR = std::string(APPDATA_DIR_PATH) 
+    + "/" + std::string(DB_NAME);
+inline const std::string LOG_PATH_STR = std::string(LOG_DIR_PATH)
+    + "/" +  std::string(LOG_NAME);
 
 inline bool log_active = false;
 
