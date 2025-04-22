@@ -6,6 +6,7 @@
 #include "commands.h"
 #include "databasemanager.h"
 #include "globals.h"
+#include "debug/debprint.h"
 
 void po::parse(int argc, char *argv[])
 {
@@ -41,8 +42,7 @@ void po::parse(int argc, char *argv[])
     }
     if (result.count("version"))
     {
-        auto temp = std::string("mTrack: " + std::string(VERSION) + "\n");
-        printf(temp.c_str());
+        printf("mTrack: %s\n", std::string(VERSION).c_str());
     }
     openDatabase();
     if (result.count("show"))
@@ -53,7 +53,7 @@ void po::parse(int argc, char *argv[])
     {
         if (result.count("add") != 2)
         {
-            throw std::runtime_error("To few options for add");
+            throw std::runtime_error("To few/many options for add");
         }
         addCommand(result["add"].as<std::vector<std::string>>());
     }

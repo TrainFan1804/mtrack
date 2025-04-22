@@ -15,8 +15,8 @@
 void launchGUI()
 {
     // saving the pipes for the communication
-    int parent_to_child[2]; // parent write, child read
-    int child_to_parent[2]; // child write, parent read
+    int to_child[2]; // parent write, child read
+    int from_child[2]; // child write, parent read
 
     /*  
         TODO: Possible piping errors AREN'T handled! See 
@@ -26,25 +26,25 @@ void launchGUI()
     
     // open pipe where PIPE[0] is read end and PIPE[1] is write end
     // Will this work on windows because it's a systemcall?!
-    pipe(parent_to_child);
-    pipe(child_to_parent);
+    pipe(to_child);
+    pipe(from_child);
 
     pid_t pid = fork();
 
     if (pid == 0) 
     {
         // start child process
-        dup2(parent_to_child[0], STDIN_FILENO);     // change 'read' from parent to STDIN 
+        dup2(to_child[0], STDIN_FILENO);     // change 'read' from parent to STDIN 
         /*
             Change 'write' from child to STDOUT
             This may cause trouble in the future everytime the child write
             something into the terminal!
         */
-        dup2(child_to_parent[1], STDOUT_FILENO);    
+        dup2(from_child[1], STDOUT_FILENO);    
         
         // close the OUTPUT/INPUT pipe from the parent/child
-        close(parent_to_child[1]);
-        close(child_to_parent[0]);
+        close(to_child[1]);
+        close(from_child[0]);
 
         // starting the subprocess
         execlp(std::string(PYTHON_PATH).c_str(), "python3", std::string(GUI_PY).c_str(), nullptr);
@@ -53,26 +53,35 @@ void launchGUI()
     }
     else
     {
+        // start parent process
         // close the INPUT/OUTPUT pipe from the parent/child
-        close(parent_to_child[0]);
-        close(child_to_parent[1]);
+        close(to_child[0]);
+        close(from_child[1]);
+
+        std::string msg_to_child;
+        msg_to_child = "First msg from C++\n";
+        write(to_child[1], msg_to_child.c_str(), msg_to_child.size());
 
         char buffer[128];
         while (true) 
         {
-            ssize_t count = read(child_to_parent[0], buffer, sizeof(buffer) - 1);
+            ssize_t count = read(from_child[0], buffer, sizeof(buffer) - 1);
             if (count <= 0) break;
 
             buffer[count] = '\0';
-            std::string cmd(buffer);
-            if (cmd.find("button_test") != std::string::npos) 
+            std::string msg_from_child(buffer);
+
+            std::string msg_to_child;
+            if (msg_from_child.find("button_test") != std::string::npos) 
             {
                 std::cout << "[C++] Button was pressen in GUI!\n";
+                msg_to_child = "Hello from the backend\n";
             }
             else
             {
-                std::cout << "[C++] Unknown message from GUI: " << cmd;
+                std::cout << "[C++] Unknown message from GUI: " << msg_from_child;
             }
+            write(to_child[1], msg_to_child.c_str(), msg_to_child.size());
         }
         wait(nullptr);
     }
