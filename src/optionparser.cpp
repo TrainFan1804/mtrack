@@ -3,7 +3,6 @@
 #include "cxxopts.hpp"
 
 #include "optionparser.h"
-#include "commands.h"
 #include "databasemanager.h"
 #include "globals.h"
 #include "debug/debprint.h"
@@ -47,7 +46,7 @@ void po::parse(int argc, char *argv[])
     openDatabase();
     if (result.count("show"))
     {
-        showCommand();
+        commands::showCommand();
     }
     if (result.count("add"))
     {
@@ -55,11 +54,39 @@ void po::parse(int argc, char *argv[])
         {
             throw std::runtime_error("To few/many options for add");
         }
-        addCommand(result["add"].as<std::vector<std::string>>());
+        commands::addCommand(result["add"].as<std::vector<std::string>>());
     }
     if (result.count("remove"))
     {
-        rmCommand(result["remove"].as<int>());
+        commands::rmCommand(result["remove"].as<int>());
     }
     closeDatabase();
+}
+
+void po::commands::showCommand()
+{
+    std::vector<std::vector<std::string>> select_result;
+    selectAllQuery(select_result);
+    for (auto row : select_result)
+    {
+        for (int entry = 0; entry < row.size(); entry++)
+        {
+            printf(row[entry].c_str());
+            if (entry != row.size() - 1) printf((entry % 2 == 0) ? " = " : ", ");
+        }
+        printf("\n");
+    }
+}
+
+void po::commands::addCommand(const std::vector<std::string> &args)
+{
+    media::Media new_media;
+    new_media._name = args[0];
+    new_media._rating = std::stoi(args[1]);
+    addMedia(new_media);
+}
+
+void po::commands::rmCommand(int id)
+{
+    rmMedia(id);
 }

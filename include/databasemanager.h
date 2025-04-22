@@ -2,6 +2,7 @@
 #define DATABASEMANAGER_H
 
 #include <string>
+#include <vector>
 
 #include <sqlite3.h>
 
@@ -25,8 +26,10 @@ void closeDatabase();
  */
 void createDatabaseTable();
 
-void showMedia();
+void selectAllQuery(std::vector<std::vector<std::string>> &result);
+
 void addMedia(const media::Media &new_media);
+
 void rmMedia(int rm_id);
 
 #endif

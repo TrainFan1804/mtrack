@@ -1,4 +1,5 @@
 #include <sstream>
+#include <vector>
 
 #include "databasemanager.h"
 #include "debug/debprint.h"
@@ -11,31 +12,50 @@ namespace
     /**
      * For a simple explanation how the callback works see:
      * https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
+     * 
+     * This function is called for every row in the table.
+     * 
+     * This is some crazy sh*t here
      */
-    int callback(void *_NOTUSED, int num_row, char **row_data, char **col_name) 
+    int callback(void *head, int num_cols, char **row_data, char **col_name) 
     {
-        for(int i = 0; i < num_row; i++) 
+        auto &h = *(reinterpret_cast<std::vector<std::vector<std::string>>*>(head));
+
+        std::vector<std::string> row;
+        // Double the size of the columns to save the column name too.
+        // Could be obsolete when just show the columns in the front end.
+        row.reserve(num_cols * 2);
+        for (int i = 0; i < num_cols; i++)
         {
-            printf("%s = %s", col_name[i], row_data[i] ? row_data[i] : "NULL");
-            if (i != num_row - 1)
-                printf(", ");
+            row.emplace_back(col_name[i]);
+            row.emplace_back(row_data[i] ? row_data[i] : "NULL");
         }
-        printf("\n");
+        h.emplace_back(std::move(row));
         return 0;
     }
 
-    bool execute_sql(const std::string &sql)
+    void execute_sql(const std::string &sql, void *head)
     {
         char *err_msg = 0;
-        int ret = sqlite3_exec(_lib_db, sql.c_str(), callback, 0, &err_msg);
+        int ret = sqlite3_exec(_lib_db, sql.c_str(), callback, head, &err_msg);
         if(ret != SQLITE_OK)
         {
             debug::print::fdeberr("SQL error: %s", err_msg);
             sqlite3_free(err_msg);
-            return false;
+            throw std::runtime_error(err_msg);
         } 
         debug::print::fdebprint("SQL statement executed: %s", sql.c_str());
-        return true;
+    }
+
+    void execute_sql(const std::string &sql)
+    {
+        execute_sql(sql, nullptr);
+    }
+
+    void execute_sql(const std::string &sql, 
+        std::vector<std::vector<std::string>> &head)
+    {
+        execute_sql(sql, &head);
     }
 }
 
@@ -88,10 +108,10 @@ void createDatabaseTable()
     execute_sql(sql);
 }
 
-void showMedia()
+void selectAllQuery(std::vector<std::vector<std::string>> &result)
 {
-    const char *sql = "SELECT * from MEDIA";
-    execute_sql(sql);
+    const char *SQL = "SELECT * from MEDIA";
+    execute_sql(SQL, result);
 }
 
 void addMedia(const media::Media &new_media)
