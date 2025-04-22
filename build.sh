@@ -1,7 +1,8 @@
 #!/bin/bash
 
 BUILD_TYPE=${1:-dev}
-VERSION=$(git describe  --tags --abbrev=0)
+# VERSION=$(git rev-parse --abbrev-ref HEAD)
+VERSION="main"
 
 # software source code specific paths (needed at buildtime)
 SRC_DIR="src"
@@ -16,18 +17,17 @@ GUI_PY="$PWD/gui/main.py"
 
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
-    VERSION_SUFFIX="-dev"
 elif [ "$BUILD_TYPE" = "release" ]; then
     CXXFLAGS=""
-    VERSION_SUFFIX=""
+    if [ "$VERSION" = "main" ]; then
+        VERSION=$(git describe --tags --abbrev=0)"-release"
+    fi
 else
     echo "Unknown build type "$BUILD_TYPE""
     exit 1
 fi
 
-FULL_VERSION="$VERSION$VERSION_SUFFIX"
-
-echo "Start building \"$BUILD_TYPE\" version \"$FULL_VERSION\"..."
+echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
 mkdir -p $BUILD_DIR 
 
