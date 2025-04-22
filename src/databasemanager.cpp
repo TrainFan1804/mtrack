@@ -34,6 +34,12 @@ namespace
         return 0;
     }
 
+    /**
+     * Execute a sql statement. Only use this directly when you now what you do.
+     * 
+     * @attention   Rather use execute_sql(const std::string&) 
+     * or execute_sql(const std::string&, std::vector<std::vector<std::string>>&)
+     */
     void execute_sql(const std::string &sql, void *head)
     {
         char *err_msg = 0;
@@ -47,11 +53,24 @@ namespace
         debug::print::fdebprint("SQL statement executed: %s", sql.c_str());
     }
 
+    /**
+     * Execute a sql statement. This should be used when working with NON
+     * `SELECT` statements.
+     */
     void execute_sql(const std::string &sql)
     {
         execute_sql(sql, nullptr);
     }
 
+    /**
+     * Execute a sql statement. This should only be used when working with
+     * `SELECT` statements.
+     * 
+     * @param sql   The executed sql statement. This function should only be used with
+     * `SELECT` statements!
+     * @param head  When executing a `SELECT` statment you need to provide a container
+     * to save the response from the query.
+     */
     void execute_sql(const std::string &sql, 
         std::vector<std::vector<std::string>> &head)
     {
