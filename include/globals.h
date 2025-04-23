@@ -31,10 +31,10 @@ namespace media
         int _rating;
         std::string _name;
 
-        Media()
+        Media(const std::string &name, int rating)
         {
-            _rating = 1;
-            _name = "";
+            _rating = rating;
+            _name = name;
         }
     };
 }

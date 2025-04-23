@@ -13,7 +13,6 @@ class MTrack(tk.Tk):
 
         self.test_connection_label = tk.Label(text="Nothing right now", background="red")
         self.test_connection_label.pack()
-        self.test_connection_label.config(text=f"First change")
 
         tk.Label(text="mTrack",
                     width=15,

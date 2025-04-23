@@ -2,7 +2,7 @@
 
 #include "optionparser.h"
 #include "databasemanager.h"
-#include "guilauncher.h"
+#include "gui/guilauncher.h"
 #include "debug/debprint.h"
 
 int main(int argc, char *argv[])
@@ -11,8 +11,16 @@ int main(int argc, char *argv[])
 
     if (argc <= 1)
     {
-        launchGUI();
-        return 0;
+        try
+        {
+            launchGUI();
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
     }
 
     try
