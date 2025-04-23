@@ -5,11 +5,9 @@
 */
 #include <iostream>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <cstring>
 
 #include "gui/guilauncher.h"
+#include "gui/communication.h"
 #include "buildenv.h"
 
 void startChild(int to_child[2], int from_child[2])
@@ -42,31 +40,9 @@ void startParent(int to_child[2], int from_child[2])
 
     std::string msg_to_child;
     msg_to_child = "First msg from C++\n";
-    write(to_child[1], msg_to_child.c_str(), msg_to_child.size());
+    sendMessageToChild(to_child, msg_to_child);
 
-    char buffer[128];
-    while (true) 
-    {
-        ssize_t count = read(from_child[0], buffer, sizeof(buffer) - 1);
-        if (count <= 0) break;
-
-        buffer[count] = '\0';
-        std::string msg_from_child(buffer);
-
-        if (msg_from_child.find(ADD_RESPONSE) != std::string::npos) 
-        {
-            std::cout << "[C++] add_btn was pressen in GUI!\n";
-        }
-        else if (msg_from_child.find(RM_RESPONSE) != std::string::npos) 
-        {
-            std::cout << "[C++] rm_btn was pressen in GUI!\n";
-        }
-        else
-        {
-            std::cout << "[C++] Unknown message from GUI: " << msg_from_child; 
-        }
-    }
-    wait(nullptr);
+    readFromChild(from_child);
 }
 
 void launchGUI()

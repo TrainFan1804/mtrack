@@ -2,6 +2,8 @@ import sys
 import threading
 
 import MTrack
+import msgsender
+import responsecodes as rsp
 
 
 def listen_to_stdin():
@@ -34,4 +36,6 @@ if (__name__ == "__main__"):
     thread = threading.Thread(target=listen_to_stdin, daemon=True)
     thread.start()
 
+    # sending request for the database data
+    msgsender.send_msg(rsp.ASK_DATA)
     window.mainloop()

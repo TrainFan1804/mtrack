@@ -59,4 +59,4 @@ class MTrack(tk.Tk):
         """
         cur_item_id = self.tree.focus()
         print("selected item id: " + cur_item_id, file=sys.stderr)
-        msgsender.send_msg(rsp.RM_RESPONSE + cur_item_id)
+        msgsender.send_msg_with_rsp(cur_item_id, rsp.RM_RESPONSE)
