@@ -4,4 +4,6 @@
 build/*
 dist/*
 temp/*
+
 include/buildenv.h
+gui/__pycache__/*

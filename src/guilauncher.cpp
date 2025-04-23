@@ -72,9 +72,14 @@ void launchGUI()
             std::string msg_from_child(buffer);
 
             std::string msg_to_child;
-            if (msg_from_child.find("button_test") != std::string::npos) 
+            if (msg_from_child.find("button_add") != std::string::npos) 
             {
-                std::cout << "[C++] Button was pressen in GUI!\n";
+                std::cout << "[C++] add_btn was pressen in GUI!\n";
+                msg_to_child = "Hello from the backend\n";
+            }
+            else if (msg_from_child.find("button_rm") != std::string::npos) 
+            {
+                std::cout << "[C++] rm_btn was pressen in GUI!\n";
                 msg_to_child = "Hello from the backend\n";
             }
             else
