@@ -10,6 +10,16 @@ def listen_to_stdin():
         end of the message or the input will be blocked (bcs 'readline()' is used)
     """
     window.test_connection_label.config(text="Init thread")
+
+    # in the real application is test_data the data from the db that is sended from the backend
+    test_data = [
+        ('1', 'Test1', 5),
+        ('2', 'Test2', 5),
+        ('3', 'Test3', 5),
+    ]
+    for entry_id, name, rating in test_data:
+        window.tree.insert('', 'end', iid=entry_id, values=(name, rating))
+
     while True:
         line = sys.stdin.readline()
         print("[PY DEBUG]:", repr(line), file=sys.stderr)

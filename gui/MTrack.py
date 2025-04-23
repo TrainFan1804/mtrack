@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import msgsender
-import msgcodes
+import responsecodes as rsp
 
 
 class MTrack(tk.Tk):
@@ -19,20 +19,18 @@ class MTrack(tk.Tk):
                     width=15,
                     height=5).pack()
 
-        self.tree = ttk.Treeview(show='headings', columns=('name', 'rating'))
+        self.tree = ttk.Treeview(selectmode='browse', show='headings', columns=('name', 'rating'))
         self.tree.heading('name', text='name')
         self.tree.heading('rating', text='rating')
         self.tree.pack()
 
-        self.tree.insert('', 'end', text='DUMMY', values=('DUMMY', 'DUMMY'))
-
         btn_frame = tk.Frame()
 
-        self.add_btn = tk.Button(btn_frame, text="add", 
-                        command=self._add_button).pack(side=tk.LEFT)
+        tk.Button(btn_frame, text="add", 
+                    command=self._add_button).pack(side=tk.LEFT)
 
-        self.rm_btn = tk.Button(btn_frame, text="remove", 
-                        command=self._rm_button).pack(side=tk.LEFT)
+        tk.Button(btn_frame, text="remove", 
+                    command=self._rm_button).pack(side=tk.LEFT)
 
         tk.Button(btn_frame, text="quit", 
                         command=self.destroy).pack(side=tk.LEFT)
@@ -51,10 +49,15 @@ class MTrack(tk.Tk):
 
 
     def _add_button(self):
-        msgsender.send_msg(msgcodes.ADD_MSG)
+        # TODO open seperate window and extract data from there?
+        msgsender.send_msg(rsp.ADD_RESPONSE)
 
 
     def _rm_button(self):
-        cur_item = self.tree.focus()
-        print(self.tree.item(cur_item), file=sys.stderr)
-        msgsender.send_msg(msgcodes.RM_MSG)
+        """
+            Find the id of the selected item and send the correct response code
+            and id to the backend.
+        """
+        cur_item_id = self.tree.focus()
+        print("selected item id: " + cur_item_id, file=sys.stderr)
+        msgsender.send_msg(rsp.RM_RESPONSE + cur_item_id)

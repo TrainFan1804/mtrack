@@ -54,17 +54,17 @@ cat << EOF > include/buildenv.h
 #define PYTHON_PATH         "$PYTHON_PATH"
 #define GUI_PY              "$GUI_PY"
 
-// msg codes for the communication between frontend and backend
-#define ADD_MSG     "101"
-#define RM_MSG      "102"
+// response codes for the communication between frontend and backend
+#define ADD_RESPONSE    "101"
+#define RM_RESPONSE     "102"
 
 #endif
 EOF
 
 # pls forgive me for this...
-cat << EOF > gui/msgcodes.py
-ADD_MSG =   "101"
-RM_MSG  =   "102"
+cat << EOF > gui/responsecodes.py
+ADD_RESPONSE    =   "101"
+RM_RESPONSE     =   "102"
 EOF
 
 echo "Successfully build"
