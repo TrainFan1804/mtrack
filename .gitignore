@@ -1,9 +1,14 @@
 # IDE stuff
 .vscode/*
 
+# Build and develope stuff
 build/*
 dist/*
 temp/*
 
+# C++ stuff
 include/buildenv.h
+
+# python stuff
 gui/__pycache__/*
+gui/responsecodes.py

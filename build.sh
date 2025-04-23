@@ -55,16 +55,26 @@ cat << EOF > include/buildenv.h
 #define GUI_PY              "$GUI_PY"
 
 // response codes for the communication between frontend and backend
+#define ASK_DATA        "100"
 #define ADD_RESPONSE    "101"
 #define RM_RESPONSE     "102"
+#define SEND_RESPONSE   "200"
+#define TRN_END         "300"
+#define WRG_FORMAT      "400"
+#define DB_ERROR        "500"
 
 #endif
 EOF
 
 # pls forgive me for this...
 cat << EOF > gui/responsecodes.py
+ASK_DATA        =   "100"
 ADD_RESPONSE    =   "101"
 RM_RESPONSE     =   "102"
+SEND_RESPONSE   =   "200"
+TRN_END         =   "300"
+WRG_FORMAT      =   "400"
+DB_ERROR        =   "500"
 EOF
 
 echo "Successfully build"
