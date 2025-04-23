@@ -132,8 +132,13 @@ void createDatabaseTable()
 
 void selectAllQuery(std::vector<std::vector<std::string>> &result)
 {
-    const char *SQL = "SELECT * from MEDIA";
-    execute_sql(SQL, result);
+    selectSpecialQuery(result, "SELECT * FROM MEDIA;");
+}
+
+void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
+    const std::string &statement)
+{
+    execute_sql(statement.c_str(), result);
 }
 
 void addMedia(const media::Media &new_media)

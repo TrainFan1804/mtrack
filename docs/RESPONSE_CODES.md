@@ -13,6 +13,7 @@ Legend:
 |102    |Removing a media                       |F          |
 |200    |Sending data from database             |B          |
 |300    |Transaction end                        |B          |
+|301    |Transaction end, with id for new media |B          |
 |400    |Wrong response format                  |F/B        |
 |500    |Database error                         |B          |
 

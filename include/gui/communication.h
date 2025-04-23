@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "json.hpp"
+
 namespace communication
 {
     /**
@@ -29,7 +31,7 @@ namespace communication::commands
 {
     void fetchCommand(int to_child[2]);
 
-    void addCommand(const std::vector<std::string> &args);
+    void addCommand(int to_child[2], const nlohmann::json &j);
 
     void rmCommand(int to_child[2], int id);
 }

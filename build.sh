@@ -60,6 +60,7 @@ cat << EOF > include/buildenv.h
 #define RM_RESPONSE     "102"
 #define SEND_RESPONSE   "200"
 #define TRN_END         "300"
+#define SEND_ID         "301"
 #define WRG_FORMAT      "400"
 #define DB_ERROR        "500"
 
@@ -73,6 +74,7 @@ ADD_RESPONSE    =   "101"
 RM_RESPONSE     =   "102"
 SEND_RESPONSE   =   "200"
 TRN_END         =   "300"
+SEND_ID         =   "301"
 WRG_FORMAT      =   "400"
 DB_ERROR        =   "500"
 EOF

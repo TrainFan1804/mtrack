@@ -1,4 +1,5 @@
 import sys
+import json
 import tkinter as tk
 from tkinter import ttk
 
@@ -47,14 +48,19 @@ class MTrack(tk.Tk):
 
 
     def _add_item(self):
-        msgsender.send_request_no_data(rsp.ADD_RESPONSE)
         AddTopLevel(self, self._receive_data_callback)
 
 
     def _receive_data_callback(self, values):
-        for v in values:
-            # TODO add sending of data
-            print(v, file=sys.stderr)
+        j_str = json.dumps(values)
+        msgsender.send_request_with_data(rsp.ADD_RESPONSE, j_str)
+
+        rsp_code = sys.stdin.readline().rstrip()
+        if rsp_code.startswith(rsp.SEND_ID):
+            rsp_id = rsp_code[4:]
+            self.tree.insert('', 'end', 
+                        iid=str(rsp_id), 
+                        values=(values["name"], values["rating"]))
 
 
     def _rm_item(self):
@@ -99,9 +105,17 @@ class AddTopLevel(tk.Toplevel):
 
 
     def _send_data(self):
-        data = []
+        data = {}
+        name_list = ["name", "rating"]
+        count = 0
         for child in self.entry_frame.winfo_children():
             if (isinstance(child, tk.Entry)):
-                data.append(child.get().strip())
-        # TODO add a check for data completion
+                cur_entry_data = child.get().strip()
+                if len(cur_entry_data) != 0:
+                    data[name_list[count]] = cur_entry_data
+                    count += 1
+
+        if len(data) != 2:
+            return
         self.callback(data)
+        self.destroy()

@@ -28,6 +28,9 @@ void createDatabaseTable();
 
 void selectAllQuery(std::vector<std::vector<std::string>> &result);
 
+void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
+    const std::string &statement);
+
 void addMedia(const media::Media &new_media);
 
 void rmMedia(int rm_id);
