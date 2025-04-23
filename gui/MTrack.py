@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import msgsender
+import msgcodes
 
 
 class MTrack(tk.Tk):
@@ -50,10 +51,10 @@ class MTrack(tk.Tk):
 
 
     def _add_button(self):
-        msgsender.send_msg("button_add")
+        msgsender.send_msg(msgcodes.ADD_MSG)
 
 
     def _rm_button(self):
         cur_item = self.tree.focus()
         print(self.tree.item(cur_item), file=sys.stderr)
-        msgsender.send_msg("button_rm")
+        msgsender.send_msg(msgcodes.RM_MSG)
