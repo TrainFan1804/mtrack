@@ -5,6 +5,7 @@
 
 #include "gui/communication.h"
 #include "buildenv.h"
+#include "debug/debprint.h"
 
 void readFromChild(int from_child[2])
 {
@@ -19,19 +20,19 @@ void readFromChild(int from_child[2])
 
         if (msg_from_child.find(ASK_DATA) != std::string::npos)
         {
-            std::cout << "[C++] Frontend asked for data\n";
+            debug::print::debprint("GUI want to fetch data");
         }
         else if (msg_from_child.find(ADD_RESPONSE) != std::string::npos) 
         {
-            std::cout << "[C++] add_btn was pressen in GUI!\n";
+            debug::print::debprint("GUI want to add data");
         }
         else if (msg_from_child.find(RM_RESPONSE) != std::string::npos) 
         {
-            std::cout << "[C++] rm_btn was pressen in GUI!\n";
+            debug::print::debprint("GUI want to remove data");
         }
         else
         {
-            std::cout << "[C++] Unknown message from GUI: " << msg_from_child; 
+            debug::print::fdebprint("Unknown message from GUI: %s", msg_from_child);
         }
     }
     wait(nullptr);
@@ -42,4 +43,5 @@ void sendMessageToChild(int to_child[2], const std::string &msg)
     int ret = write(to_child[1], msg.c_str(), msg.size());
     if (ret <= 0)
         throw std::runtime_error("Error writing a message to the frontend!");
+    debug::print::fdebprint("Send message to child: %s", msg.c_str());
 }

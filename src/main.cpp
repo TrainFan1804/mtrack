@@ -8,9 +8,9 @@
 int main(int argc, char *argv[])
 {
     initDatabase();
-
     if (argc <= 1)
     {
+        debug::print::debprint("Start software in GUI mode");
         try
         {
             launchGUI();
@@ -20,11 +20,13 @@ int main(int argc, char *argv[])
             std::cerr << e.what() << '\n';
             return EXIT_FAILURE;
         }
+        debug::print::debprint("Close sofware");
         return EXIT_SUCCESS;
     }
 
     try
     {
+        debug::print::debprint("Start software in CLI mode");
         po::parse(argc, argv);
     }
     catch(const std::exception &ex)
