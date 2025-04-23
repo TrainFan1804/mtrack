@@ -1,8 +1,7 @@
 #!/bin/bash
 
 BUILD_TYPE=${1:-dev}
-# VERSION=$(git rev-parse --abbrev-ref HEAD)
-VERSION="main"
+VERSION=$(git rev-parse --abbrev-ref HEAD)
 
 # software source code specific paths (needed at buildtime)
 SRC_DIR="src"
