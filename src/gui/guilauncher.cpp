@@ -38,11 +38,7 @@ void startParent(int to_child[2], int from_child[2])
     close(to_child[0]);
     close(from_child[1]);
 
-    std::string msg_to_child;
-    msg_to_child = "First msg from C++\n";
-    sendMessageToChild(to_child, msg_to_child);
-
-    readFromChild(from_child);
+    communication::waitForChildResponse(from_child, to_child);
 }
 
 void launchGUI()

@@ -26,10 +26,10 @@ class MTrack(tk.Tk):
         btn_frame = tk.Frame()
 
         tk.Button(btn_frame, text="add", 
-                    command=self._add_button).pack(side=tk.LEFT)
+                    command=self._add_item).pack(side=tk.LEFT)
 
         tk.Button(btn_frame, text="remove", 
-                    command=self._rm_button).pack(side=tk.LEFT)
+                    command=self._rm_item).pack(side=tk.LEFT)
 
         tk.Button(btn_frame, text="quit", 
                         command=self.destroy).pack(side=tk.LEFT)
@@ -47,16 +47,19 @@ class MTrack(tk.Tk):
         self.geometry('%dx%d+%d+%d' % (width, height, x, y))
 
 
-    def _add_button(self):
+    def _add_item(self):
         # TODO open seperate window and extract data from there?
-        msgsender.send_msg(rsp.ADD_RESPONSE)
+        msgsender.send_request_no_data(rsp.ADD_RESPONSE)
 
 
-    def _rm_button(self):
+    def _rm_item(self):
         """
             Find the id of the selected item and send the correct response code
             and id to the backend.
         """
         cur_item_id = self.tree.focus()
-        print("selected item id: " + cur_item_id, file=sys.stderr)
-        msgsender.send_msg_with_rsp(cur_item_id, rsp.RM_RESPONSE)
+        msgsender.send_request_with_data(rsp.RM_RESPONSE, cur_item_id)
+        rsp_code = sys.stdin.readline().rstrip()
+        if rsp_code == rsp.TRN_END:
+            selectd_item = self.tree.selection()[0]
+            self.tree.delete(selectd_item)

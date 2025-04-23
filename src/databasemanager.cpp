@@ -24,6 +24,9 @@ namespace
         std::vector<std::string> row;
         // Double the size of the columns to save the column name too.
         // Could be obsolete when just show the columns in the front end.
+
+        // TODO remove the column names from the vector -> display them in the frontend
+        // directly
         row.reserve(num_cols * 2);
         for (int i = 0; i < num_cols; i++)
         {
