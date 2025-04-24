@@ -4,7 +4,6 @@
 #include "databasemanager.h"
 #include "debug/debprint.h"
 #include "storage/utils.h"
-#include <iostream>
 
 namespace
 {
@@ -123,10 +122,11 @@ void closeDatabase()
 
 void createDatabaseTable()
 {
-    const char *sql = "CREATE TABLE IF NOT EXISTS MEDIA("  \
-       "ID INTEGER PRIMARY KEY," \
-       "NAME           TEXT    NOT NULL," \
-       "RATING         INT     NOT NULL);";
+    const char *sql = "CREATE TABLE IF NOT EXISTS MEDIA("   \
+       "ID          INTEGER     PRIMARY KEY,"               \
+       "NAME        TEXT        NOT NULL,"                  \
+       "RATING      INT         NOT NULL"                   \
+    ");";
  
     execute_sql(sql);
 }
@@ -144,7 +144,13 @@ void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
 
 nlohmann::json selectAllJsonQuery()
 {
-    std::string sql("SELECT json_group_array(json_object('id', ID, 'name', NAME, 'rating', RATING)) AS json_result FROM MEDIA;");
+    const char *sql = "SELECT json_group_array("    \
+        "json_object("                              \
+            "'id', ID,"                             \
+            "'name', NAME,"                         \
+            "'rating', RATING"                      \
+        ")" \
+    ") AS json_result FROM MEDIA;";
 
     std::vector<std::vector<std::string>> select_result;
     execute_sql(sql, select_result);

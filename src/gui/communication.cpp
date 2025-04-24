@@ -35,7 +35,10 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
         {
             debug::print::debprint("GUI want to add data");
 
-            auto temp = msg_from_child.substr(4, msg_from_child.length());
+            auto temp = msg_from_child.substr(
+                RESPONSE_CODE_SIZE, 
+                msg_from_child.length()
+            );
             nlohmann::json j = nlohmann::json::parse(temp);
 
             commands::addCommand(to_child, j);
@@ -45,7 +48,12 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
             debug::print::debprint("GUI want to remove data");
             try
             {
-                int id_int = std::stoi(msg_from_child.substr(4, msg_from_child.length()));
+                int id_int = std::stoi(
+                    msg_from_child.substr(
+                        RESPONSE_CODE_SIZE, 
+                        msg_from_child.length()
+                    )
+                );
                 commands::rmCommand(to_child, id_int);
             }
             catch(const std::exception& e)
