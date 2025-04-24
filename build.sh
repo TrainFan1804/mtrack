@@ -70,6 +70,7 @@ cat << EOF > include/buildenv.h
 
 // macros for SQL queries
 #define TABLE_NAME          "MEDIA"
+#define TABLE_COL           "ID", "NAME", "RATING"
 #endif
 EOF
 

@@ -133,7 +133,7 @@ void createDatabaseTable()
 
 void selectAllQuery(std::vector<std::vector<std::string>> &result)
 {
-    selectSpecialQuery(result, "SELECT * FROM MEDIA;");
+    selectSpecialQuery(result, "SELECT * FROM " + std::string(TABLE_NAME) + ";");
 }
 
 void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
@@ -144,16 +144,22 @@ void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
 
 nlohmann::json selectAllJsonQuery()
 {
-    const char *sql = "SELECT json_group_array("    \
-        "json_object("                              \
-            "'id', ID,"                             \
-            "'name', NAME,"                         \
-            "'rating', RATING"                      \
-        ")" \
-    ") AS json_result FROM MEDIA;";
+    const std::string NAME_LIST[] = { TABLE_COL };
+
+    std::ostringstream oss;
+    oss << "SELECT json_group_array(json_object(";
+
+    // why does NAME_LIST->length() return ACTUALLY_LENGTH - 1?
+    for (int index = 0; index <= NAME_LIST->length(); index++)
+    {
+        oss << "'" << strToLower(NAME_LIST[index]) << "', " << NAME_LIST[index];
+        if (index != NAME_LIST->length())
+            oss << ", ";
+    }
+    oss << ")) AS json_result FROM " << TABLE_NAME << ";";
 
     std::vector<std::vector<std::string>> select_result;
-    execute_sql(sql, select_result);
+    execute_sql(oss.str(), select_result);
 
     auto raw_str = select_result[0][1];
     auto j = nlohmann::json::parse(raw_str);
@@ -164,9 +170,12 @@ void addMedia(const media::Media &new_media)
 {
     // scary SQL injection BOOO 
     std::ostringstream oss;
-    oss << "INSERT INTO MEDIA (NAME,RATING) VALUES('"
+    oss << "INSERT INTO " 
+        << TABLE_NAME 
+        << " (NAME,RATING) VALUES('"
         << new_media._name << "',"
-        << new_media._rating << ");";
+        << new_media._rating 
+        << ");";
 
     execute_sql(oss.str());
 }
@@ -174,8 +183,11 @@ void addMedia(const media::Media &new_media)
 void rmMedia(int rm_id)
 {
     std::ostringstream oss;
-    oss << "DELETE FROM MEDIA WHERE ID="
-        << rm_id << ";";
+    oss << "DELETE FROM "
+        << TABLE_NAME 
+        << " WHERE ID="
+        << rm_id 
+        << ";";
  
     execute_sql(oss.str());
 }
