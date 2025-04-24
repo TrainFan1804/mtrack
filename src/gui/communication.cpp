@@ -93,8 +93,22 @@ void communication::commands::fetchCommand(int to_child[2])
 
 void communication::commands::addCommand(int to_child[2], const nlohmann::json &j)
 {
-    auto j_rating_str = j["rating"].get<std::string>();
-    media::Media new_media(j["name"], std::stoi(j_rating_str));
+    /*
+        This loop will extract the integer typses from the given json (j).
+        This is needed because in the db some columns are INTEGER but the json
+        is a string type. So there need to be a list of all INTEGER columns (int_cols)
+        and cast the represent values in the json to int to add the new media correctly.
+    */
+    std::vector<std::string> int_cols = { TABLE_INT_COL };
+    std::vector<int> int_cols_val;
+    for (const auto &col : int_cols)
+    {
+        auto temp = j[col].get<std::string>();
+        int_cols_val.push_back(std::stoi(temp));
+    }
+    
+    // TODO add here the params when there a new media section
+    media::Media new_media(j["name"], int_cols_val[0]);
     addMedia(new_media);
 
     std::vector<std::vector<std::string>> select_result;
