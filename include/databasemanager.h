@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <sqlite3.h>
+#include "json.hpp"
 
 #include "globals.h"
 
@@ -30,6 +31,8 @@ void selectAllQuery(std::vector<std::vector<std::string>> &result);
 
 void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
     const std::string &statement);
+
+nlohmann::json selectAllJsonQuery();
 
 void addMedia(const media::Media &new_media);
 

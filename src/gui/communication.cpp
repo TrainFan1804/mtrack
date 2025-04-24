@@ -75,13 +75,10 @@ void communication::sendMessageToChild(int to_child[2], const std::string &msg)
 
 void communication::commands::fetchCommand(int to_child[2])
 {
-    // TODO this need to be converted in real json
-    std::vector<std::vector<std::string>> select_result;
-    selectAllQuery(select_result);
-    nlohmann::json j = select_result;
+    auto json_data = selectAllJsonQuery();
     
     std::string prefix = std::string(SEND_RESPONSE) + ".";
-    std::string j_str = prefix + j.dump();
+    std::string j_str = prefix + json_data.dump();
 
     communication::sendMessageToChild(to_child, j_str);
 }

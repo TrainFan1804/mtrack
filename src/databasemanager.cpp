@@ -4,6 +4,7 @@
 #include "databasemanager.h"
 #include "debug/debprint.h"
 #include "storage/utils.h"
+#include <iostream>
 
 namespace
 {
@@ -139,6 +140,18 @@ void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
     const std::string &statement)
 {
     execute_sql(statement.c_str(), result);
+}
+
+nlohmann::json selectAllJsonQuery()
+{
+    std::string sql("SELECT json_group_array(json_object('id', ID, 'name', NAME, 'rating', RATING)) AS json_result FROM MEDIA;");
+
+    std::vector<std::vector<std::string>> select_result;
+    execute_sql(sql, select_result);
+
+    auto raw_str = select_result[0][1];
+    auto j = nlohmann::json::parse(raw_str);
+    return j;
 }
 
 void addMedia(const media::Media &new_media)

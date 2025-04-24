@@ -11,10 +11,11 @@ def fill_window_tree():
     j_str = j_str[4:]
 
     j_data = json.loads(j_str)
+    name_list = ["id", "name", "rating"]
     for row in j_data:
         window.tree.insert('', 'end', 
-                        iid=str(row[1]), 
-                        values=(row[3], row[5]))
+                        iid=str(row[name_list[0]]), 
+                        values=(row[name_list[1]], row[name_list[2]]))
 
 
 if (__name__ == "__main__"):
