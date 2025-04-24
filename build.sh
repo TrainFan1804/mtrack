@@ -30,7 +30,7 @@ echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
 mkdir -p $BUILD_DIR 
 
-if ! g++ $CXXFLAGS -DVERSION="\"$FULL_VERSION\"" -I$INCLUDE_DIR $(find $SRC_DIR -name '*.cpp') -o $BUILD_DIR/mtrack -lsqlite3; then
+if ! g++ $CXXFLAGS -DVERSION="\"$VERSION\"" -I$INCLUDE_DIR $(find $SRC_DIR -name '*.cpp') -o $BUILD_DIR/mtrack -lsqlite3; then
     echo "Build failed"
     exit 1
 fi
