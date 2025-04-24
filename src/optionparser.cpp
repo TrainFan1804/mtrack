@@ -26,7 +26,7 @@ void po::parse(int argc, char *argv[])
         ("r,remove", "Remove a media by id", cxxopts::value<int>(), "<id>")
         ("verbose", "Activate log")
         ("v,version", "Show version")
-        ("h,help", "Print help")
+        ("h,help", "Show this page")
       ;
 
     options.parse_positional({"add"});
@@ -38,10 +38,12 @@ void po::parse(int argc, char *argv[])
     if (result.count("help"))
     {
         printf(options.help().c_str());
+        return;
     }
     if (result.count("version"))
     {
         printf("mTrack: %s\n", std::string(VERSION).c_str());
+        return;
     }
     openDatabase();
     if (result.count("show"))
