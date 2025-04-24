@@ -41,6 +41,8 @@ mkdir -p $LOG_PATH
 # Because I am to lazy to define the path in the C++ code twice I came up with
 # this crazy stuff...
 # Maybe I should rewrite the entire programm in just a big script that execute a big cat command...
+# I realized this can only be used in development because I couldn't compile this
+# when there is no buidenv.h...
 cat << EOF > include/buildenv.h
 #ifndef BUILDENV_H
 #define BUILDENV_H
@@ -67,8 +69,10 @@ cat << EOF > include/buildenv.h
 #endif
 EOF
 
+mkdir -p "$PWD/gui/config"
+
 # pls forgive me for this...
-cat << EOF > gui/responsecodes.py
+cat << EOF > gui/config/responsecodes.py
 ASK_DATA        =   "100"
 ADD_RESPONSE    =   "101"
 RM_RESPONSE     =   "102"
@@ -77,6 +81,12 @@ TRN_END         =   "300"
 SEND_ID         =   "301"
 WRG_FORMAT      =   "400"
 DB_ERROR        =   "500"
+EOF
+
+cat << EOF > gui/config/mediasection.py
+RESPONSE_CODE_SIZE  =   3 + 1
+JSON_ID             =   'id'
+NAME_LIST           =   ['name', 'rating']
 EOF
 
 echo "Successfully build"
