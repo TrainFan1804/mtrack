@@ -11,4 +11,4 @@ include/buildenv.h
 
 # python stuff
 gui/__pycache__/*
-gui/responsecodes.py
+gui/config/__pycache__/*

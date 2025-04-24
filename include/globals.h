@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iomanip>
 #include <filesystem>
+#include <algorithm>
+#include <cctype>
 
 #include "buildenv.h"
 
@@ -30,11 +32,13 @@ namespace media
         int _media_id;
         int _rating;
         std::string _name;
+        std::string _state;
 
-        Media(const std::string &name, int rating)
+        Media(const std::string &name, int rating, const std::string &state)
         {
             _rating = rating;
             _name = name;
+            _state = state;
         }
     };
 }
@@ -47,6 +51,21 @@ inline std::string getCustomCurrentTimestamp()
     std::ostringstream oss;
     oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
     return oss.str();
+}
+
+/*
+    Why isn't there a function like this is std?
+*/
+inline std::string strToLower(const std::string str)
+{
+    std::string res = str;
+    std::transform(
+        res.begin(), res.end(), res.begin(),
+        [](unsigned char c){
+            return std::tolower(c);
+        }
+    );
+    return res;
 }
 
 #endif

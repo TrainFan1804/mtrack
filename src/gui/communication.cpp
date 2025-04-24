@@ -35,7 +35,10 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
         {
             debug::print::debprint("GUI want to add data");
 
-            auto temp = msg_from_child.substr(4, msg_from_child.length());
+            auto temp = msg_from_child.substr(
+                RESPONSE_CODE_SIZE, 
+                msg_from_child.length()
+            );
             nlohmann::json j = nlohmann::json::parse(temp);
 
             commands::addCommand(to_child, j);
@@ -45,7 +48,12 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
             debug::print::debprint("GUI want to remove data");
             try
             {
-                int id_int = std::stoi(msg_from_child.substr(4, msg_from_child.length()));
+                int id_int = std::stoi(
+                    msg_from_child.substr(
+                        RESPONSE_CODE_SIZE, 
+                        msg_from_child.length()
+                    )
+                );
                 commands::rmCommand(to_child, id_int);
             }
             catch(const std::exception& e)
@@ -75,21 +83,32 @@ void communication::sendMessageToChild(int to_child[2], const std::string &msg)
 
 void communication::commands::fetchCommand(int to_child[2])
 {
-    // TODO this need to be converted in real json
-    std::vector<std::vector<std::string>> select_result;
-    selectAllQuery(select_result);
-    nlohmann::json j = select_result;
+    auto json_data = selectAllJsonQuery();
     
     std::string prefix = std::string(SEND_RESPONSE) + ".";
-    std::string j_str = prefix + j.dump();
+    std::string j_str = prefix + json_data.dump();
 
     communication::sendMessageToChild(to_child, j_str);
 }
 
 void communication::commands::addCommand(int to_child[2], const nlohmann::json &j)
 {
-    auto j_rating_str = j["rating"].get<std::string>();
-    media::Media new_media(j["name"], std::stoi(j_rating_str));
+    /*
+        This loop will extract the integer typses from the given json (j).
+        This is needed because in the db some columns are INTEGER but the json
+        is a string type. So there need to be a list of all INTEGER columns (int_cols)
+        and cast the represent values in the json to int to add the new media correctly.
+    */
+    std::vector<std::string> int_cols = { TABLE_INT_COL };
+    std::vector<int> int_cols_val;
+    for (const auto &col : int_cols)
+    {
+        auto temp = j[col].get<std::string>();
+        int_cols_val.push_back(std::stoi(temp));
+    }
+    
+    // TODO add here the params when there a new media section
+    media::Media new_media(j["name"], int_cols_val[0], j["state"]);
     addMedia(new_media);
 
     std::vector<std::vector<std::string>> select_result;

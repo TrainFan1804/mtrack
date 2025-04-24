@@ -122,17 +122,12 @@ void closeDatabase()
 
 void createDatabaseTable()
 {
-    const char *sql = "CREATE TABLE IF NOT EXISTS MEDIA("  \
-       "ID INTEGER PRIMARY KEY," \
-       "NAME           TEXT    NOT NULL," \
-       "RATING         INT     NOT NULL);";
- 
-    execute_sql(sql);
+    execute_sql(SQL_CREATE);
 }
 
 void selectAllQuery(std::vector<std::vector<std::string>> &result)
 {
-    selectSpecialQuery(result, "SELECT * FROM MEDIA;");
+    selectSpecialQuery(result, "SELECT * FROM " + std::string(TABLE_NAME) + ";");
 }
 
 void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
@@ -141,13 +136,27 @@ void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
     execute_sql(statement.c_str(), result);
 }
 
+nlohmann::json selectAllJsonQuery()
+{
+    std::vector<std::vector<std::string>> select_result;
+    execute_sql(SQL_JSON_SELECT_ALL, select_result);
+
+    auto raw_str = select_result[0][1];
+    auto j = nlohmann::json::parse(raw_str);
+    return j;
+}
+
 void addMedia(const media::Media &new_media)
 {
     // scary SQL injection BOOO 
     std::ostringstream oss;
-    oss << "INSERT INTO MEDIA (NAME,RATING) VALUES('"
-        << new_media._name << "',"
-        << new_media._rating << ");";
+    oss << "INSERT INTO " 
+        << TABLE_NAME 
+        << " (NAME, RATING, STATE) VALUES("
+        << "'" << new_media._name << "', "
+        << new_media._rating << ", "
+        << "'" << new_media._state << "'"
+        << ");";
 
     execute_sql(oss.str());
 }
@@ -155,8 +164,11 @@ void addMedia(const media::Media &new_media)
 void rmMedia(int rm_id)
 {
     std::ostringstream oss;
-    oss << "DELETE FROM MEDIA WHERE ID="
-        << rm_id << ";";
+    oss << "DELETE FROM "
+        << TABLE_NAME 
+        << " WHERE ID="
+        << rm_id 
+        << ";";
  
     execute_sql(oss.str());
 }

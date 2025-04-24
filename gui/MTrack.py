@@ -4,7 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 
 import msgsender
-import responsecodes as rsp
+import config.responsecodes as rsp
+import config.mediasection as ms
 
 
 def place_window_mid(window, width, height):
@@ -23,27 +24,37 @@ class MTrack(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         place_window_mid(self, 500, 400)
 
-        self.test_connection_label = tk.Label(text="Nothing right now", background="red")
-        self.test_connection_label.pack()
-
         tk.Label(text="mTrack",
                     height=3).pack()
 
-        self.tree = ttk.Treeview(selectmode='browse', show='headings', columns=('name', 'rating'))
-        self.tree.heading('name', text='name')
-        self.tree.heading('rating', text='rating')
+        self.tree = ttk.Treeview(
+            selectmode='browse',
+            show='headings', 
+            columns=ms.NAME_LIST
+        )
+        
+        for name in ms.NAME_LIST:
+            self.tree.heading(name, text=name)
         self.tree.pack()
+
 
         btn_frame = tk.Frame()
 
-        tk.Button(btn_frame, text="add", 
-                    command=self._add_item).pack(side=tk.LEFT)
+        tk.Button(
+            btn_frame, text="add", 
+            command=self._add_item
+        ).pack(side=tk.LEFT)
 
-        tk.Button(btn_frame, text="remove", 
-                    command=self._rm_item).pack(side=tk.LEFT)
+        tk.Button(
+            btn_frame, text="remove", 
+            command=self._rm_item
+        ).pack(side=tk.LEFT)
 
-        tk.Button(btn_frame, text="quit", 
-                        command=self.destroy).pack(side=tk.LEFT)
+        tk.Button(
+            btn_frame, text="quit", 
+            command=self.destroy
+        ).pack(side=tk.LEFT)
+
         btn_frame.pack()
 
 
@@ -57,10 +68,11 @@ class MTrack(tk.Tk):
 
         rsp_code = sys.stdin.readline().rstrip()
         if rsp_code.startswith(rsp.SEND_ID):
-            rsp_id = rsp_code[4:]
+            rsp_id = rsp_code[rsp.RESPONSE_CODE_SIZE:]
             self.tree.insert('', 'end', 
-                        iid=str(rsp_id), 
-                        values=(values["name"], values["rating"]))
+                iid=str(rsp_id), 
+                values=[values[key] for key in ms.NAME_LIST]
+            )
 
 
     def _rm_item(self):
@@ -85,9 +97,21 @@ class AddTopLevel(tk.Toplevel):
 
         tk.Label(self, text="Add a new media", height=3).pack()
         self._build_entries()
+
         btn_frame = tk.Frame(self)
-        tk.Button(btn_frame, text="add", command=self._send_data).pack(side=tk.LEFT)
-        tk.Button(btn_frame, text="close", command=self.destroy).pack(side=tk.LEFT)
+
+        tk.Button(
+            btn_frame, 
+            text="add", 
+            command=self._send_data
+        ).pack(side=tk.LEFT)
+
+        tk.Button(
+            btn_frame, 
+            text="close", 
+            command=self.destroy
+        ).pack(side=tk.LEFT)
+
         btn_frame.pack()
 
 
@@ -97,25 +121,30 @@ class AddTopLevel(tk.Toplevel):
             frame for the toplevel window need to be added.
         """
         self.entry_frame = tk.Frame(self)
-        name_list = ["name", "rating"]
-        for _row in range(len(name_list)):
-            tk.Label(self.entry_frame, text=name_list[_row]).grid(row=_row, column=0)
-            tk.Entry(self.entry_frame).grid(row=_row, column=1)
+        for _row in range(len(ms.NAME_LIST)):
+            tk.Label(
+                self.entry_frame, 
+                text=ms.NAME_LIST[_row]
+            ).grid(row=_row, column=0)
+
+            tk.Entry(
+                self.entry_frame
+            ).grid(row=_row, column=1)
+
         self.entry_frame.pack()
 
 
     def _send_data(self):
         data = {}
-        name_list = ["name", "rating"]
         count = 0
         for child in self.entry_frame.winfo_children():
             if (isinstance(child, tk.Entry)):
                 cur_entry_data = child.get().strip()
                 if len(cur_entry_data) != 0:
-                    data[name_list[count]] = cur_entry_data
+                    data[ms.NAME_LIST[count]] = cur_entry_data
                     count += 1
 
-        if len(data) != 2:
+        if len(data) != len(ms.NAME_LIST):
             return
         self.callback(data)
         self.destroy()
