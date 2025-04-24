@@ -70,7 +70,12 @@ cat << EOF > include/buildenv.h
 
 // macros for SQL queries
 #define TABLE_NAME          "MEDIA"
-#define TABLE_COL           "ID", "NAME", "RATING"
+#define TABLE_INT_COL       "RATING"    // all table columns that are integer (important for casting from json to int)
+
+const std::string SQL_JSON_SELECT_ALL = "SELECT json_group_array(json_object('id', ID, 'name', NAME, 'rating', RATING)) AS json_result FROM " + std::string(TABLE_NAME) + ";";
+
+const std::string SQL_CREATE = "CREATE TABLE IF NOT EXISTS " + std::string(TABLE_NAME) + "(ID INTEGER PRIMARY KEY, NAME TEXT NOT NULL, RATING INT NOT NULL);";
+
 #endif
 EOF
 

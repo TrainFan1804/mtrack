@@ -122,13 +122,7 @@ void closeDatabase()
 
 void createDatabaseTable()
 {
-    const char *sql = "CREATE TABLE IF NOT EXISTS MEDIA("   \
-       "ID          INTEGER     PRIMARY KEY,"               \
-       "NAME        TEXT        NOT NULL,"                  \
-       "RATING      INT         NOT NULL"                   \
-    ");";
- 
-    execute_sql(sql);
+    execute_sql(SQL_CREATE);
 }
 
 void selectAllQuery(std::vector<std::vector<std::string>> &result)
@@ -144,22 +138,8 @@ void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
 
 nlohmann::json selectAllJsonQuery()
 {
-    const std::string NAME_LIST[] = { TABLE_COL };
-
-    std::ostringstream oss;
-    oss << "SELECT json_group_array(json_object(";
-
-    // why does NAME_LIST->length() return ACTUALLY_LENGTH - 1?
-    for (int index = 0; index <= NAME_LIST->length(); index++)
-    {
-        oss << "'" << strToLower(NAME_LIST[index]) << "', " << NAME_LIST[index];
-        if (index != NAME_LIST->length())
-            oss << ", ";
-    }
-    oss << ")) AS json_result FROM " << TABLE_NAME << ";";
-
     std::vector<std::vector<std::string>> select_result;
-    execute_sql(oss.str(), select_result);
+    execute_sql(SQL_JSON_SELECT_ALL, select_result);
 
     auto raw_str = select_result[0][1];
     auto j = nlohmann::json::parse(raw_str);
