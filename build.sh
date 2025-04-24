@@ -3,17 +3,6 @@
 BUILD_TYPE=${1:-dev}
 VERSION=$(git rev-parse --abbrev-ref HEAD)
 
-# software source code specific paths (needed at buildtime)
-SRC_DIR="src"
-INCLUDE_DIR="include"
-BUILD_DIR="build"
-
-# appdata specific paths (needed at runtime)
-APPDATA_PATH="$HOME/.local/share/mtrack"
-LOG_PATH="$APPDATA_PATH/log"
-PYTHON_PATH="$PWD/dist/pyenv/bin/python3"
-GUI_PY="$PWD/gui/main.py"
-
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
 elif [ "$BUILD_TYPE" = "release" ]; then
@@ -22,18 +11,39 @@ elif [ "$BUILD_TYPE" = "release" ]; then
         VERSION=$(git describe --tags --abbrev=0)"-release"
     fi
 else
-    echo "Unknown build type "$BUILD_TYPE""
+    echo "[ERROR]: Unknown build type "$BUILD_TYPE""
     exit 1
 fi
 
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
-mkdir -p $BUILD_DIR 
+# software source code specific paths (needed at buildtime)
+SRC_DIR="src"
+INCLUDE_DIR="include"
+BUILD_DIR="build"
+OBJ_DIR="$BUILD_DIR/obj"
 
-if ! g++ $CXXFLAGS -DVERSION="\"$VERSION\"" -I$INCLUDE_DIR $(find $SRC_DIR -name '*.cpp') -o $BUILD_DIR/mtrack -lsqlite3; then
-    echo "Build failed"
-    exit 1
-fi
+mkdir -p $BUILD_DIR 
+mkdir -p $OBJ_DIR
+
+for file in $(find $SRC_DIR -name '*.cpp'); do
+    obj="$OBJ_DIR/$(basename "$OBJ_DIR/${file%.cpp}.o")"
+    if [ "$file" -nt "$obj" ]; then
+        echo "Compiling $file -> $obj"
+        if ! g++ -c $CXXFLAGS -DVERSION="\"$VERSION\"" -I$INCLUDE_DIR "$file" -o "$obj"; then
+            echo "[ERROR]: Build failed"
+            exit 1
+        fi
+    fi
+done
+
+g++ $OBJ_DIR/*.o -o "$BUILD_DIR/mtrack" -lsqlite3
+
+# appdata specific paths (needed at runtime)
+APPDATA_PATH="$HOME/.local/share/mtrack"
+LOG_PATH="$APPDATA_PATH/log"
+PYTHON_PATH="$PWD/dist/pyenv/bin/python3"
+GUI_PY="$PWD/gui/main.py"
 
 mkdir -p $APPDATA_PATH
 mkdir -p $LOG_PATH
