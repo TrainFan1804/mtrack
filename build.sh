@@ -71,11 +71,11 @@ cat << EOF > include/buildenv.h
 // macros for SQL queries
 #define TABLE_NAME          "MEDIA"
 #define TABLE_INT_COL       "rating"    // all table columns that are integer (important for casting from json to int)
-#define TABLE_STR_COL       "name"      // all table columns that are string
+#define TABLE_STR_COL       "name", "state"      // all table columns that are string
 
-const std::string SQL_JSON_SELECT_ALL = "SELECT json_group_array(json_object('id', ID, 'name', NAME, 'rating', RATING)) AS json_result FROM " + std::string(TABLE_NAME) + ";";
+const std::string SQL_JSON_SELECT_ALL = "SELECT json_group_array(json_object('id', ID, 'name', NAME, 'rating', RATING, 'state', STATE)) AS json_result FROM " + std::string(TABLE_NAME) + ";";
 
-const std::string SQL_CREATE = "CREATE TABLE IF NOT EXISTS " + std::string(TABLE_NAME) + "(ID INTEGER PRIMARY KEY, NAME TEXT NOT NULL, RATING INT NOT NULL);";
+const std::string SQL_CREATE = "CREATE TABLE IF NOT EXISTS " + std::string(TABLE_NAME) + "(ID INTEGER PRIMARY KEY, NAME TEXT NOT NULL, RATING INT NOT NULL, STATE TEXT NOT NULL);";
 
 #endif
 EOF
@@ -97,7 +97,7 @@ EOF
 cat << EOF > gui/config/mediasection.py
 RESPONSE_CODE_SIZE  =   3 + 1
 JSON_ID             =   'id'
-NAME_LIST           =   ['name', 'rating']
+NAME_LIST           =   ['name', 'rating', 'state']
 EOF
 
 echo "Successfully build"

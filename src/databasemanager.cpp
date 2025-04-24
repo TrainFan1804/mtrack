@@ -152,9 +152,10 @@ void addMedia(const media::Media &new_media)
     std::ostringstream oss;
     oss << "INSERT INTO " 
         << TABLE_NAME 
-        << " (NAME,RATING) VALUES('"
-        << new_media._name << "',"
-        << new_media._rating 
+        << " (NAME, RATING, STATE) VALUES("
+        << "'" << new_media._name << "', "
+        << new_media._rating << ", "
+        << "'" << new_media._state << "'"
         << ");";
 
     execute_sql(oss.str());

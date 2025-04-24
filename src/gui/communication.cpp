@@ -108,7 +108,7 @@ void communication::commands::addCommand(int to_child[2], const nlohmann::json &
     }
     
     // TODO add here the params when there a new media section
-    media::Media new_media(j["name"], int_cols_val[0]);
+    media::Media new_media(j["name"], int_cols_val[0], j["state"]);
     addMedia(new_media);
 
     std::vector<std::vector<std::string>> select_result;

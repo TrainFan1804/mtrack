@@ -144,7 +144,7 @@ class AddTopLevel(tk.Toplevel):
                     data[ms.NAME_LIST[count]] = cur_entry_data
                     count += 1
 
-        if len(data) != 2:
+        if len(data) != len(ms.NAME_LIST):
             return
         self.callback(data)
         self.destroy()
