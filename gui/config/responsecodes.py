@@ -6,3 +6,5 @@ TRN_END         =   "300"
 SEND_ID         =   "301"
 WRG_FORMAT      =   "400"
 DB_ERROR        =   "500"
+
+RESPONSE_CODE_SIZE  =   3 + 1

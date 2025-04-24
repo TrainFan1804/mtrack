@@ -68,7 +68,7 @@ class MTrack(tk.Tk):
 
         rsp_code = sys.stdin.readline().rstrip()
         if rsp_code.startswith(rsp.SEND_ID):
-            rsp_id = rsp_code[ms.RESPONSE_CODE_SIZE:]
+            rsp_id = rsp_code[rsp.RESPONSE_CODE_SIZE:]
             self.tree.insert('', 'end', 
                 iid=str(rsp_id), 
                 values=[values[key] for key in ms.NAME_LIST]

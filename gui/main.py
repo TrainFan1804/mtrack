@@ -9,7 +9,7 @@ import config.mediasection as ms
 
 def fill_window_tree():
     j_str = sys.stdin.readline()
-    j_str = j_str[ms.RESPONSE_CODE_SIZE:]   # remove response code
+    j_str = j_str[rsp.RESPONSE_CODE_SIZE:]   # remove response code
 
     j_dir = json.loads(j_str)
     for row in j_dir:

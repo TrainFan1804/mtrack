@@ -92,10 +92,11 @@ TRN_END         =   "300"
 SEND_ID         =   "301"
 WRG_FORMAT      =   "400"
 DB_ERROR        =   "500"
+
+RESPONSE_CODE_SIZE  =   3 + 1
 EOF
 
 cat << EOF > gui/config/mediasection.py
-RESPONSE_CODE_SIZE  =   3 + 1
 JSON_ID             =   'id'
 NAME_LIST           =   ['name', 'rating', 'state']
 EOF
