@@ -10,3 +10,4 @@ When adding a new media section theses things need to be done:
 - In `optionparser.cpp` add the new media section in the created media object. 
     (Don't forget to update the `--help` window)
 - In `build.sh` add the new section into the created files that are created at building.
+- IN `MTrack.py` add a check if the string is INTEGER

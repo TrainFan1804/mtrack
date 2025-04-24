@@ -2,6 +2,7 @@ import sys
 import json
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 import msgsender
 import config.responsecodes as rsp
@@ -73,6 +74,8 @@ class MTrack(tk.Tk):
                 iid=str(rsp_id), 
                 values=[values[key] for key in ms.NAME_LIST]
             )
+        else:
+            messagebox.showerror("Error", "Something went wrong")
 
 
     def _rm_item(self):
@@ -86,6 +89,8 @@ class MTrack(tk.Tk):
         if rsp_code == rsp.TRN_END:
             selectd_item = self.tree.selection()[0]
             self.tree.delete(selectd_item)
+        else:
+            messagebox.showerror("Error", "Something went wrong")
 
 
 class AddTopLevel(tk.Toplevel):
@@ -145,6 +150,12 @@ class AddTopLevel(tk.Toplevel):
                     count += 1
 
         if len(data) != len(ms.NAME_LIST):
+            messagebox.showerror("Error", "You can't leave any field empty")
             return
+
+        if not data['rating'].isnumeric():
+            messagebox.showerror("Error", "Rating must be a number")
+            return
+
         self.callback(data)
         self.destroy()
