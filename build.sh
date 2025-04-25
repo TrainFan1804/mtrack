@@ -15,8 +15,8 @@ else
     exit 1
 fi
 
-chmod +x $PWD/dist/bin/createbuildenv.sh
-$PWD/dist/bin/createbuildenv.sh
+chmod +x $PWD/bin/createbuildenv.sh
+$PWD/bin/createbuildenv.sh
 
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 

@@ -3,7 +3,6 @@
 
 # Build and develope stuff
 build/*
-dist/pyenv
 temp/*
 
 # C++ stuff

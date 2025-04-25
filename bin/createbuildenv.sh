@@ -1,12 +1,14 @@
+#!/bin/bash
+
 # appdata specific paths (needed at runtime)
 APPDATA_PATH="$HOME/.local/share/mtrack"
 LOG_PATH="$APPDATA_PATH/log"
-PYTHON_PATH="$PWD/dist/pyenv/bin/python3"
+PYTHON_PATH="$PWD/build/pyenv/bin/python3"
 GUI_PY="$PWD/gui/main.py"
 
-if [ ! -d $PWD/dist/pyenv ]; then
+if [ ! -d $PWD/build/pyenv ]; then
     echo "Creating python enviroment..."
-    python3 -m venv $PWD/dist/pyenv
+    python3 -m venv $PWD/build/pyenv
 fi
 
 mkdir -p $APPDATA_PATH
