@@ -13,7 +13,7 @@ echo "Start installing.."
 # Installing mTrack will move the executable into the users bin directory
 # to access the software via the terminal
 SCRIPT_INSTALL_PATH="$HOME/.local/bin"
-BUILD_TARGET="build/mtrack"
+BUILD_TARGET="$PWD/build/mtrack"
 
 if [ ! -f "$BUILD_TARGET" ]; then
     echo "Build target not found"
