@@ -33,12 +33,15 @@ namespace media
         int _rating;
         std::string _name;
         std::string _state;
+        std::string _type;
 
-        Media(const std::string &name, int rating, const std::string &state)
+        Media(const std::string &name, int rating,
+            const std::string &state, const std::string &type)
         {
             _rating = rating;
             _name = name;
             _state = state;
+            _type = type;
         }
     };
 }

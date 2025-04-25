@@ -137,7 +137,7 @@ void checkTable()
         if (!col_exists)
         {
             std::ostringstream oss;
-            oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN" << ex_col << " TEXT;";
+            oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN " << ex_col << " TEXT DEFAULT 'unknown';";
             execute_sql(oss.str());
         }
     }
@@ -202,7 +202,8 @@ void addMedia(const media::Media &new_media)
         << " (NAME, RATING, STATE) VALUES("
         << "'" << new_media._name << "', "
         << new_media._rating << ", "
-        << "'" << new_media._state << "'"
+        << "'" << new_media._state << "', "
+        << "'" << new_media._type << "'"
         << ");";
 
     execute_sql(oss.str());

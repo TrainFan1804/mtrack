@@ -22,7 +22,7 @@ void po::parse(int argc, char *argv[])
       .allow_unrecognised_options()
       .add_options()
         ("s,show", "Show the content of the libary")
-        ("a,add", "Add a new media to your libary", cxxopts::value<std::vector<std::string>>(), "<NAME> <RATING> <STATE>")
+        ("a,add", "Add a new media to your libary", cxxopts::value<std::vector<std::string>>(), "<NAME> <RATING> <STATE> <TYPE>")
         ("r,remove", "Remove a media by id", cxxopts::value<int>(), "<id>")
         ("verbose", "Activate log")
         ("v,version", "Show version")
@@ -82,7 +82,7 @@ void po::commands::showCommand()
 
 void po::commands::addCommand(const std::vector<std::string> &args)
 {
-    media::Media new_media(args[0], std::stoi(args[1]), args[2]);
+    media::Media new_media(args[0], std::stoi(args[1]), args[2], args[3]);
     addMedia(new_media);
 }
 
