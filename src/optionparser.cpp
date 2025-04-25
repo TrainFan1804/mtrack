@@ -9,7 +9,9 @@
 
 void po::parse(int argc, char *argv[])
 {
-    std::unique_ptr<cxxopts::Options> allocated(new cxxopts::Options(argv[0], "example command line options"));
+    std::unique_ptr<cxxopts::Options> allocated(
+        new cxxopts::Options(argv[0])
+    );
 
     auto& options = *allocated;
     options
@@ -22,8 +24,12 @@ void po::parse(int argc, char *argv[])
       .allow_unrecognised_options()
       .add_options()
         ("s,show", "Show the content of the libary")
-        ("a,add", "Add a new media to your libary", cxxopts::value<std::vector<std::string>>(), "<NAME> <RATING> <STATE> <TYPE>")
-        ("r,remove", "Remove a media by id", cxxopts::value<int>(), "<id>")
+        ("a,add", "Add a new media to your libary",
+            cxxopts::value<std::vector<std::string>>(),
+            "<NAME> <RATING> <STATE> <TYPE>")
+        ("r,remove", "Remove a media by id",
+            cxxopts::value<int>(),
+            "<id>")
         ("verbose", "Activate log")
         ("v,version", "Show version")
         ("h,help", "Show this page")
