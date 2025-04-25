@@ -8,6 +8,7 @@
 int main(int argc, char *argv[])
 {
     initDatabase();
+    checkTable();
     if (argc <= 1)
     {
         debug::print::debprint("Start software in GUI mode");

@@ -82,6 +82,7 @@ cat << EOF > include/buildenv.h
 #define TABLE_NAME          "MEDIA"
 #define TABLE_INT_COL       "rating"    // all table columns that are integer (important for casting from json to int)
 #define TABLE_STR_COL       "name", "state"      // all table columns that are string
+#define TABLE_ALL_COL       "ID", "NAME", "RATING", "STATE"
 
 const std::string SQL_JSON_SELECT_ALL = "SELECT json_group_array(json_object('id', ID, 'name', NAME, 'rating', RATING, 'state', STATE)) AS json_result FROM " + std::string(TABLE_NAME) + ";";
 

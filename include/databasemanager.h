@@ -11,6 +11,8 @@
 
 void initDatabase();
 
+void checkTable();
+
 /**
  * Open the database connection.
  */

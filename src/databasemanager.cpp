@@ -79,6 +79,12 @@ namespace
     {
         execute_sql(sql, &head);
     }
+
+    void createCol(const std::string &new_col)
+    {
+        printf("%s\n", new_col.c_str());
+    }
+
 }
 
 void initDatabase()
@@ -94,6 +100,47 @@ void initDatabase()
     debug::print::debprint("Database created");
     createDatabaseTable();
     debug::print::debprint("Tables created");
+    closeDatabase();
+}
+
+void checkTable()
+{
+    openDatabase();
+    std::ostringstream oss;
+    oss << "PRAGMA table_info(" 
+        << TABLE_NAME << ");";
+    
+    std::vector<std::vector<std::string>> select_result;
+    selectSpecialQuery(select_result, oss.str());
+
+    std::vector<std::string> real_cols; // cols in the actuall table
+    
+    for (const auto &row : select_result)
+    {
+        real_cols.push_back(row[3]);
+    }
+    
+    // cols that should be in the table
+    const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
+
+    for (auto &ex_col : EXPECTED_COLS)
+    {
+        bool col_exists = false;
+        for (auto &col: real_cols)
+        {
+            if (ex_col == col)
+            {
+                col_exists = true;
+                break;
+            }
+        }
+        if (!col_exists)
+        {
+            std::ostringstream oss;
+            oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN" << ex_col << " TEXT;";
+            execute_sql(oss.str());
+        }
+    }
     closeDatabase();
 }
 
