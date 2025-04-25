@@ -199,7 +199,7 @@ void addMedia(const media::Media &new_media)
     std::ostringstream oss;
     oss << "INSERT INTO " 
         << TABLE_NAME 
-        << " (NAME, RATING, STATE) VALUES("
+        << " (NAME, RATING, STATE, TYPE) VALUES("
         << "'" << new_media._name << "', "
         << new_media._rating << ", "
         << "'" << new_media._state << "', "
