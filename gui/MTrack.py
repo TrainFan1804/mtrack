@@ -23,7 +23,7 @@ def place_window_mid(window, width, height):
 class MTrack(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        place_window_mid(self, 500, 400)
+        place_window_mid(self, 800, 400)
 
         tk.Label(text="mTrack",
                     height=3).pack()
