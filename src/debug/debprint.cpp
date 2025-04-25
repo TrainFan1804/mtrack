@@ -49,9 +49,7 @@ void debug::print::debprint(const std::string &msg)
 
 void debug::print::deberr(const std::string &err)
 {
-    #ifdef DEBUG
-        std::cerr << "[ERROR] " << err << "\n";
-    #endif
+    std::cerr << "[ERROR] " << err << "\n";
     if (log_active)
     {
         log(err, ERROR);
@@ -78,16 +76,14 @@ void debug::print::fdebprint(const char *msg, ...)
 
 void debug::print::fdeberr(const char *err, ...)
 {
-    #ifdef DEBUG
-        va_list args;
-        va_start(args, err);
+    va_list args;
+    va_start(args, err);
 
-        char buffer[1024];
-        vsnprintf(buffer, sizeof(buffer), err, args);
+    char buffer[1024];
+    vsnprintf(buffer, sizeof(buffer), err, args);
 
-        va_end(args);
-        deberr(std::string(buffer));
-    #endif
+    va_end(args);
+    deberr(std::string(buffer));
     if (log_active)
     {
         log(err, ERROR);

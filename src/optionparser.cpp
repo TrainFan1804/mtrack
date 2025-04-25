@@ -3,9 +3,9 @@
 #include "cxxopts.hpp"
 
 #include "optionparser.h"
-#include "commands.h"
 #include "databasemanager.h"
 #include "globals.h"
+#include "debug/debprint.h"
 
 void po::parse(int argc, char *argv[])
 {
@@ -22,11 +22,11 @@ void po::parse(int argc, char *argv[])
       .allow_unrecognised_options()
       .add_options()
         ("s,show", "Show the content of the libary")
-        ("a,add", "Add a new media to your libary", cxxopts::value<std::vector<std::string>>(), "<NAME> <RATING>")
+        ("a,add", "Add a new media to your libary", cxxopts::value<std::vector<std::string>>(), "<NAME> <RATING> <STATE> <TYPE>")
         ("r,remove", "Remove a media by id", cxxopts::value<int>(), "<id>")
         ("verbose", "Activate log")
         ("v,version", "Show version")
-        ("h,help", "Print help")
+        ("h,help", "Show this page")
       ;
 
     options.parse_positional({"add"});
@@ -38,28 +38,55 @@ void po::parse(int argc, char *argv[])
     if (result.count("help"))
     {
         printf(options.help().c_str());
+        return;
     }
     if (result.count("version"))
     {
-        auto temp = std::string("Current version: " + std::string(VERSION));
-        printf(temp.c_str());
+        printf("mTrack: %s\n", std::string(VERSION).c_str());
+        return;
     }
     openDatabase();
     if (result.count("show"))
     {
-        showCommand();
+        commands::showCommand();
     }
     if (result.count("add"))
     {
-        if (result.count("add") != 2)
+        if (result.count("add") != 3)
         {
-            throw std::runtime_error("To few options for add");
+            throw std::runtime_error("To few/many options for add");
         }
-        addCommand(result["add"].as<std::vector<std::string>>());
+        commands::addCommand(result["add"].as<std::vector<std::string>>());
     }
     if (result.count("remove"))
     {
-        rmCommand(result["remove"].as<int>());
+        commands::rmCommand(result["remove"].as<int>());
     }
     closeDatabase();
+}
+
+void po::commands::showCommand()
+{
+    std::vector<std::vector<std::string>> select_result;
+    selectAllQuery(select_result);
+    for (auto row : select_result)
+    {
+        for (size_t entry = 0; entry < row.size(); entry++)
+        {
+            printf(row[entry].c_str());
+            if (entry != row.size() - 1) printf((entry % 2 == 0) ? " = " : ", ");
+        }
+        printf("\n");
+    }
+}
+
+void po::commands::addCommand(const std::vector<std::string> &args)
+{
+    media::Media new_media(args[0], std::stoi(args[1]), args[2], args[3]);
+    addMedia(new_media);
+}
+
+void po::commands::rmCommand(int id)
+{
+    rmMedia(id);
 }

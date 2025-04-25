@@ -1,30 +1,45 @@
 #!/bin/bash
 
 BUILD_TYPE=${1:-dev}
-VERSION=$(git describe  --tags --abbrev=0)
-
-SRC_DIR="src"
-INCLUDE_DIR="include"
-BUILD_DIR="build"
+VERSION=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
-    VERSION_SUFFIX="-dev"
 elif [ "$BUILD_TYPE" = "release" ]; then
     CXXFLAGS=""
-    VERSION_SUFFIX=""
+    if [ "$VERSION" = "main" ]; then
+        VERSION=$(git describe --tags --abbrev=0)"-release"
+    fi
 else
-    echo "Unknown build type "$BUILD_TYPE""
+    echo "[ERROR]: Unknown build type "$BUILD_TYPE""
     exit 1
 fi
 
-FULL_VERSION="$VERSION$VERSION_SUFFIX"
+chmod +x $PWD/bin/createbuildenv.sh
+$PWD/bin/createbuildenv.sh
 
-echo "Start building \"$BUILD_TYPE\" version \"$FULL_VERSION\"..."
+echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
-if ! g++ $CXXFLAGS -DVERSION="\"$FULL_VERSION\"" -I$INCLUDE_DIR $(find $SRC_DIR -name '*.cpp') -o $BUILD_DIR/mtrack -lsqlite3; then
-    echo "Build failed"
-    exit 1
-fi
+# software source code specific paths (needed at buildtime)
+SRC_DIR="$PWD/src"
+INCLUDE_DIR="$PWD/include"
+BUILD_DIR="$PWD/build"
+OBJ_DIR="$BUILD_DIR/obj"
+
+mkdir -p $BUILD_DIR 
+mkdir -p $OBJ_DIR
+
+for file in $(find $SRC_DIR -name '*.cpp'); do
+    obj="$OBJ_DIR/$(basename "$OBJ_DIR/${file%.cpp}.o")"
+    if [ "$file" -nt "$obj" ]; then
+        echo "Compiling $file -> $obj"
+        if ! g++ -c $CXXFLAGS -DVERSION="\"$VERSION\"" -I$INCLUDE_DIR "$file" -o "$obj"; then
+            echo "[ERROR]: Build failed"
+            exit 1
+        fi
+    fi
+done
+
+g++ $OBJ_DIR/*.o -o "$BUILD_DIR/mtrack" -lsqlite3
 
 echo "Successfully build"

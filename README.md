@@ -1,5 +1,8 @@
 # mTrack
 
+> [!NOTE]
+> This software is **NOT** supported for windows!
+
 With this CLI tool you can organize your consumed media.
 
 > [!IMPORTANT]
@@ -7,9 +10,6 @@ With this CLI tool you can organize your consumed media.
 > provide more features in the future.
 
 # Installation
-
-> [!NOTE]
-> This will probably NOT work on windows.
 
 1. Clone this repository.
 2. Enter the repository.
@@ -32,4 +32,6 @@ Run ```mtrack --help``` to show all available commands.
 
 # Misc
 
-I used [CXXOPTS](https://github.com/jarro2783/cxxopts) to handle command line options easily.
+I used [CXXOPTS](https://github.com/jarro2783/cxxopts) to handle command line 
+options easily and [nlohmann/json](https://github.com/nlohmann/json) for handle
+json format.

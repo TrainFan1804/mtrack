@@ -1,0 +1,10 @@
+ASK_DATA        =   "100"
+ADD_RESPONSE    =   "101"
+RM_RESPONSE     =   "102"
+SEND_RESPONSE   =   "200"
+TRN_END         =   "300"
+SEND_ID         =   "301"
+WRG_FORMAT      =   "400"
+DB_ERROR        =   "500"
+
+RESPONSE_CODE_SIZE  =   3 + 1

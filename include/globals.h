@@ -6,6 +6,10 @@
 #include <sstream>
 #include <iomanip>
 #include <filesystem>
+#include <algorithm>
+#include <cctype>
+
+#include "buildenv.h"
 
 #ifndef VERSION
 #define VERSION "unknown"
@@ -13,17 +17,11 @@
 
 #define DB_NAME "mtrack.db"
 #define LOG_NAME "debug.log"
-// Relative path from $HOME to the app data
-#define REL_APPDATA_PATH ".local/share/mtrack"
-// Relative path from $REL_APPDATA_PATH to the log dir
-#define REL_LOG_PATH "log"
 
-inline const std::filesystem::path APPDATA_PATH = std::string(std::getenv("HOME"))
-    + "/" + std::string(REL_APPDATA_PATH);
-inline const std::filesystem::path LOG_PATH = (APPDATA_PATH / REL_LOG_PATH);
-
-inline const std::string DB_PATH_STR = (APPDATA_PATH / DB_NAME).string();
-inline const std::string LOG_PATH_STR = (LOG_PATH / LOG_NAME).string();
+inline const std::string DB_PATH_STR = std::string(APPDATA_DIR_PATH) 
+    + "/" + std::string(DB_NAME);
+inline const std::string LOG_PATH_STR = std::string(LOG_DIR_PATH)
+    + "/" +  std::string(LOG_NAME);
 
 inline bool log_active = false;
 
@@ -34,11 +32,16 @@ namespace media
         int _media_id;
         int _rating;
         std::string _name;
+        std::string _state;
+        std::string _type;
 
-        Media()
+        Media(const std::string &name, int rating,
+            const std::string &state, const std::string &type)
         {
-            _rating = 1;
-            _name = "";
+            _rating = rating;
+            _name = name;
+            _state = state;
+            _type = type;
         }
     };
 }
@@ -51,6 +54,21 @@ inline std::string getCustomCurrentTimestamp()
     std::ostringstream oss;
     oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
     return oss.str();
+}
+
+/*
+    Why isn't there a function like this is std?
+*/
+inline std::string strToLower(const std::string str)
+{
+    std::string res = str;
+    std::transform(
+        res.begin(), res.end(), res.begin(),
+        [](unsigned char c){
+            return std::tolower(c);
+        }
+    );
+    return res;
 }
 
 #endif
