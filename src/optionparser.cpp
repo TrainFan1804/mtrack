@@ -71,7 +71,7 @@ void po::commands::showCommand()
     selectAllQuery(select_result);
     for (auto row : select_result)
     {
-        for (int entry = 0; entry < row.size(); entry++)
+        for (size_t entry = 0; entry < row.size(); entry++)
         {
             printf(row[entry].c_str());
             if (entry != row.size() - 1) printf((entry % 2 == 0) ? " = " : ", ");

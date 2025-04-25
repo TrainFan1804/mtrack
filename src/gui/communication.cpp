@@ -112,10 +112,11 @@ void communication::commands::addCommand(int to_child[2], const nlohmann::json &
     addMedia(new_media);
 
     std::vector<std::vector<std::string>> select_result;
-    selectSpecialQuery(select_result, "SELECT MAX(ID) FROM MEDIA;");
+    auto json_data = selectJsonQuery("SELECT MAX(ID) FROM MEDIA;");
+    std::string prefix = std::string(SEND_ID) + ".";
+    std::string j_str = prefix + json_data.dump();
 
-    std::string msg = std::string(SEND_ID) + "." + select_result[0][1];
-    communication::sendMessageToChild(to_child, msg);
+    communication::sendMessageToChild(to_child, j_str);
 }
 
 void communication::commands::rmCommand(int to_child[2], int id)

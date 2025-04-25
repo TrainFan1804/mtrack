@@ -79,12 +79,6 @@ namespace
     {
         execute_sql(sql, &head);
     }
-
-    void createCol(const std::string &new_col)
-    {
-        printf("%s\n", new_col.c_str());
-    }
-
 }
 
 void initDatabase()
@@ -146,7 +140,6 @@ void checkTable()
 
 void openDatabase()
 {
-    char *err_msg = 0;
     int ret;
 
     ret = sqlite3_open(DB_PATH_STR.c_str(), &_lib_db);
@@ -187,6 +180,16 @@ nlohmann::json selectAllJsonQuery()
 {
     std::vector<std::vector<std::string>> select_result;
     execute_sql(SQL_JSON_SELECT_ALL, select_result);
+
+    auto raw_str = select_result[0][1];
+    auto j = nlohmann::json::parse(raw_str);
+    return j;
+}
+
+nlohmann::json selectJsonQuery(const std::string &statement)
+{
+    std::vector<std::vector<std::string>> select_result;
+    execute_sql(statement.c_str(), select_result);
 
     auto raw_str = select_result[0][1];
     auto j = nlohmann::json::parse(raw_str);
