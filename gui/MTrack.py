@@ -24,38 +24,49 @@ class MTrack(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         place_window_mid(self, 800, 400)
 
-        tk.Label(text="mTrack",
-                    height=3).pack()
+        self.columnconfigure(0, weight=10)
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=10)
+        self.rowconfigure(2, weight=1)
+        self.minsize(height=325, width=400)
+
+        tk.Label(
+            text="mTrack",
+            height=3
+        ).grid(row=0, column=0, sticky="nsew")
 
         self.tree = ttk.Treeview(
             selectmode='browse',
             show='headings', 
             columns=MTrack.TREE_COL_LIST
         )
-        
+        self.tree.grid(row=1, column=0, sticky="nsew")
         for col in MTrack.TREE_COL_LIST:
             self.tree.heading(col, text=col)
-        self.tree.pack()
+
         self._fill_window_tree()
 
+        tree_scrollbar = tk.Scrollbar(orient="vertical", command=self.tree.yview)
+        tree_scrollbar.grid(row=1, column=1, sticky="nsew")
+        self.tree.configure(yscrollcommand=tree_scrollbar.set)
+
         btn_frame = tk.Frame()
+        btn_frame.grid(row=2, column=0, sticky="nsew")
 
         tk.Button(
             btn_frame, text="add", 
             command=self._add_item
-        ).pack(side=tk.LEFT)
+        ).pack(side=tk.LEFT, expand=True, fill="x")
 
         tk.Button(
             btn_frame, text="remove", 
             command=self._rm_item
-        ).pack(side=tk.LEFT)
+        ).pack(side=tk.LEFT, expand=True, fill="x")
 
         tk.Button(
             btn_frame, text="quit", 
             command=self.destroy
-        ).pack(side=tk.LEFT)
-
-        btn_frame.pack()
+        ).pack(side=tk.LEFT, expand=True, fill="x")
 
 
     def _add_item(self):
@@ -110,7 +121,8 @@ class AddTopLevel(tk.Toplevel):
     NAME_LIST = ['name', 'state', 'type']
     def __init__(self, parent, callback):
         tk.Toplevel.__init__(self, parent)
-        place_window_mid(self, 400, 300)
+        self.resizable(False, False)
+        place_window_mid(self, 500, 250)
 
         self.callback = callback
 
@@ -146,9 +158,16 @@ class AddTopLevel(tk.Toplevel):
                 self.entry_frame
             ).grid(row=_row, column=1)
 
-        self.group1 = tk.IntVar(value=1)
-        tk.Radiobutton(self.entry_frame, text='1', value=1, variable=self.group1).grid(row=len(AddTopLevel.NAME_LIST), column=0)
-        tk.Radiobutton(self.entry_frame, text='2', value=2, variable=self.group1).grid(row=len(AddTopLevel.NAME_LIST), column=1)
+        tk.Label(self.entry_frame, text="rating").grid(row=len(AddTopLevel.NAME_LIST), column=0)
+        rb_frame = tk.Frame(self.entry_frame)
+        self.rating_value = tk.IntVar(value=5)
+        for btn_index in range(1, 11):
+            tk.Radiobutton(
+                rb_frame, text=str(btn_index),
+                value=btn_index, variable=self.rating_value
+            ).grid(row=len(AddTopLevel.NAME_LIST), column=btn_index)
+
+        rb_frame.grid(row=len(AddTopLevel.NAME_LIST), column=1)
 
         self.entry_frame.pack()
 
@@ -162,11 +181,9 @@ class AddTopLevel(tk.Toplevel):
                 if len(cur_entry_data) != 0:
                     data[AddTopLevel.NAME_LIST[count]] = cur_entry_data
                     count += 1
-            if (isinstance(child, tk.Radiobutton)):
-                data['rating'] = self.group1.get()
+        data['rating'] = self.rating_value.get()
 
         if len(data) != len(AddTopLevel.NAME_LIST) + 1:
-            print(len(data), file=sys.stderr)
             messagebox.showerror("Error", "You can't leave any field empty")
             return
 
