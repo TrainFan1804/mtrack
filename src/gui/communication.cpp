@@ -4,7 +4,6 @@
 #include <sys/wait.h>
 
 #include "gui/communication.h"
-#include "buildenv.h"
 #include "debug/debprint.h"
 #include "databasemanager.h"
 #include "globals.h"
@@ -35,10 +34,7 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
         {
             debug::print::debprint("GUI want to add data");
 
-            auto temp = msg_from_child.substr(
-                RESPONSE_CODE_SIZE, 
-                msg_from_child.length()
-            );
+            auto temp = msg_from_child.substr(RESPONSE_CODE_SIZE);
             nlohmann::json j = nlohmann::json::parse(temp);
 
             commands::addCommand(to_child, j);
@@ -49,10 +45,7 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
             try
             {
                 int id_int = std::stoi(
-                    msg_from_child.substr(
-                        RESPONSE_CODE_SIZE, 
-                        msg_from_child.length()
-                    )
+                    msg_from_child.substr(RESPONSE_CODE_SIZE)
                 );
                 commands::rmCommand(to_child, id_int);
             }
@@ -93,25 +86,9 @@ void communication::commands::fetchCommand(int to_child[2])
 
 void communication::commands::addCommand(int to_child[2], const nlohmann::json &j)
 {
-    /*
-        This loop will extract the integer typses from the given json (j).
-        This is needed because in the db some columns are INTEGER but the json
-        is a string type. So there need to be a list of all INTEGER columns (int_cols)
-        and cast the represent values in the json to int to add the new media correctly.
-    */
-    std::vector<std::string> int_cols = { TABLE_INT_COL };
-    std::vector<int> int_cols_val;
-    for (const auto &col : int_cols)
-    {
-        auto temp = j[col].get<std::string>();
-        int_cols_val.push_back(std::stoi(temp));
-    }
-    
-    // TODO add here the params when there a new media section
-    media::Media new_media(j["name"], int_cols_val[0], j["state"], j["type"]);
+    media::Media new_media(j);
     addMedia(new_media);
 
-    std::vector<std::vector<std::string>> select_result;
     auto json_data = selectJsonQuery("SELECT MAX(ID) FROM MEDIA;");
     std::string prefix = std::string(SEND_ID) + ".";
     std::string j_str = prefix + json_data.dump();

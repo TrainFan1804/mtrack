@@ -88,6 +88,7 @@ void initDatabase()
     if (fileIsCreated(DB_PATH_STR))
     {
         debug::print::debprint("Database already exists. Skip table creation.");
+        checkTable();
         return;
     }
     openDatabase();
@@ -202,11 +203,10 @@ void addMedia(const media::Media &new_media)
     std::ostringstream oss;
     oss << "INSERT INTO " 
         << TABLE_NAME 
-        << " (NAME, RATING, STATE, TYPE) VALUES("
-        << "'" << new_media._name << "', "
-        << new_media._rating << ", "
-        << "'" << new_media._state << "', "
-        << "'" << new_media._type << "'"
+        << " (" 
+        << new_media.attributesToSql() 
+        << ") VALUES("
+        << new_media.valuesToSql()
         << ");";
 
     execute_sql(oss.str());
