@@ -86,6 +86,21 @@ namespace media
             _state = json["state"];
             _type = json["type"];
         }
+
+        inline const std::string attributesToSql() const
+        {
+            return "NAME, RATING, STATE, TYPE";
+        }
+
+        inline const std::string valuesToSql() const
+        {
+            std::ostringstream oss;
+            oss << "'" << _name << "', "
+                << _rating << ", "
+                << "'" << _state << "', "
+                << "'" << _type << "'";
+            return oss.str();
+        }
     };
 }
 
