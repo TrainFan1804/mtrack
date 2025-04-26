@@ -31,46 +31,55 @@ class MTrack(tk.Tk):
         self.minsize(height=325, width=400)
 
         tk.Label(
-            text="mTrack",
+            text='mTrack',
             height=3
-        ).grid(row=0, column=0, sticky="nsew")
+        ).grid(row=0, column=0, sticky='nsew')
 
         self.tree = ttk.Treeview(
             selectmode='browse',
             show='headings', 
             columns=MTrack.TREE_COL_LIST
         )
-        self.tree.grid(row=1, column=0, sticky="nsew")
+        self.tree.grid(row=1, column=0, sticky='nsew')
         for col in MTrack.TREE_COL_LIST:
             self.tree.heading(col, text=col)
 
         self._fill_window_tree()
 
-        tree_scrollbar = tk.Scrollbar(orient="vertical", command=self.tree.yview)
-        tree_scrollbar.grid(row=1, column=1, sticky="nsew")
+        tree_scrollbar = tk.Scrollbar(orient='vertical', command=self.tree.yview)
+        tree_scrollbar.grid(row=1, column=1, sticky='nsew')
         self.tree.configure(yscrollcommand=tree_scrollbar.set)
 
         btn_frame = tk.Frame()
-        btn_frame.grid(row=2, column=0, sticky="nsew")
+        btn_frame.grid(row=2, column=0, sticky='nsew')
 
         tk.Button(
-            btn_frame, text="add", 
+            btn_frame, text='add', 
             command=self._add_item
-        ).pack(side=tk.LEFT, expand=True, fill="x")
+        ).pack(side=tk.LEFT, expand=True, fill='x')
 
         tk.Button(
-            btn_frame, text="remove", 
+            btn_frame, text='edit', 
+            command=self._edit_item
+        ).pack(side=tk.LEFT, expand=True, fill='x')
+
+        tk.Button(
+            btn_frame, text='remove', 
             command=self._rm_item
-        ).pack(side=tk.LEFT, expand=True, fill="x")
+        ).pack(side=tk.LEFT, expand=True, fill='x')
 
         tk.Button(
-            btn_frame, text="quit", 
+            btn_frame, text='quit', 
             command=self.destroy
-        ).pack(side=tk.LEFT, expand=True, fill="x")
+        ).pack(side=tk.LEFT, expand=True, fill='x')
 
 
     def _add_item(self):
         AddTopLevel(self, self._receive_data_callback)
+
+    
+    def _edit_item(self):
+        pass
 
 
     def _receive_data_callback(self, values):
@@ -126,50 +135,53 @@ class AddTopLevel(tk.Toplevel):
 
         self.callback = callback
 
-        tk.Label(self, text="Add a new media", height=3).pack()
+        tk.Label(self, text='Add a new media', height=3).pack()
         self._build_entries()
 
         btn_frame = tk.Frame(self)
+        btn_frame.pack()
 
         tk.Button(
             btn_frame, 
-            text="add", 
+            text='add', 
             command=self._send_data
         ).pack(side=tk.LEFT)
 
         tk.Button(
             btn_frame, 
-            text="close", 
+            text='close', 
             command=self.destroy
         ).pack(side=tk.LEFT)
-
-        btn_frame.pack()
 
 
     def _build_entries(self):
         self.entry_frame = tk.Frame(self)
-        for _row in range(len(AddTopLevel.NAME_LIST)):
-            tk.Label(
-                self.entry_frame, 
-                text=AddTopLevel.NAME_LIST[_row]
-            ).grid(row=_row, column=0)
+        self.entry_frame.pack()
 
-            tk.Entry(
-                self.entry_frame
-            ).grid(row=_row, column=1)
+        tk.Label(self.entry_frame, text='name').grid(row=0, column=0)
+        tk.Entry(self.entry_frame).grid(row=0, column=1)
 
-        tk.Label(self.entry_frame, text="rating").grid(row=len(AddTopLevel.NAME_LIST), column=0)
+        tk.Label(self.entry_frame, text='state').grid(row=1, column=0)
+        self.state_value = tk.StringVar()
+        ttk.Combobox(
+            self.entry_frame, 
+            state='readonly',
+            textvariable=self.state_value,
+            values=('completed', 'droped', 'ongoing')
+        ).grid(row=1, column=1)
+
+        tk.Label(self.entry_frame, text='type').grid(row=2, column=0)
+        tk.Entry(self.entry_frame).grid(row=2, column=1)
+
+        tk.Label(self.entry_frame, text='rating').grid(row=3, column=0)
         rb_frame = tk.Frame(self.entry_frame)
+        rb_frame.grid(row=3, column=1)
         self.rating_value = tk.IntVar(value=5)
         for btn_index in range(1, 11):
             tk.Radiobutton(
                 rb_frame, text=str(btn_index),
                 value=btn_index, variable=self.rating_value
-            ).grid(row=len(AddTopLevel.NAME_LIST), column=btn_index)
-
-        rb_frame.grid(row=len(AddTopLevel.NAME_LIST), column=1)
-
-        self.entry_frame.pack()
+            ).grid(row=0, column=btn_index)
 
 
     def _send_data(self):
@@ -181,7 +193,11 @@ class AddTopLevel(tk.Toplevel):
                 if len(cur_entry_data) != 0:
                     data[AddTopLevel.NAME_LIST[count]] = cur_entry_data
                     count += 1
+
         data['rating'] = self.rating_value.get()
+        # because tkk.Combobox inherit from tk.Entry the for loop will already extract the data
+        # but the loop may be gone in a future version
+        data['state'] = self.state_value.get()
 
         if len(data) != len(AddTopLevel.NAME_LIST) + 1:
             messagebox.showerror("Error", "You can't leave any field empty")
