@@ -15,8 +15,39 @@ else
     exit 1
 fi
 
-chmod +x $PWD/bin/createbuildenv.sh
-$PWD/bin/createbuildenv.sh
+# appdata specific paths (needed at runtime)
+APPDATA_PATH="$HOME/.local/share/mtrack"
+LOG_PATH="$APPDATA_PATH/log"
+PYTHON_PATH="$PWD/build/pyenv/bin/python3"
+GUI_PY="$PWD/gui/main.py"
+
+if [ ! -d $PWD/build/pyenv ]; then
+    echo "Creating python enviroment..."
+    python3 -m venv $PWD/build/pyenv
+fi
+
+mkdir -p $APPDATA_PATH
+mkdir -p $LOG_PATH
+
+# Because I am to lazy to define the path in the C++ code twice I came up with
+# this crazy stuff...
+# Maybe I should rewrite the entire programm in just a big script that execute a big cat command...
+# This is actually crazy stuff because mTrack will use the correct data path automatically
+cat << EOF > include/buildenv.h
+#ifndef BUILDENV_H
+#define BUILDENV_H
+
+/*
+    mTrack use a different location for the appdata itself. Right now
+    it's just a simple sqlite database and a (optional) log.
+*/
+#define APPDATA_DIR_PATH    "$APPDATA_PATH"
+#define LOG_DIR_PATH        "$LOG_PATH"
+#define PYTHON_PATH         "$PYTHON_PATH"
+#define GUI_PY              "$GUI_PY"
+
+#endif
+EOF
 
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 

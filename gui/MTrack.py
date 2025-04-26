@@ -4,9 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import msgsender
-import config.responsecodes as rsp
-import config.mediasection as ms
+import msgsender as msgs
 
 
 def place_window_mid(window, width, height):
@@ -21,6 +19,7 @@ def place_window_mid(window, width, height):
 
 
 class MTrack(tk.Tk):
+    TREE_COL_LIST = ['name', 'state', 'type', 'rating']
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         place_window_mid(self, 800, 400)
@@ -31,13 +30,13 @@ class MTrack(tk.Tk):
         self.tree = ttk.Treeview(
             selectmode='browse',
             show='headings', 
-            columns=ms.NAME_LIST
+            columns=MTrack.TREE_COL_LIST
         )
         
-        for name in ms.NAME_LIST:
-            self.tree.heading(name, text=name)
+        for col in MTrack.TREE_COL_LIST:
+            self.tree.heading(col, text=col)
         self.tree.pack()
-
+        self._fill_window_tree()
 
         btn_frame = tk.Frame()
 
@@ -65,14 +64,14 @@ class MTrack(tk.Tk):
 
     def _receive_data_callback(self, values):
         j_str = json.dumps(values)
-        msgsender.send_request_with_data(rsp.ADD_RESPONSE, j_str)
+        msgs.send_request_with_data(msgs.ADD_RESPONSE, j_str)
 
         rsp_code = sys.stdin.readline().rstrip()
-        if rsp_code.startswith(rsp.SEND_ID):
-            rsp_id = rsp_code[rsp.RESPONSE_CODE_SIZE:]
+        if rsp_code.startswith(msgs.SEND_ID):
+            rsp_id = rsp_code[msgs.RESPONSE_CODE_SIZE:]
             self.tree.insert('', 'end', 
                 iid=str(rsp_id), 
-                values=[values[key] for key in ms.NAME_LIST]
+                values=[values[key] for key in MTrack.TREE_COL_LIST]
             )
         else:
             messagebox.showerror("Error", "Something went wrong")
@@ -84,16 +83,31 @@ class MTrack(tk.Tk):
             and id to the backend.
         """
         cur_item_id = self.tree.focus()
-        msgsender.send_request_with_data(rsp.RM_RESPONSE, cur_item_id)
+        msgs.send_request_with_data(msgs.RM_RESPONSE, cur_item_id)
         rsp_code = sys.stdin.readline().rstrip()
-        if rsp_code == rsp.TRN_END:
+        if rsp_code == msgs.TRN_END:
             selectd_item = self.tree.selection()[0]
             self.tree.delete(selectd_item)
         else:
             messagebox.showerror("Error", "Something went wrong")
 
 
+    def _fill_window_tree(self):
+        # sending request for the database data
+        msgs.send_request_no_data(msgs.ASK_DATA)
+        j_str = sys.stdin.readline()
+        j_str = j_str[msgs.RESPONSE_CODE_SIZE:]   # remove response code
+
+        j_dir = json.loads(j_str)
+        for row in j_dir:
+            self.tree.insert('', 'end', 
+                iid=str(row['id']), 
+                values=[row[key] for key in MTrack.TREE_COL_LIST]
+            )
+
+
 class AddTopLevel(tk.Toplevel):
+    NAME_LIST = ['name', 'state', 'type']
     def __init__(self, parent, callback):
         tk.Toplevel.__init__(self, parent)
         place_window_mid(self, 400, 300)
@@ -121,20 +135,20 @@ class AddTopLevel(tk.Toplevel):
 
 
     def _build_entries(self):
-        """
-            NOTE: When adding a new attribute to the database, a new label and 
-            frame for the toplevel window need to be added.
-        """
         self.entry_frame = tk.Frame(self)
-        for _row in range(len(ms.NAME_LIST)):
+        for _row in range(len(AddTopLevel.NAME_LIST)):
             tk.Label(
                 self.entry_frame, 
-                text=ms.NAME_LIST[_row]
+                text=AddTopLevel.NAME_LIST[_row]
             ).grid(row=_row, column=0)
 
             tk.Entry(
                 self.entry_frame
             ).grid(row=_row, column=1)
+
+        self.group1 = tk.IntVar(value=1)
+        tk.Radiobutton(self.entry_frame, text='1', value=1, variable=self.group1).grid(row=len(AddTopLevel.NAME_LIST), column=0)
+        tk.Radiobutton(self.entry_frame, text='2', value=2, variable=self.group1).grid(row=len(AddTopLevel.NAME_LIST), column=1)
 
         self.entry_frame.pack()
 
@@ -146,15 +160,14 @@ class AddTopLevel(tk.Toplevel):
             if (isinstance(child, tk.Entry)):
                 cur_entry_data = child.get().strip()
                 if len(cur_entry_data) != 0:
-                    data[ms.NAME_LIST[count]] = cur_entry_data
+                    data[AddTopLevel.NAME_LIST[count]] = cur_entry_data
                     count += 1
+            if (isinstance(child, tk.Radiobutton)):
+                data['rating'] = self.group1.get()
 
-        if len(data) != len(ms.NAME_LIST):
+        if len(data) != len(AddTopLevel.NAME_LIST) + 1:
+            print(len(data), file=sys.stderr)
             messagebox.showerror("Error", "You can't leave any field empty")
-            return
-
-        if not data['rating'].isnumeric():
-            messagebox.showerror("Error", "Rating must be a number")
             return
 
         self.callback(data)

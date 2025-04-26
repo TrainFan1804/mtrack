@@ -88,6 +88,7 @@ void initDatabase()
     if (fileIsCreated(DB_PATH_STR))
     {
         debug::print::debprint("Database already exists. Skip table creation.");
+        checkTable();
         return;
     }
     openDatabase();
