@@ -10,4 +10,4 @@ include/buildenv.h
 
 # python stuff
 gui/__pycache__/*
-gui/config/__pycache__/*
+gui/custom/__pycache__/*
