@@ -1,13 +1,15 @@
 import json
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 
 import comhandler as com
+from custom import MainFrame as mf
 
 
 class EditFrame(tk.Frame):
     def __init__(self, parent):
-        tk.Frame.__init__(self, parent, bg='red')
+        tk.Frame.__init__(self, parent)
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
@@ -28,8 +30,11 @@ class EditFrame(tk.Frame):
             self, text='state'
         ).grid(row=1, column=0, sticky='ew')
         self.state_var = tk.StringVar()
-        tk.Entry(
-            self, textvariable=self.state_var
+        ttk.Combobox(
+            self,
+            state='readonly',
+            textvariable=self.state_var,
+            values=('completed', 'droped', 'ongoing')
         ).grid(row=1, column=1)
 
         tk.Label(
@@ -62,6 +67,10 @@ class EditFrame(tk.Frame):
         self.save_btn.grid(row=4, column=0)
 
 
+    def set_tree(self, tree):
+        self.tree = tree
+
+
     def save_item(self):
         data = {}
         data['id'] = int(self.edit_item_id)
@@ -74,7 +83,10 @@ class EditFrame(tk.Frame):
         rsp_str = com.listen_to_backend()
         rp = json.loads(rsp_str)
         if rp[0]['CODE'] == com.TRN_END:
-            pass
+            self.tree.item(
+                str(data['id']), 
+                values=[data[key] for key in mf.TREE_COL_LIST]
+            )
         else:
             messagebox.showerror("Error", "Something went wrong")
 

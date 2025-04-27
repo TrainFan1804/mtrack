@@ -20,6 +20,7 @@ class MTrack(tk.Tk):
         self.edit_frame = ef.EditFrame(self)
         self.edit_frame.grid(row=0, column=1, sticky="nsew")
 
-        self.main_frame = mf.MainFrame(self, self.edit_frame)
+        self.main_frame = mf.MainFrame(self, self.edit_frame.edit_item)
         self.main_frame.grid(row=0, column=0, sticky="nsew")
-    
+
+        self.edit_frame.set_tree(self.main_frame.tree) 

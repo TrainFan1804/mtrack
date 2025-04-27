@@ -1,5 +1,4 @@
 import json
-import sys
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -8,12 +7,11 @@ import comhandler as com
 from custom import AddTopLevel as at
 
 
+TREE_COL_LIST = ['name', 'state', 'type', 'rating']
+
 class MainFrame(tk.Frame):
-
-    TREE_COL_LIST = ['name', 'state', 'type', 'rating']
-
     def __init__(self, parent, target_select_event):
-        tk.Frame.__init__(self, parent, bg='green')
+        tk.Frame.__init__(self, parent)
 
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
@@ -30,14 +28,14 @@ class MainFrame(tk.Frame):
             self,
             selectmode='browse',
             show='headings', 
-            columns=MainFrame.TREE_COL_LIST
+            columns=TREE_COL_LIST
         )
         self.tree.grid(row=1, column=0, sticky='nsew')
-        for col in MainFrame.TREE_COL_LIST:
+        for col in TREE_COL_LIST:
             self.tree.heading(col, text=col)
             self.tree.column(col, width=100)
 
-        self.tree.bind("<<TreeviewSelect>>", target_select_event.edit_item)
+        self.tree.bind("<<TreeviewSelect>>", target_select_event)
 
         self._fill_window_tree()
 
@@ -77,7 +75,7 @@ class MainFrame(tk.Frame):
             rsp_id = rp[0]['id']
             self.tree.insert('', 'end', 
                 iid=str(rsp_id), 
-                values=[values[key] for key in MainFrame.TREE_COL_LIST]
+                values=[values[key] for key in TREE_COL_LIST]
             )
         else:
             messagebox.showerror("Error", "Something went wrong")
@@ -109,5 +107,5 @@ class MainFrame(tk.Frame):
         for row in j_list[:-1]:
             self.tree.insert('', 'end', 
                 iid=str(row['id']), 
-                values=[row[key] for key in MainFrame.TREE_COL_LIST]
+                values=[row[key] for key in TREE_COL_LIST]
             )
