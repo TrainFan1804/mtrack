@@ -19,45 +19,38 @@ void communication::waitForChildResponse(int from_child[2], int to_child[2])
 
         buffer[count] = '\0';
         std::string msg_from_child(buffer);
+        // remove all new lines
         msg_from_child.erase(
             std::remove(msg_from_child.begin(), msg_from_child.end(), '\n'), 
-            msg_from_child.end());
+            msg_from_child.end()
+        );
 
         debug::print::fdebprint("Received message from frontend: %s", msg_from_child.c_str());
+        
+        auto temp2 = msg_from_child.substr(RESPONSE_CODE_SIZE);
+        nlohmann::json response = nlohmann::json::parse(msg_from_child);
+        int response_code = response["CODE"];
 
-        if (msg_from_child.rfind(ASK_DATA, 0) == 0)
+        switch (response_code)
         {
-            debug::print::debprint("GUI want to fetch data.");
+        case ASK_DATA:
             commands::fetchCommand(to_child);
-        }
-        else if (msg_from_child.rfind(ADD_RESPONSE, 0) == 0) 
-        {
-            debug::print::debprint("GUI want to add data");
-
-            auto temp = msg_from_child.substr(RESPONSE_CODE_SIZE);
-            nlohmann::json j = nlohmann::json::parse(temp);
-
-            commands::addCommand(to_child, j);
-        }
-        else if (msg_from_child.rfind(RM_RESPONSE, 0) == 0) 
-        {
-            debug::print::debprint("GUI want to remove data");
-            try
-            {
-                int id_int = std::stoi(
-                    msg_from_child.substr(RESPONSE_CODE_SIZE)
-                );
-                commands::rmCommand(to_child, id_int);
-            }
-            catch(const std::exception& e)
-            {
-                debug::print::fdeberr("Something went wrong while converting the data: %s", e.what());
-                sendMessageToChild(to_child, WRG_FORMAT);
-            }
-        }
-        else
-        {
-            debug::print::fdeberr("Unknown message from GUI: %s", msg_from_child);
+            break;
+        case ADD_RESPONSE:
+            commands::addCommand(to_child, response);
+            break;
+        case RM_RESPONSE:
+            commands::rmCommand(to_child, response);
+            break;
+        case EDIT_RESPONSE:
+            commands::editCommand(to_child, response);
+            break;
+        default:
+            debug::print::fdeberr(
+                "Unknown message from GUI: %s",
+                msg_from_child.c_str()
+            );
+            break;
         }
     }
     wait(nullptr);
@@ -76,28 +69,51 @@ void communication::sendMessageToChild(int to_child[2], const std::string &msg)
 
 void communication::commands::fetchCommand(int to_child[2])
 {
+    debug::print::debprint("GUI want to fetch data.");
     auto json_data = selectAllJsonQuery();
+    json_data.push_back({{"CODE", SEND_RESPONSE}});
     
-    std::string prefix = std::string(SEND_RESPONSE) + ".";
-    std::string j_str = prefix + json_data.dump();
-
-    communication::sendMessageToChild(to_child, j_str);
+    communication::sendMessageToChild(to_child, json_data.dump());
 }
 
 void communication::commands::addCommand(int to_child[2], const nlohmann::json &j)
 {
+    debug::print::debprint("GUI want to add data");
+
     media::Media new_media(j);
     addMedia(new_media);
 
-    auto json_data = selectJsonQuery("SELECT MAX(ID) FROM MEDIA;");
-    std::string prefix = std::string(SEND_ID) + ".";
-    std::string j_str = prefix + json_data.dump();
+    nlohmann::json j_arr = nlohmann::json::array();
+    auto new_id = selectJsonQuery("SELECT MAX(ID) FROM MEDIA;");
+    j_arr.push_back({
+        {"CODE", SEND_ID},
+        {"id", new_id}
+    });
 
-    communication::sendMessageToChild(to_child, j_str);
+    communication::sendMessageToChild(to_child, j_arr.dump());
 }
 
-void communication::commands::rmCommand(int to_child[2], int id)
+void communication::commands::rmCommand(int to_child[2], const nlohmann::json &j)
 {
-    rmMedia(id);
-    communication::sendMessageToChild(to_child, TRN_END);
+    debug::print::debprint("GUI want to remove data");
+
+    rmMedia(j["id"]);
+    nlohmann::json j_data = nlohmann::json::array();
+    j_data.push_back({
+        {"CODE", TRN_END},
+    });
+    communication::sendMessageToChild(to_child, j_data.dump());
+}
+
+void communication::commands::editCommand(int to_child[2], const nlohmann::json &j)
+{
+    debug::print::debprint("GUI want to edit data");
+
+    media::Media edit_media(j);
+    editMedia(j["id"], edit_media);
+    nlohmann::json j_data = nlohmann::json::array();
+    j_data.push_back({
+        {"CODE", TRN_END},
+    });
+    communication::sendMessageToChild(to_child, j_data.dump());
 }

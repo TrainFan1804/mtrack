@@ -1,4 +1,8 @@
+import json
 import tkinter as tk
+from tkinter import messagebox
+
+import comhandler as com
 
 
 class EditFrame(tk.Frame):
@@ -59,11 +63,21 @@ class EditFrame(tk.Frame):
 
 
     def save_item(self):
-        n = self.name_var.get()
-        s = self.state_var.get()
-        t = self.state_var.get()
-        r = self.rating_var.get()
-        # TODO implement edit stuff
+        data = {}
+        data['id'] = int(self.edit_item_id)
+        data['name'] = self.name_var.get()
+        data['state'] = self.state_var.get()
+        data['type'] = self.type_var.get()
+        data['rating'] = self.rating_var.get()
+
+        com.send_request_with_data(com.EDIT_RESPONSE, data)
+        rsp_str = com.listen_to_backend()
+        rp = json.loads(rsp_str)
+        if rp[0]['CODE'] == com.TRN_END:
+            pass
+        else:
+            messagebox.showerror("Error", "Something went wrong")
+
 
     def edit_item(self, event):
         """

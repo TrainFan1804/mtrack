@@ -1,10 +1,10 @@
-import sys
 import json
+import sys
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import msgsender as msgs
+import comhandler as com
 from custom import AddTopLevel as at
 
 
@@ -69,12 +69,12 @@ class MainFrame(tk.Frame):
 
 
     def _receive_data_callback(self, values):
-        j_str = json.dumps(values)
-        msgs.send_request_with_data(msgs.ADD_RESPONSE, j_str)
+        com.send_request_with_data(com.ADD_RESPONSE, values)
 
-        rsp_code = sys.stdin.readline().rstrip()
-        if rsp_code.startswith(msgs.SEND_ID):
-            rsp_id = rsp_code[msgs.RESPONSE_CODE_SIZE:]
+        rsp_str = com.listen_to_backend()
+        rp = json.loads(rsp_str)
+        if rp[0]['CODE'] == com.SEND_ID:
+            rsp_id = rp[0]['id']
             self.tree.insert('', 'end', 
                 iid=str(rsp_id), 
                 values=[values[key] for key in MainFrame.TREE_COL_LIST]
@@ -89,9 +89,12 @@ class MainFrame(tk.Frame):
             and id to the backend.
         """
         rm_item_id = self.tree.focus()
-        msgs.send_request_with_data(msgs.RM_RESPONSE, rm_item_id)
-        rsp_code = sys.stdin.readline().rstrip()
-        if rsp_code == msgs.TRN_END:
+        data = {'id' : int(rm_item_id)}
+        com.send_request_with_data(com.RM_RESPONSE, data)
+
+        rsp_str = com.listen_to_backend()
+        rp = json.loads(rsp_str)
+        if rp[0]['CODE'] == com.TRN_END:
             self.tree.delete(rm_item_id)
         else:
             messagebox.showerror("Error", "Something went wrong")
@@ -99,12 +102,11 @@ class MainFrame(tk.Frame):
 
     def _fill_window_tree(self):
         # sending request for the database data
-        msgs.send_request_no_data(msgs.ASK_DATA)
-        j_str = sys.stdin.readline()
-        j_str = j_str[msgs.RESPONSE_CODE_SIZE:]   # remove response code
+        com.send_request_no_data(com.ASK_DATA)
+        j_str = com.listen_to_backend()
 
-        j_dir = json.loads(j_str)
-        for row in j_dir:
+        j_list = json.loads(j_str)
+        for row in j_list[:-1]:
             self.tree.insert('', 'end', 
                 iid=str(row['id']), 
                 values=[row[key] for key in MainFrame.TREE_COL_LIST]

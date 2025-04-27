@@ -1,9 +1,8 @@
-import sys
 import tkinter as tk
 
+from custom import utils
 from custom import MainFrame as mf
 from custom import EditFrame as ef
-from custom import utils
 
 
 class MTrack(tk.Tk):

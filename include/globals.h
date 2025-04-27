@@ -18,14 +18,15 @@
 #endif
 
 // response codes for the communication between frontend and backend
-#define ASK_DATA            "100"
-#define ADD_RESPONSE        "101"
-#define RM_RESPONSE         "102"
-#define SEND_RESPONSE       "200"
-#define TRN_END             "300"
-#define SEND_ID             "301"
-#define WRG_FORMAT          "400"
-#define DB_ERROR            "500"
+#define ASK_DATA            100
+#define ADD_RESPONSE        101
+#define RM_RESPONSE         102
+#define EDIT_RESPONSE       103
+#define SEND_RESPONSE       200
+#define TRN_END             300
+#define SEND_ID             301
+#define WRG_FORMAT          400
+#define DB_ERROR            500
 
 #define RESPONSE_CODE_SIZE  4   // prefix = 3, . = 1
 
