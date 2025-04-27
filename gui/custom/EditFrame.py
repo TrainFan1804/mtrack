@@ -99,6 +99,7 @@ class EditFrame(tk.Frame):
         self.save_btn.config(state='normal')
         tree = event.widget
         self.edit_item_id = tree.focus()
+        # See MainFrame treeview creation to understand the magic numbers
         self.name_var.set(tree.item(self.edit_item_id)['values'][0])
         self.state_var.set(tree.item(self.edit_item_id)['values'][1])
         self.type_var.set(tree.item(self.edit_item_id)['values'][2])

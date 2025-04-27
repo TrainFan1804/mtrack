@@ -5,19 +5,21 @@ VERSION=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
+    APPDATA_PATH="$PWD/dev/mtrack"
+    LOG_PATH="$APPDATA_PATH/log"
 elif [ "$BUILD_TYPE" = "release" ]; then
     CXXFLAGS=""
     if [ "$VERSION" = "main" ]; then
         VERSION=$(git describe --tags --abbrev=0)"-release"
     fi
+    APPDATA_PATH="$HOME/.local/share/mtrack"
+    LOG_PATH="$APPDATA_PATH/log"
 else
     echo "[ERROR]: Unknown build type "$BUILD_TYPE""
     exit 1
 fi
 
 # appdata specific paths (needed at runtime)
-APPDATA_PATH="$HOME/.local/share/mtrack"
-LOG_PATH="$APPDATA_PATH/log"
 PYTHON_PATH="$PWD/build/pyenv/bin/python3"
 GUI_PY="$PWD/gui/main.py"
 

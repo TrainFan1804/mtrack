@@ -26,7 +26,6 @@ def send_request_no_data(response_code : str):
         backend e.g. when you want to fetch the data from the database to the
         frontend.
     """
-    # print(response_code, flush=True)
     send_request_with_data(response_code, {})
 
 
@@ -35,9 +34,6 @@ def send_request_with_data(response_code : int, data : dict):
         This function is used when you want to send data to the backend.
         When sending data you need to use a response code to determine
         the use of the sending data.
-
-        All sended data must have the format:
-            <RESPONSE_CODE>.<DATA>
     """
     data['CODE'] = response_code
     data = json.dumps(data)

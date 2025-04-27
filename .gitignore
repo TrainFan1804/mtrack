@@ -4,6 +4,7 @@
 # Build and develope stuff
 build/*
 temp/*
+dev/*
 
 # C++ stuff
 include/buildenv.h
