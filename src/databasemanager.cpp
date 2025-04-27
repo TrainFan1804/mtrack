@@ -223,3 +223,18 @@ void rmMedia(int rm_id)
  
     execute_sql(oss.str());
 }
+
+void editMedia(int edit_id, const media::Media &edit_media)
+{
+    std::ostringstream oss;
+    oss << "UPDATE " 
+        << TABLE_NAME 
+        << " SET " 
+        << " NAME = " << "'" << edit_media._name << "', "
+        << " RATING  ="<< "'" << edit_media._rating << "', "
+        << " STATE = " << "'" << edit_media._state << "', "
+        << " TYPE = " << "'" << edit_media._type << "'"
+        << " WHERE ID = " << edit_id << ";";
+
+    execute_sql(oss.str());
+}

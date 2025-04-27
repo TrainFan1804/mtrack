@@ -33,7 +33,9 @@ namespace communication::commands
 
     void addCommand(int to_child[2], const nlohmann::json &j);
 
-    void rmCommand(int to_child[2], int id);
+    void rmCommand(int to_child[2], const nlohmann::json &j);
+
+    void editCommand(int to_child[2], const nlohmann::json &j);
 }
 
 #endif

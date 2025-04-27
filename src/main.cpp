@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
             std::cerr << e.what() << '\n';
             return EXIT_FAILURE;
         }
-        debug::print::debprint("Close sofware");
+        debug::print::debprint("Exit sofware. Close GUI.");
         return EXIT_SUCCESS;
     }
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     catch(const std::exception &ex)
     {
         debug::print::deberr(ex.what());
-        closeDatabase();
+        debug::print::debprint("Exit sofware. Close CLI.");
         return EXIT_FAILURE;
     }
 }

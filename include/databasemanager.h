@@ -56,4 +56,6 @@ void addMedia(const media::Media &new_media);
 
 void rmMedia(int rm_id);
 
+void editMedia(int edit_id, const media::Media &edit_media);
+
 #endif
