@@ -85,7 +85,11 @@ class MainFrame(tk.Frame):
             and id to the backend.
         """
         rm_item_id = self.tree.focus()
-        data = {'id' : int(rm_item_id)}
+        try:
+            data = {'id' : int(rm_item_id)}
+        except:
+            messagebox.showwarning("Warning", "You need to select an item")
+            return
         rsp_str = client.send_request_with_data(client.RM_RESPONSE, data)
 
         rp = json.loads(rsp_str)
