@@ -30,6 +30,8 @@
 
 #define RESPONSE_CODE_SIZE  4   // prefix = 3, . = 1
 
+const char *SOCKET_PATH = "./mtrack_socket";
+
 // macros for SQL queries
 #define TABLE_NAME          "MEDIA"
 #define TABLE_ALL_COL       "ID", "NAME", "RATING", "STATE", "TYPE"

@@ -3,9 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import comhandler as com
 from custom import AddTopLevel as at
-
+from api import client
 
 TREE_COL_LIST = ['name', 'state', 'type', 'rating']
 
@@ -67,11 +66,10 @@ class MainFrame(tk.Frame):
 
 
     def _receive_data_callback(self, values):
-        com.send_request_with_data(com.ADD_RESPONSE, values)
+        rsp_str = client.send_request_with_data(client.ADD_RESPONSE, values)
 
-        rsp_str = com.listen_to_backend()
         rp = json.loads(rsp_str)
-        if rp[0]['CODE'] == com.SEND_ID:
+        if rp[0]['CODE'] == client.SEND_ID:
             rsp_id = rp[0]['id']
             self.tree.insert('', 'end', 
                 iid=str(rsp_id), 
@@ -88,11 +86,10 @@ class MainFrame(tk.Frame):
         """
         rm_item_id = self.tree.focus()
         data = {'id' : int(rm_item_id)}
-        com.send_request_with_data(com.RM_RESPONSE, data)
+        rsp_str = client.send_request_with_data(client.RM_RESPONSE, data)
 
-        rsp_str = com.listen_to_backend()
         rp = json.loads(rsp_str)
-        if rp[0]['CODE'] == com.TRN_END:
+        if rp[0]['CODE'] == client.TRN_END:
             self.tree.delete(rm_item_id)
         else:
             messagebox.showerror("Error", "Something went wrong")
@@ -100,8 +97,7 @@ class MainFrame(tk.Frame):
 
     def _fill_window_tree(self):
         # sending request for the database data
-        com.send_request_no_data(com.ASK_DATA)
-        j_str = com.listen_to_backend()
+        j_str = client.send_request(client.ASK_DATA)
 
         j_list = json.loads(j_str)
         for row in j_list[:-1]:

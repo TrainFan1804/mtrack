@@ -2,7 +2,7 @@
 
 #include "optionparser.h"
 #include "databasemanager.h"
-#include "gui/guilauncher.h"
+#include "api/guilauncher.h"
 #include "debug/debprint.h"
 
 int main(int argc, char *argv[])

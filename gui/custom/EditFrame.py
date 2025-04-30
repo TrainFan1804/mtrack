@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import comhandler as com
 from custom import MainFrame as mf
+from api import client
 
 
 class EditFrame(tk.Frame):
@@ -79,10 +79,9 @@ class EditFrame(tk.Frame):
         data['type'] = self.type_var.get()
         data['rating'] = self.rating_var.get()
 
-        com.send_request_with_data(com.EDIT_RESPONSE, data)
-        rsp_str = com.listen_to_backend()
+        rsp_str = client.send_request_with_data(client.EDIT_RESPONSE, data)
         rp = json.loads(rsp_str)
-        if rp[0]['CODE'] == com.TRN_END:
+        if rp[0]['CODE'] == client.TRN_END:
             self.tree.item(
                 str(data['id']), 
                 values=[data[key] for key in mf.TREE_COL_LIST]

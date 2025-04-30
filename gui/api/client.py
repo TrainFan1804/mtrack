@@ -1,9 +1,4 @@
-"""
-    Because the frontend is a subprocess of the C++ backend and communicate via
-    pipes (or more specific of STDIN and STDOUT) EVERY print to STDOUT will 
-    resolve into a message to the backend
-"""
-import sys
+import socket
 import json
 
 
@@ -19,14 +14,16 @@ DB_ERROR            =   500
 
 RESPONSE_CODE_SIZE  =  3 + 1
 
+socket_path = 'mtrack_socket'
 
-def send_request_no_data(response_code : str):
+
+def send_request(response_code: int):
     """
         This method is used when you just want to send simple codes to the
         backend e.g. when you want to fetch the data from the database to the
         frontend.
     """
-    send_request_with_data(response_code, {})
+    return send_request_with_data(response_code, {})
 
 
 def send_request_with_data(response_code : int, data : dict):
@@ -35,11 +32,12 @@ def send_request_with_data(response_code : int, data : dict):
         When sending data you need to use a response code to determine
         the use of the sending data.
     """
+    client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    client.connect(socket_path)
+
     data['CODE'] = response_code
-    data = json.dumps(data)
-    print(data, flush=True)
 
-
-def listen_to_backend():
-    from_parent = sys.stdin.readline().rstrip()
-    return from_parent
+    client.sendall(json.dumps(data).encode())    
+    r = client.recv(1024)
+    client.close()
+    return r.decode()
