@@ -90,7 +90,7 @@ class EditFrame(tk.Frame):
             messagebox.showerror("Error", "Something went wrong")
 
 
-    def edit_item(self, event):
+    def fill_selected_item(self, event):
         """
             This method is called when a item from the treeview in MainFrame 
             is selected.
@@ -99,7 +99,14 @@ class EditFrame(tk.Frame):
         tree = event.widget
         self.edit_item_id = tree.focus()
         # See MainFrame treeview creation to understand the magic numbers
-        self.name_var.set(tree.item(self.edit_item_id)['values'][0])
-        self.state_var.set(tree.item(self.edit_item_id)['values'][1])
-        self.type_var.set(tree.item(self.edit_item_id)['values'][2])
-        self.rating_var.set(tree.item(self.edit_item_id)['values'][3]) 
+        try:
+            self.name_var.set(tree.item(self.edit_item_id)['values'][0])
+            self.state_var.set(tree.item(self.edit_item_id)['values'][1])
+            self.type_var.set(tree.item(self.edit_item_id)['values'][2])
+            self.rating_var.set(tree.item(self.edit_item_id)['values'][3]) 
+        except:
+            self.name_var.set("")
+            self.state_var.set("")
+            self.type_var.set("")
+            self.rating_var.set(-1)
+            self.save_btn.config(state='disabled')
