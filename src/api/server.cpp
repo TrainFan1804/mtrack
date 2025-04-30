@@ -1,6 +1,3 @@
-#include <iostream>
-#include <cstring>
-#include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <csignal>
@@ -68,7 +65,7 @@ void server::run()
             debug::print::debprint("Client disconnected");
         }
     }
-    unlink(SOCKET_PATH);
+    unlink(SOCKET_NAME.c_str());
     close(server_fd);
     closeDatabase();
     debug::print::debprint("Socket cleaned up");
@@ -87,10 +84,10 @@ void server::startServer()
         perror("socket error");
         return;
     }
-    unlink(SOCKET_PATH);
+    unlink(SOCKET_NAME.c_str());
 
     addr.sun_family = AF_UNIX;
-    std::strncpy(addr.sun_path, SOCKET_PATH, sizeof(addr.sun_path) - 1);
+    std::strncpy(addr.sun_path, SOCKET_NAME.c_str(), sizeof(addr.sun_path) - 1);
 
     if (bind(server_fd, (sockaddr*)&addr, sizeof(addr)) != 0)
     {

@@ -12,9 +12,7 @@ SEND_ID             =   301
 WRG_FORMAT          =   400
 DB_ERROR            =   500
 
-RESPONSE_CODE_SIZE  =  3 + 1
-
-socket_path = 'mtrack_socket'
+_SOCKET_NAME = 'mtrack_socket'
 
 
 def send_request(response_code: int):
@@ -33,7 +31,7 @@ def send_request_with_data(response_code : int, data : dict):
         the use of the sending data.
     """
     client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    client.connect(socket_path)
+    client.connect(_SOCKET_NAME)
 
     data['CODE'] = response_code
 

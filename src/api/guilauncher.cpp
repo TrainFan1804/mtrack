@@ -1,24 +1,9 @@
-#include <iostream>
-#include <unistd.h>
 #include <thread>
+#include <sys/wait.h>
 
 #include "api/guilauncher.h"
 #include "api/server.h"
 #include "buildenv.h"
-#include <sys/wait.h>
-
-void startChild()
-{
-    // starting the subprocess
-    execlp(std::string(PYTHON_PATH).c_str(), "python3", std::string(GUI_PY).c_str(), nullptr);
-    perror("execlp failed to launch the GUI.\n");
-    exit(1);
-}
-
-void startParent()
-{
-    server::run();
-}
 
 void launchGUI()
 {
@@ -28,7 +13,10 @@ void launchGUI()
 
     if (pid == 0) 
     {
-        startChild();
+        // starting the subprocess
+        execlp(std::string(PYTHON_PATH).c_str(), "python3", std::string(GUI_PY).c_str(), nullptr);
+        perror("execlp failed to launch the GUI.\n");
+        exit(1);
     }
     else
     {

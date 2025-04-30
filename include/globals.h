@@ -28,16 +28,14 @@
 #define WRG_FORMAT          400
 #define DB_ERROR            500
 
-#define RESPONSE_CODE_SIZE  4   // prefix = 3, . = 1
-
-const char *SOCKET_PATH = "./mtrack_socket";
-
 // macros for SQL queries
 #define TABLE_NAME          "MEDIA"
 #define TABLE_ALL_COL       "ID", "NAME", "RATING", "STATE", "TYPE"
 
 #define DB_NAME "mtrack.db"
 #define LOG_NAME "debug.log"
+
+inline const std::string SOCKET_NAME = "./mtrack_socket";
 
 inline const std::string DB_PATH_STR = std::string(APPDATA_DIR_PATH) 
     + "/" + std::string(DB_NAME);
