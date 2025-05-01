@@ -92,7 +92,6 @@ class FilterFrame(tk.Frame):
         for child in self.tree.get_children():
             values = self.tree.item(child)['values']
             if search_for.lower() in values[0].lower():
-                print(values[0])
                 selections.append(child)
         # select multiple hits per search
         self.tree['selectmode'] = 'extended'
