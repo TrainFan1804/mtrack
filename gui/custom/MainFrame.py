@@ -31,7 +31,7 @@ class MainFrame(tk.Frame):
         )
         self.tree.grid(row=1, column=0, sticky='nsew')
         for col in TREE_COL_LIST:
-            self.tree.heading(col, text=col)
+            self.tree.heading(col, text=col, command=lambda c=col: self._sort_treeview(c, False))
             self.tree.column(col, width=100)
 
         self.tree.bind("<<TreeviewSelect>>", target_select_event)
@@ -109,3 +109,18 @@ class MainFrame(tk.Frame):
                 iid=str(row['id']), 
                 values=[row[key] for key in TREE_COL_LIST]
             )
+
+
+    def _sort_treeview(self, col_name, descending):
+        """
+            This is a modified version from this source:
+            https://www.w3resource.com/python-exercises/tkinter/python-tkinter-widgets-exercise-18.php
+        """
+        col_data = [(self.tree.set(item, col_name), item) for item in self.tree.get_children('')]
+        sort_key = None
+        if (col_name == 'rating'):
+            sort_key = lambda t: int(t[0])
+        col_data.sort(key=sort_key, reverse=descending)
+        for index, (NOT_USED, item) in enumerate(col_data):
+            self.tree.move(item, '', index)
+        self.tree.heading(col_name, command=lambda: self._sort_treeview(col_name, not descending))
