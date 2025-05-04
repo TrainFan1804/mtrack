@@ -8,6 +8,7 @@ dev/*
 
 # C++ stuff
 include/buildenv.h
+include/gui/main_widget.h
 
 # python stuff
 *.pyc

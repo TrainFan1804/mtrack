@@ -7,7 +7,7 @@ VERSION=$(git rev-parse --abbrev-ref HEAD)
 
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
-    APPDATA_PATH="$PWD/dev/mtrack"
+    APPDATA_PATH="./dev/mtrack"
     LOG_PATH="$APPDATA_PATH/log"
 elif [ "$BUILD_TYPE" = "release" ]; then
     CXXFLAGS=""
@@ -19,15 +19,6 @@ elif [ "$BUILD_TYPE" = "release" ]; then
 else
     echo "[ERROR]: Unknown build type "$BUILD_TYPE""
     exit 1
-fi
-
-# appdata specific paths (needed at runtime)
-PYTHON_PATH="$PWD/build/pyenv/bin/python3"
-GUI_PY="$PWD/gui/main.py"
-
-if [ ! -d $PWD/build/pyenv ]; then
-    echo "Creating python enviroment..."
-    python3 -m venv $PWD/build/pyenv
 fi
 
 mkdir -p $APPDATA_PATH
@@ -47,8 +38,6 @@ cat << EOF > include/buildenv.h
 */
 #define APPDATA_DIR_PATH    "$APPDATA_PATH"
 #define LOG_DIR_PATH        "$LOG_PATH"
-#define PYTHON_PATH         "$PYTHON_PATH"
-#define GUI_PY              "$GUI_PY"
 
 #endif
 EOF
@@ -56,25 +45,55 @@ EOF
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
 # software source code specific paths (needed at buildtime)
-SRC_DIR="$PWD/src"
-INCLUDE_DIR="$PWD/include"
-BUILD_DIR="$PWD/build"
-OBJ_DIR="$BUILD_DIR/obj"
-
+CXX=g++
+SRC_DIR="./src"
+INCLUDE_DIR="./include"
+BUILD_DIR="./build"
 mkdir -p $BUILD_DIR 
-mkdir -p $OBJ_DIR
 
-for file in $(find $SRC_DIR -name '*.cpp'); do
-    obj="$OBJ_DIR/$(basename "$OBJ_DIR/${file%.cpp}.o")"
-    if [ "$file" -nt "$obj" ]; then
-        echo "Compiling $file -> $obj"
-        if ! g++ -c $CXXFLAGS -DVERSION="\"$VERSION\"" -I$INCLUDE_DIR "$file" -o "$obj"; then
-            echo "[ERROR]: Build failed"
-            exit 1
-        fi
+QT_INCLUDES="-I/usr/include/qt -I/usr/include/qt/QtWidgets"
+ALL_INCLUDES="-I$INCLUDE_DIR $QT_INCLUDES"
+
+CPPFLAGS="-MMD -MP -fPIC -DVERSION="\"$VERSION\"" $ALL_INCLUDES"
+LNKFLAGS="-lsqlite3 -lQt5Widgets -lQt5Core -lQt5Gui"
+
+# stuff for Qt forms
+FORM_DIR="./forms"
+for form_file in $(find $FORM_DIR -name '*.ui'); do
+    header_name="$(basename "${form_file%.ui}.h")"
+    uic $form_file -o $INCLUDE_DIR/gui/$header_name
+done
+
+# Compile .cpp files to .o files 
+for src_file in $(find $SRC_DIR -name '*.cpp'); do
+    obj_file="$BUILD_DIR/"${src_file%.cpp}.o""
+    dep_file="${obj_file%.o}.d"
+    mkdir -p $(dirname $obj_file)
+
+    needs_build=0
+
+    # check if .o or .d are missing
+    if [ ! -f "$obj_file" ] || [ ! -f "$dep_file" ]; then
+        needs_build=1
+    else
+        # check if any dependency in .d is newer than .o file
+        deps=$(sed -e 's/\\$//' "$dep_file" | cut -d ':' -f2- | tr ' ' '\n')
+        for dep in $deps; do
+            if [ "$dep" -nt "$obj_file" ]; then
+                needs_build=1
+                break
+            fi
+        done
+    fi
+
+    if [ "$needs_build" -eq 1 ]; then
+        echo "Compiling $src_file -> $obj_file"
+        $CXX $CPPFLAGS $CXXFLAGS -c "$src_file" -o "$obj_file"
     fi
 done
 
-g++ $OBJ_DIR/*.o -o "$BUILD_DIR/mtrack" -lsqlite3
+echo "Linking files..."
+objs=$(find $BUILD_DIR -name '*.o')
+$CXX $objs -o "$BUILD_DIR/mtrack" $LNKFLAGS
 
 echo "Successfully build"
