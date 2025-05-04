@@ -4,6 +4,7 @@
 #include "databasemanager.h"
 #include "api/guilauncher.h"
 #include "debug/debprint.h"
+#include "gui/launcher.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +14,8 @@ int main(int argc, char *argv[])
         debug::print::debprint("Start software in GUI mode");
         try
         {
-            launchGUI();
+            // launchGUI();
+            launch(argc, argv);
         }
         catch(const std::exception& e)
         {
