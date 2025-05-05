@@ -59,9 +59,18 @@ LNKFLAGS="-lsqlite3 -lQt5Widgets -lQt5Core -lQt5Gui"
 
 # stuff for Qt forms
 FORM_DIR="./forms"
+FORM_INCLUDE_DIR=$INCLUDE_DIR/gui/forms
+mkdir -p $FORM_INCLUDE_DIR
+# create .h files from .ui files
 for form_file in $(find $FORM_DIR -name '*.ui'); do
     header_name="$(basename "${form_file%.ui}.h")"
-    uic $form_file -o $INCLUDE_DIR/gui/$header_name
+    uic $form_file -o $FORM_INCLUDE_DIR/$header_name
+done
+
+# create moc files with .h files
+for wrapper_file in $(find $INCLUDE_DIR/gui/wrapper -name '*.h'); do
+    wrapper_name="$(basename "${wrapper_file%.h}.cpp")"
+    moc $wrapper_file -o $SRC_DIR/gui/wrapper/moc_$wrapper_name
 done
 
 # Compile .cpp files to .o files 
@@ -91,13 +100,6 @@ for src_file in $(find $SRC_DIR -name '*.cpp'); do
         $CXX $CPPFLAGS $CXXFLAGS -c "$src_file" -o "$obj_file"
     fi
 done
-
-# stuff for QT building
-QT_BUILD_PATH=$BUILD_DIR/qt
-
-mkdir -p $QT_BUILD_PATH
-moc $INCLUDE_DIR/gui/MainWindowWrapper.h -o $QT_BUILD_PATH/moc_MainWindowWrapper.cpp
-g++ $ALL_INCLUDES -c $QT_BUILD_PATH/moc_MainWindowWrapper.cpp -o $QT_BUILD_PATH/moc_MainWindowWrapper.o
 
 echo "Linking files..."
 objs=$(find $BUILD_DIR -name '*.o')
