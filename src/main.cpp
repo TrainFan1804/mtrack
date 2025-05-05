@@ -2,7 +2,6 @@
 
 #include "optionparser.h"
 #include "databasemanager.h"
-#include "api/guilauncher.h"
 #include "debug/debprint.h"
 #include "gui/launcher.h"
 

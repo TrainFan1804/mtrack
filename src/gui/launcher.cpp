@@ -5,26 +5,26 @@
 #include <iostream>
 
 #include "gui/launcher.h"
+#include "gui/wrapper/MainWindowWrapper.h"
 
 int launch(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    MainWindowWrapper w;
+    w.show();
 
-    QWidget window;
-    window.setWindowTitle("Meine Qt-GUI");
+    // QWidget window;
+    // window.setWindowTitle("Meine Qt-GUI");
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    // QVBoxLayout *layout = new QVBoxLayout();
 
-    QPushButton *button = new QPushButton("Klick mich!");
-    layout->addWidget(button);
+    // QPushButton *button = new QPushButton("Close");
+    // layout->addWidget(button);
+    // QObject::connect(button, &QPushButton::clicked, &window, &QWidget::close);
 
-    QObject::connect(button, &QPushButton::clicked, []() {
-        std::cout << "Button wurde geklickt!" << std::endl;
-    });
-
-    window.setLayout(layout);
-    window.resize(300, 100);
-    window.show();
+    // window.setLayout(layout);
+    // window.resize(300, 100);
+    // window.show();
 
     return app.exec();
 }

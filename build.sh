@@ -58,6 +58,9 @@ CPPFLAGS="-MMD -MP -fPIC -DVERSION="\"$VERSION\"" $ALL_INCLUDES"
 LNKFLAGS="-lsqlite3 -lQt5Widgets -lQt5Core -lQt5Gui"
 
 # stuff for Qt forms
+
+# this still cause trouble because the new created header will force the src files
+# that use this header to recompile even when there wasn't any change
 FORM_DIR="./forms"
 FORM_INCLUDE_DIR=$INCLUDE_DIR/gui/forms
 mkdir -p $FORM_INCLUDE_DIR
