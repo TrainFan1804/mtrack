@@ -28,19 +28,19 @@ mkdir -p $LOG_PATH
 # this crazy stuff...
 # Maybe I should rewrite the entire programm in just a big script that execute a big cat command...
 # This is actually crazy stuff because mTrack will use the correct data path automatically
-cat << EOF > include/buildenv.h
-#ifndef BUILDENV_H
-#define BUILDENV_H
+# cat << EOF > include/buildenv.h
+# #ifndef BUILDENV_H
+# #define BUILDENV_H
 
-/*
-    mTrack use a different location for the appdata itself. Right now
-    it's just a simple sqlite database and a (optional) log.
-*/
-#define APPDATA_DIR_PATH    "$APPDATA_PATH"
-#define LOG_DIR_PATH        "$LOG_PATH"
+# /*
+#     mTrack use a different location for the appdata itself. Right now
+#     it's just a simple sqlite database and a (optional) log.
+# */
+# #define APPDATA_DIR_PATH    "$APPDATA_PATH"
+# #define LOG_DIR_PATH        "$LOG_PATH"
 
-#endif
-EOF
+# #endif
+# EOF
 
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
@@ -51,7 +51,7 @@ INCLUDE_DIR="./include"
 BUILD_DIR="./build"
 mkdir -p $BUILD_DIR 
 
-QT_INCLUDES="-I/usr/include/qt -I/usr/include/qt/QtWidgets"
+QT_INCLUDES="-I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtCore -I/usr/include/qt/QtGui"
 ALL_INCLUDES="-I$INCLUDE_DIR $QT_INCLUDES"
 
 CPPFLAGS="-MMD -MP -fPIC -DVERSION="\"$VERSION\"" $ALL_INCLUDES"
@@ -91,6 +91,13 @@ for src_file in $(find $SRC_DIR -name '*.cpp'); do
         $CXX $CPPFLAGS $CXXFLAGS -c "$src_file" -o "$obj_file"
     fi
 done
+
+# stuff for QT building
+QT_BUILD_PATH=$BUILD_DIR/qt
+
+mkdir -p $QT_BUILD_PATH
+moc $INCLUDE_DIR/gui/MainWindowWrapper.h -o $QT_BUILD_PATH/moc_MainWindowWrapper.cpp
+g++ $ALL_INCLUDES -c $QT_BUILD_PATH/moc_MainWindowWrapper.cpp -o $QT_BUILD_PATH/moc_MainWindowWrapper.o
 
 echo "Linking files..."
 objs=$(find $BUILD_DIR -name '*.o')
