@@ -51,11 +51,11 @@ INCLUDE_DIR="./include"
 BUILD_DIR="./build"
 mkdir -p $BUILD_DIR 
 
-QT_INCLUDES="-I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtCore -I/usr/include/qt/QtGui"
+QT_INCLUDES="-I/usr/include/qt6 -I/usr/include/qt6/QtWidgets -I/usr/include/qt6/QtCore -I/usr/include/qt6/QtGui"
 ALL_INCLUDES="-I$INCLUDE_DIR $QT_INCLUDES"
 
 CPPFLAGS="-MMD -MP -fPIC -DVERSION="\"$VERSION\"" $ALL_INCLUDES"
-LNKFLAGS="-lsqlite3 -lQt5Widgets -lQt5Core -lQt5Gui"
+LNKFLAGS="-lsqlite3 -lQt6Widgets -lQt6Core -lQt6Gui"
 
 # stuff for Qt forms
 
@@ -67,13 +67,13 @@ mkdir -p $FORM_INCLUDE_DIR
 # create .h files from .ui files
 for form_file in $(find $FORM_DIR -name '*.ui'); do
     header_name="$(basename "${form_file%.ui}.h")"
-    uic $form_file -o $FORM_INCLUDE_DIR/$header_name
+    /usr/lib/qt6/uic $form_file -o $FORM_INCLUDE_DIR/$header_name
 done
 
 # create moc files with .h files
 for wrapper_file in $(find $INCLUDE_DIR/gui/wrapper -name '*.h'); do
     wrapper_name="$(basename "${wrapper_file%.h}.cpp")"
-    moc $wrapper_file -o $SRC_DIR/gui/wrapper/moc_$wrapper_name
+    /usr/lib/qt6/moc $wrapper_file -o $SRC_DIR/gui/wrapper/moc_$wrapper_name
 done
 
 # Compile .cpp files to .o files 
