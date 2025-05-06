@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "gui/forms/main_widget.h"
+#include "gui/wrapper/MediaViewModel.h"
 
 class MainWindowWrapper : public QMainWindow 
 {
@@ -15,6 +16,13 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    MediaViewModel *_model;
+
+private slots:
+    void addAction();
+    void removeAction();
+    void saveAction();
+    void handleSelectionChanged(const QItemSelection &selection);
 };
 
 #endif

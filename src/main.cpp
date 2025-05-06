@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
         try
         {
             // launchGUI();
+            openDatabase();
             launch(argc, argv);
         }
         catch(const std::exception& e)

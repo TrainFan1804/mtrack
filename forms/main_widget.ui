@@ -74,6 +74,21 @@
          <property name="placeholderText">
           <string/>
          </property>
+         <item>
+          <property name="text">
+           <string>completed</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ongoing</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>droped</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="0" column="0">
@@ -92,6 +107,9 @@
        </item>
        <item row="4" column="0">
         <widget class="QPushButton" name="saveButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>save</string>
          </property>
@@ -116,7 +134,23 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableView" name="mediaView"/>
+        <widget class="QTreeView" name="mediaView">
+         <property name="tabKeyNavigation">
+          <bool>true</bool>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable">
+          <bool>false</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="mainButtonLayout">
@@ -164,5 +198,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>quitButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>499</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
