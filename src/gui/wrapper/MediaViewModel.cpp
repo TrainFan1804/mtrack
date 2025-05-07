@@ -25,6 +25,18 @@ const QList<QMedia> &MediaViewModel::getMediaList() const
     return _data;
 }
 
+int MediaViewModel::removeRow(int row, const QModelIndex &parent)
+{
+    if (row < 0 || row >= _data.size())
+        return -1;
+
+    beginRemoveRows(parent, row, row);
+    auto rm_media = _data.at(row);
+    _data.removeAt(row);
+    endRemoveRows();
+    return rm_media._id;
+}
+
 int MediaViewModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);

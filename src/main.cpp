@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
             std::cerr << e.what() << '\n';
             return EXIT_FAILURE;
         }
+        closeDatabase();
         debug::print::debprint("Exit sofware. Close GUI.");
         return EXIT_SUCCESS;
     }

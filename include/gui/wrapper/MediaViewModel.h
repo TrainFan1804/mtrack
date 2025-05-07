@@ -7,7 +7,6 @@
 
 struct QMedia
 {
-    // "This variable may be removed in a future version"
     int _id;
 
     int _rating;
@@ -41,6 +40,13 @@ public:
     const QMedia &mediaAt(int row) const;
 
     const QList<QMedia> &getMediaList() const;
+
+    /**
+     * Remove a item from the view model.
+
+     * @return The `id` of the removed media.
+     */
+    int removeRow(int row, const QModelIndex &parent = QModelIndex());
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 

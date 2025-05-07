@@ -51,7 +51,11 @@ void MainWindowWrapper::addAction()
 
 void MainWindowWrapper::removeAction()
 {
-    std::cout << "Need to be implemented\n";
+    QModelIndex rm_index = ui->mediaView->currentIndex();
+    int del_id = _model->removeRow(rm_index.row(), rm_index);
+    // this is just temp to avoid access the database when none is selected
+    if (del_id <= -1) return;
+    rmMedia(del_id);
 }
 
 void MainWindowWrapper::saveAction()
