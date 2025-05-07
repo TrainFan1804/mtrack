@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>799</width>
-    <height>600</height>
+    <width>800</width>
+    <height>601</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>601</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -17,38 +23,38 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>50</y>
-      <width>765</width>
-      <height>441</height>
+      <x>20</x>
+      <y>0</y>
+      <width>771</width>
+      <height>541</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="rootLayout">
+    <layout class="QGridLayout" name="root_layout">
      <item row="0" column="2">
-      <layout class="QGridLayout" name="editLayout">
+      <layout class="QGridLayout" name="edit_layout">
        <item row="0" column="1">
-        <widget class="QLineEdit" name="nameEdit">
+        <widget class="QLineEdit" name="name_edit">
          <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
        <item row="3" column="0">
-        <widget class="QLabel" name="ratingLabel">
+        <widget class="QLabel" name="rating_label">
          <property name="text">
           <string>rating</string>
          </property>
         </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="typeLabel">
+        <widget class="QLabel" name="type_label">
          <property name="text">
           <string>type</string>
          </property>
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QSpinBox" name="ratingBox">
+        <widget class="QSpinBox" name="rating_box">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -67,7 +73,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="stateBox">
+        <widget class="QComboBox" name="state_box">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -92,21 +98,21 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QLabel" name="nameLabel">
+        <widget class="QLabel" name="name_label">
          <property name="text">
           <string>name</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="stateLabel">
+        <widget class="QLabel" name="state_label">
          <property name="text">
           <string>state</string>
          </property>
         </widget>
        </item>
        <item row="4" column="0">
-        <widget class="QPushButton" name="saveButton">
+        <widget class="QPushButton" name="save_button">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -116,7 +122,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="typeEdit">
+        <widget class="QLineEdit" name="type_edit">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -125,16 +131,22 @@
       </layout>
      </item>
      <item row="0" column="0">
-      <layout class="QVBoxLayout" name="mainLayout">
-       <item>
-        <widget class="QLabel" name="mTrackLayout">
+      <layout class="QVBoxLayout" name="main_layout">
+       <item alignment="Qt::AlignmentFlag::AlignHCenter">
+        <widget class="QLabel" name="mtrack_lable">
+         <property name="font">
+          <font>
+           <pointsize>18</pointsize>
+           <bold>false</bold>
+          </font>
+         </property>
          <property name="text">
           <string>mtrack</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="mediaView">
+        <widget class="QTreeView" name="media_view">
          <property name="tabKeyNavigation">
           <bool>true</bool>
          </property>
@@ -153,16 +165,16 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="mainButtonLayout">
+        <layout class="QHBoxLayout" name="main_button_layout">
          <item>
-          <widget class="QPushButton" name="addButton">
+          <widget class="QPushButton" name="add_button">
            <property name="text">
             <string>add</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="rmButton">
+          <widget class="QPushButton" name="rm_button">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -172,7 +184,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="quitButton">
+          <widget class="QPushButton" name="quit_button">
            <property name="text">
             <string>quit</string>
            </property>
@@ -190,7 +202,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>799</width>
+     <width>800</width>
      <height>27</height>
     </rect>
    </property>
@@ -200,7 +212,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>quitButton</sender>
+   <sender>quit_button</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
