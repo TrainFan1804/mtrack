@@ -16,6 +16,12 @@ public:
 
 private:
     Ui::AddTopLevel *ui;
+
+signals:
+    void submitAddContent(const QMedia &Media);
+
+private slots:
+    void addBtnClicked();
 };
 
 #endif

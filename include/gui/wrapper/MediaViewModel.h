@@ -3,27 +3,7 @@
 
 #include <QAbstractTableModel>
 
-#include "globals.h"
-
-struct QMedia
-{
-    int _id;
-
-    int _rating;
-    QString _name;
-    QString _state;
-    QString _type;
-
-    QMedia(const nlohmann::json &json)
-    {
-        _id = json["id"];
-
-        _rating = json["rating"];
-        _name = QString::fromStdString(json["name"]);
-        _state = QString::fromStdString(json["state"]);
-        _type = QString::fromStdString(json["type"]);
-    }
-};
+#include "gui/QMedia.h"
 
 /*
  * This was mainly reused from an older project of myself.
@@ -33,20 +13,13 @@ class MediaViewModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    MediaViewModel(QObject *parent = nullptr);
+    MediaViewModel(QObject *parent, const QList <QMedia> &list);
 
-    void setDatalist(const QList<QMedia> &list);
+    const QMedia &getMediaAt(int row) const;
 
-    const QMedia &mediaAt(int row) const;
+    bool insertRow(const QMedia &new_media);
 
-    const QList<QMedia> &getMediaList() const;
-
-    /**
-     * Remove a item from the view model.
-
-     * @return The `id` of the removed media.
-     */
-    int removeRow(int row, const QModelIndex &parent = QModelIndex());
+    int removeRow(int row);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 

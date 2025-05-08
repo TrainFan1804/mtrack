@@ -1,36 +1,33 @@
 #include "gui/wrapper/MediaViewModel.h"
 
 
-MediaViewModel::MediaViewModel(QObject *parent)
+MediaViewModel::MediaViewModel(QObject *parent, const QList<QMedia> &list)
     : QAbstractTableModel()
-{
-    QList<QMedia> list;
-    setDatalist(list);
-}
-
-void MediaViewModel::setDatalist(const QList<QMedia> &list)
 {
     beginResetModel();
     _data = list;
     endResetModel();
 }
 
-const QMedia &MediaViewModel::mediaAt(int row) const
+const QMedia &MediaViewModel::getMediaAt(int row) const
 {
     return _data.at(row);
 }
 
-const QList<QMedia> &MediaViewModel::getMediaList() const
+bool MediaViewModel::insertRow(const QMedia &new_media)
 {
-    return _data;
+   beginInsertRows(QModelIndex(), rowCount(), rowCount());
+   _data.append(new_media);
+   endInsertRows();
+   return true;
 }
 
-int MediaViewModel::removeRow(int row, const QModelIndex &parent)
+int MediaViewModel::removeRow(int row)
 {
     if (row < 0 || row >= _data.size())
         return -1;
 
-    beginRemoveRows(parent, row, row);
+    beginRemoveRows(QModelIndex(), row, row);
     auto rm_media = _data.at(row);
     _data.removeAt(row);
     endRemoveRows();
@@ -46,7 +43,9 @@ int MediaViewModel::rowCount(const QModelIndex &parent) const
 int MediaViewModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 4; // amount of all attributes (withoud id) of QMedia
+    // amount of all attributes (withoud id) of QMedia (because id should
+    // not be showed inside the TableModel)
+    return 4;
 }
 
 QVariant MediaViewModel::data(const QModelIndex &index, int role) const

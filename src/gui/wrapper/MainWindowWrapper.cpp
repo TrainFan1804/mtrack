@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QWidget>
+#include <QMessageBox>
 
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
@@ -22,15 +23,29 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
         view_data << media;
     }
     // put data in MediaViewModel
-    _model = new MediaViewModel(this);
-    _model->setDatalist(view_data);
+    _model = new MediaViewModel(this, view_data);
     // put MediaViewModel into ui->mediaView
     ui->media_view->setModel(_model);
 
     // setup custom slots
-    connect(ui->add_button, SIGNAL(clicked()), this, SLOT(addAction()));
-    connect(ui->rm_button, SIGNAL(clicked()), this, SLOT(removeAction()));
-    connect(ui->save_button, SIGNAL(clicked()), this, SLOT(saveAction()));
+    connect(
+        ui->add_button, 
+        &QPushButton::clicked, 
+        this, 
+        &MainWindowWrapper::openTopLevelWindow
+    );
+    connect(
+        ui->rm_button, 
+        &QPushButton::clicked, 
+        this, 
+        &MainWindowWrapper::removeAction
+    );
+    connect(
+        ui->save_button, 
+        &QPushButton::clicked, 
+        this, 
+        &MainWindowWrapper::saveAction
+    );
 
     connect(
         ui->media_view->selectionModel(),
@@ -46,17 +61,37 @@ MainWindowWrapper::~MainWindowWrapper()
     delete _model;
 }
 
-void MainWindowWrapper::addAction()
+void MainWindowWrapper::openTopLevelWindow()
 {
     AddTopLevelWrapper *top_level = new AddTopLevelWrapper();
+
+    connect(
+        top_level, 
+        &AddTopLevelWrapper::submitAddContent, 
+        this, 
+        &MainWindowWrapper::getTopLevelContent
+    );
     top_level->setAttribute(Qt::WA_DeleteOnClose);
     top_level->show();
 }
 
+void MainWindowWrapper::getTopLevelContent(const QMedia &media)
+{
+    int last_index = _model->rowCount() - 1;
+    if (last_index < 0) return;
+    int last_index_id = _model->getMediaAt(last_index)._id;
+    QMedia c = media;
+    c._id = last_index_id + 1;
+
+    _model->insertRow(c);
+    auto m = qMediaToMedia(c);
+    addMedia(m);
+}
+
 void MainWindowWrapper::removeAction()
 {
-    QModelIndex rm_index = ui->media_view->currentIndex();
-    int del_id = _model->removeRow(rm_index.row(), rm_index);
+    int rm_index = ui->media_view->currentIndex().row();
+    int del_id = _model->removeRow(rm_index);
     // this is just temp to avoid access the database when none is selected
     if (del_id <= -1) return;
     rmMedia(del_id);
@@ -77,12 +112,12 @@ void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)
 {
     QModelIndex selected_index = ui->media_view->currentIndex();
     if (!selected_index.isValid()) return;
-    auto list = _model->getMediaList();
+    auto media = _model->getMediaAt(selected_index.row());
 
-    auto name = list.at(selected_index.row())._name;
-    auto state = list.at(selected_index.row())._state;
-    auto type = list.at(selected_index.row())._type;
-    auto rating = list.at(selected_index.row())._rating;
+    auto name = media._name;
+    auto state = media._state;
+    auto type = media._type;
+    auto rating = media._rating;
 
     ui->name_edit->setText(name);
     /*

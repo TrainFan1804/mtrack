@@ -19,7 +19,9 @@ private:
     MediaViewModel *_model;
 
 private slots:
-    void addAction();
+    void openTopLevelWindow();
+    void getTopLevelContent(const QMedia &media);
+
     void removeAction();
     void saveAction();
     void handleSelectionChanged(const QItemSelection &selection);
