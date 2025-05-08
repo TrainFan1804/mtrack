@@ -10,5 +10,4 @@ dev/*
 include/buildenv.h
 
 # python stuff
-gui/__pycache__/*
-gui/custom/__pycache__/*
+*.pyc

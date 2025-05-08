@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import comhandler as com
 from custom import MainFrame as mf
+from api import client
 
 
 class EditFrame(tk.Frame):
@@ -79,10 +79,9 @@ class EditFrame(tk.Frame):
         data['type'] = self.type_var.get()
         data['rating'] = self.rating_var.get()
 
-        com.send_request_with_data(com.EDIT_RESPONSE, data)
-        rsp_str = com.listen_to_backend()
+        rsp_str = client.send_request_with_data(client.EDIT_RESPONSE, data)
         rp = json.loads(rsp_str)
-        if rp[0]['CODE'] == com.TRN_END:
+        if rp[0]['CODE'] == client.TRN_END:
             self.tree.item(
                 str(data['id']), 
                 values=[data[key] for key in mf.TREE_COL_LIST]
@@ -91,7 +90,7 @@ class EditFrame(tk.Frame):
             messagebox.showerror("Error", "Something went wrong")
 
 
-    def edit_item(self, event):
+    def fill_selected_item(self, event):
         """
             This method is called when a item from the treeview in MainFrame 
             is selected.
@@ -100,7 +99,14 @@ class EditFrame(tk.Frame):
         tree = event.widget
         self.edit_item_id = tree.focus()
         # See MainFrame treeview creation to understand the magic numbers
-        self.name_var.set(tree.item(self.edit_item_id)['values'][0])
-        self.state_var.set(tree.item(self.edit_item_id)['values'][1])
-        self.type_var.set(tree.item(self.edit_item_id)['values'][2])
-        self.rating_var.set(tree.item(self.edit_item_id)['values'][3]) 
+        try:
+            self.name_var.set(tree.item(self.edit_item_id)['values'][0])
+            self.state_var.set(tree.item(self.edit_item_id)['values'][1])
+            self.type_var.set(tree.item(self.edit_item_id)['values'][2])
+            self.rating_var.set(tree.item(self.edit_item_id)['values'][3]) 
+        except:
+            self.name_var.set("")
+            self.state_var.set("")
+            self.type_var.set("")
+            self.rating_var.set(-1)
+            self.save_btn.config(state='disabled')

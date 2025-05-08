@@ -3,9 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import comhandler as com
 from custom import AddTopLevel as at
-
+from api import client
 
 TREE_COL_LIST = ['name', 'state', 'type', 'rating']
 
@@ -32,7 +31,7 @@ class MainFrame(tk.Frame):
         )
         self.tree.grid(row=1, column=0, sticky='nsew')
         for col in TREE_COL_LIST:
-            self.tree.heading(col, text=col)
+            self.tree.heading(col, text=col, command=lambda c=col: self._sort_treeview(c, False))
             self.tree.column(col, width=100)
 
         self.tree.bind("<<TreeviewSelect>>", target_select_event)
@@ -67,11 +66,10 @@ class MainFrame(tk.Frame):
 
 
     def _receive_data_callback(self, values):
-        com.send_request_with_data(com.ADD_RESPONSE, values)
+        rsp_str = client.send_request_with_data(client.ADD_RESPONSE, values)
 
-        rsp_str = com.listen_to_backend()
         rp = json.loads(rsp_str)
-        if rp[0]['CODE'] == com.SEND_ID:
+        if rp[0]['CODE'] == client.SEND_ID:
             rsp_id = rp[0]['id']
             self.tree.insert('', 'end', 
                 iid=str(rsp_id), 
@@ -87,12 +85,15 @@ class MainFrame(tk.Frame):
             and id to the backend.
         """
         rm_item_id = self.tree.focus()
-        data = {'id' : int(rm_item_id)}
-        com.send_request_with_data(com.RM_RESPONSE, data)
+        try:
+            data = {'id' : int(rm_item_id)}
+        except:
+            messagebox.showwarning("Warning", "You need to select an item")
+            return
+        rsp_str = client.send_request_with_data(client.RM_RESPONSE, data)
 
-        rsp_str = com.listen_to_backend()
         rp = json.loads(rsp_str)
-        if rp[0]['CODE'] == com.TRN_END:
+        if rp[0]['CODE'] == client.TRN_END:
             self.tree.delete(rm_item_id)
         else:
             messagebox.showerror("Error", "Something went wrong")
@@ -100,8 +101,7 @@ class MainFrame(tk.Frame):
 
     def _fill_window_tree(self):
         # sending request for the database data
-        com.send_request_no_data(com.ASK_DATA)
-        j_str = com.listen_to_backend()
+        j_str = client.send_request(client.ASK_DATA)
 
         j_list = json.loads(j_str)
         for row in j_list[:-1]:
@@ -109,3 +109,18 @@ class MainFrame(tk.Frame):
                 iid=str(row['id']), 
                 values=[row[key] for key in TREE_COL_LIST]
             )
+
+
+    def _sort_treeview(self, col_name, descending):
+        """
+            This is a modified version from this source:
+            https://www.w3resource.com/python-exercises/tkinter/python-tkinter-widgets-exercise-18.php
+        """
+        col_data = [(self.tree.set(item, col_name), item) for item in self.tree.get_children('')]
+        sort_key = None
+        if (col_name == 'rating'):
+            sort_key = lambda t: int(t[0])
+        col_data.sort(key=sort_key, reverse=descending)
+        for index, (NOT_USED, item) in enumerate(col_data):
+            self.tree.move(item, '', index)
+        self.tree.heading(col_name, command=lambda: self._sort_treeview(col_name, not descending))
