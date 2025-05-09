@@ -49,11 +49,11 @@ namespace
         int ret = sqlite3_exec(_lib_db, sql.c_str(), callback, head, &err_msg);
         if(ret != SQLITE_OK)
         {
-            debug::print::fdeberr("SQL error: %s", err_msg);
+            debug::print::fdeberr("SQL error: %s", debug::DB, err_msg);
             sqlite3_free(err_msg);
             throw std::runtime_error(err_msg);
         } 
-        debug::print::fdebprint("SQL statement executed: %s", sql.c_str());
+        debug::print::fdebprint("SQL statement executed: %s", debug::DB, sql.c_str());
     }
 
     /**
@@ -147,7 +147,7 @@ void openDatabase()
 
     if(ret)
     {
-        debug::print::fdeberr("Can't open database: %s", sqlite3_errmsg(_lib_db));
+        debug::print::fdeberr("Can't open database: %s", debug::DB, sqlite3_errmsg(_lib_db));
     }
     else
     {
