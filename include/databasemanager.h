@@ -29,9 +29,16 @@ void closeDatabase();
  */
 void createDatabaseTable();
 
+/**
+ * Execute a `SELECT` statement that will fetch ALL data of the MEDIA table.
+ */
 nlohmann::json selectAllJsonQuery();
 
-nlohmann::json selectJsonQuery(const std::string &statement,
+/**
+ * Execute a `SELECT` statement that will only fetch custom data. This is part of
+ * private API.
+ */
+nlohmann::json _selectJsonQuery(const std::string &statement,
     int (*callback)(void*, int, char**, char **));
 
 void addMedia(const media::Media &new_media);

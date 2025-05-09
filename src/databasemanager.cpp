@@ -9,38 +9,6 @@ namespace
 {
     sqlite3 *_lib_db;
 
-        /**
-     * For a simple explanation how the callback works see:
-     * https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
-     * 
-     * This function is called for every row in the table.
-     * 
-     * This is some crazy sh*t here
-     */
-    int pragmaOnceCallback(void *head, int num_cols, char **row_data, char **col_name) 
-    {
-        auto &h = *(reinterpret_cast<std::string*>(head));
-
-        std::vector<std::string> row;
-        // Double the size of the columns to save the column name too.
-        // Could be obsolete when just show the columns in the front end.
-
-        // TODO remove the column names from the vector -> display them in the frontend
-        // directly
-        row.reserve(num_cols * 2);
-        for (int i = 0; i < num_cols; i++)
-        {
-            // row.emplace_back(col_name[i]);
-            // row.emplace_back(row_data[i] ? row_data[i] : "NULL");
-            h += col_name[i];
-            h += ": ";
-            h += (row_data[i] ? row_data[i] : "NULL");
-            h += "\n";
-        }
-        // h.emplace_back(std::move(row));
-        return 0;
-    }
-
     /**
      * For a simple explanation how the callback works see:
      * https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
@@ -76,7 +44,6 @@ namespace
             throw std::runtime_error(err_msg);
         } 
         debug::print::fdebprint("SQL statement executed: %s", debug::DB, sql.c_str());
-        debug::print::fdebprint("Data fetched: %s", debug::DB, static_cast<std::string*>(head)->c_str());
     }
 
     /**
@@ -85,7 +52,7 @@ namespace
      */
     void execute_sql(const std::string &sql)
     {
-        execute_sql(sql, nullptr, nullptr);
+        execute_sql(sql, NULL, NULL);
     }
 }
 
@@ -115,7 +82,7 @@ void checkTable()
     std::ostringstream oss;
     oss << "SELECT json_group_array(json_object('col_name', NAME)) AS json_result FROM pragma_table_info('MEDIA');";
     
-    auto media_col_names = selectJsonQuery(oss.str(), jsonSelectCallback);
+    auto media_col_names = _selectJsonQuery(oss.str(), jsonSelectCallback);
 
     std::vector<std::string> real_cols; // cols in the actuall table
     
@@ -183,15 +150,17 @@ nlohmann::json selectAllJsonQuery()
     std::string result;
     execute_sql(SQL_JSON_SELECT_ALL, &result, jsonSelectCallback);
     auto j = nlohmann::json::parse(result);
+    debug::print::fdebprint("Data fetched: %s", debug::DB, result.c_str());
     return j;
 }
 
-nlohmann::json selectJsonQuery(const std::string &statement, 
+nlohmann::json _selectJsonQuery(const std::string &statement, 
     int (*callback)(void*, int, char**, char **))
 {
     std::string result;
     execute_sql(statement.c_str(), &result, callback);
     auto j = nlohmann::json::parse(result);
+    debug::print::fdebprint("Data fetched: %s", debug::DB, result.c_str());
     return j;
 }
 
