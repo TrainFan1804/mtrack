@@ -9,6 +9,38 @@ namespace
 {
     sqlite3 *_lib_db;
 
+        /**
+     * For a simple explanation how the callback works see:
+     * https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
+     * 
+     * This function is called for every row in the table.
+     * 
+     * This is some crazy sh*t here
+     */
+    int pragmaOnceCallback(void *head, int num_cols, char **row_data, char **col_name) 
+    {
+        auto &h = *(reinterpret_cast<std::string*>(head));
+
+        std::vector<std::string> row;
+        // Double the size of the columns to save the column name too.
+        // Could be obsolete when just show the columns in the front end.
+
+        // TODO remove the column names from the vector -> display them in the frontend
+        // directly
+        row.reserve(num_cols * 2);
+        for (int i = 0; i < num_cols; i++)
+        {
+            // row.emplace_back(col_name[i]);
+            // row.emplace_back(row_data[i] ? row_data[i] : "NULL");
+            h += col_name[i];
+            h += ": ";
+            h += (row_data[i] ? row_data[i] : "NULL");
+            h += "\n";
+        }
+        // h.emplace_back(std::move(row));
+        return 0;
+    }
+
     /**
      * For a simple explanation how the callback works see:
      * https://stackoverflow.com/questions/31146713/sqlite3-exec-callback-function-clarification
@@ -32,7 +64,8 @@ namespace
     /**
      * Use this when you want to add a custom callback to your SQL querry.
      */
-    void execute_sql(const std::string &sql, void *head, int (*callback)(void*, int, char**, char **))
+    void execute_sql(const std::string &sql, void *head, 
+        int (*callback)(void*, int, char**, char **))
     {
         char *err_msg = 0;
         int ret = sqlite3_exec(_lib_db, sql.c_str(), callback, head, &err_msg);
@@ -79,41 +112,39 @@ void initDatabase()
 void checkTable()
 {
     openDatabase();
-    // std::ostringstream oss;
-    // oss << "PRAGMA table_info(" 
-    //     << TABLE_NAME << ");";
+    std::ostringstream oss;
+    oss << "SELECT json_group_array(json_object('col_name', NAME)) AS json_result FROM pragma_table_info('MEDIA');";
     
-    // std::vector<std::vector<std::string>> select_result;
-    // // selectSpecialQuery(select_result, oss.str());
+    auto media_col_names = selectJsonQuery(oss.str(), jsonSelectCallback);
 
-    // std::vector<std::string> real_cols; // cols in the actuall table
+    std::vector<std::string> real_cols; // cols in the actuall table
     
-    // for (const auto &row : select_result)
-    // {
-    //     real_cols.push_back(row[3]);
-    // }
+    for (const auto &item: media_col_names)
+    {
+        real_cols.push_back(item["col_name"].get<std::string>());
+    }
     
-    // // cols that should be in the table
-    // const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
+    // cols that should be in the table
+    const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
 
-    // for (auto &ex_col : EXPECTED_COLS)
-    // {
-    //     bool col_exists = false;
-    //     for (auto &col: real_cols)
-    //     {
-    //         if (ex_col == col)
-    //         {
-    //             col_exists = true;
-    //             break;
-    //         }
-    //     }
-    //     if (!col_exists)
-    //     {
-    //         std::ostringstream oss;
-    //         oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN " << ex_col << " TEXT DEFAULT 'unknown';";
-    //         execute_sql(oss.str());
-    //     }
-    // }
+    for (auto &ex_col : EXPECTED_COLS)
+    {
+        bool col_exists = false;
+        for (auto &col: real_cols)
+        {
+            if (ex_col == col)
+            {
+                col_exists = true;
+                break;
+            }
+        }
+        if (!col_exists)
+        {
+            std::ostringstream oss;
+            oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN " << ex_col << " TEXT DEFAULT 'unknown';";
+            execute_sql(oss.str());
+        }
+    }
     closeDatabase();
 }
 
@@ -155,12 +186,12 @@ nlohmann::json selectAllJsonQuery()
     return j;
 }
 
-nlohmann::json selectJsonQuery(const std::string &statement)
+nlohmann::json selectJsonQuery(const std::string &statement, 
+    int (*callback)(void*, int, char**, char **))
 {
     std::string result;
-    execute_sql(statement.c_str(), &result, nullptr);
+    execute_sql(statement.c_str(), &result, callback);
     auto j = nlohmann::json::parse(result);
-    printf("%s\n", result.c_str());
     return j;
 }
 

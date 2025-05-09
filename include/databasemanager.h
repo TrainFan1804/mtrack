@@ -31,7 +31,8 @@ void createDatabaseTable();
 
 nlohmann::json selectAllJsonQuery();
 
-nlohmann::json selectJsonQuery(const std::string &statement);
+nlohmann::json selectJsonQuery(const std::string &statement,
+    int (*callback)(void*, int, char**, char **));
 
 void addMedia(const media::Media &new_media);
 
