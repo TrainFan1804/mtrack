@@ -7,8 +7,14 @@ namespace debug
 {
     enum DEBUG_LEVEL
     {
-        INFO, ERROR
+        INFO,
+        ERROR,
+        DB,
+        GUI,
+        BACKEND
     };
+
+    std::string toString(DEBUG_LEVEL level);
 }
 
 /**
@@ -22,13 +28,13 @@ namespace debug
  */
 namespace debug::print
 {
-    void debprint(const std::string &msg);
+    void debprint(const std::string &msg, debug::DEBUG_LEVEL level = INFO);
 
-    void deberr(const std::string &err);
+    void deberr(const std::string &err, debug::DEBUG_LEVEL level = INFO);
 
-    void fdebprint(const char *msg, ...);
+    void fdebprint(const char *msg, debug::DEBUG_LEVEL level, ...);
 
-    void fdeberr(const char *err, ...);
+    void fdeberr(const char *err, debug::DEBUG_LEVEL level, ...);
 }
 
 #endif
