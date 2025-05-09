@@ -34,6 +34,20 @@ int MediaViewModel::removeRow(int row)
     return rm_media._id;
 }
 
+bool MediaViewModel::editRow(int row, const QMedia &edited_media)
+{
+    if (row < 0 || row >= _data.size())
+        return false;
+
+    _data[row] = edited_media;
+    // get left and right cell of the edited row and send signal to qt to change
+    // those data
+    QModelIndex edited_row_left_index = index(row, 0);
+    QModelIndex edited_row_right_index = index(row, columnCount() - 1);
+    emit dataChanged(edited_row_left_index, edited_row_right_index);
+    return true;
+}
+
 int MediaViewModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);

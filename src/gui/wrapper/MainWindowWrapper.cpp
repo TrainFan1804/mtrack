@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QMessageBox>
 
+#include "json.hpp"
+
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
 #include "databasemanager.h"
@@ -69,13 +71,13 @@ void MainWindowWrapper::openTopLevelWindow()
         top_level, 
         &AddTopLevelWrapper::submitAddContent, 
         this, 
-        &MainWindowWrapper::getTopLevelContent
+        &MainWindowWrapper::fetchTopLevelContent
     );
     top_level->setAttribute(Qt::WA_DeleteOnClose);
     top_level->show();
 }
 
-void MainWindowWrapper::getTopLevelContent(const QMedia &media)
+void MainWindowWrapper::fetchTopLevelContent(const QMedia &media)
 {
     int last_index = _model->rowCount() - 1;
     if (last_index < 0) return;
@@ -99,13 +101,23 @@ void MainWindowWrapper::removeAction()
 
 void MainWindowWrapper::saveAction()
 {
+    int selected_index = ui->media_view->currentIndex().row();
+    int selected_id = _model->getMediaAt(selected_index)._id;
+
     auto edit_name = ui->name_edit->text();
     auto edit_state = ui->state_box->currentText();
     auto edit_type = ui->type_edit->text();
     auto edit_rating = ui->rating_box->value();
 
-    std::cout << "name: " << edit_name.toStdString() << ", state: " << edit_state.toStdString() 
-        << ", type: " << edit_type.toStdString() << ", rating: " << edit_rating << "\n";
+    nlohmann::json json;
+    json["id"] = selected_id;
+    json["name"] = edit_name.toStdString();
+    json["state"] = edit_state.toStdString();
+    json["type"] = edit_type.toStdString();
+    json["rating"] = edit_rating;
+    QMedia media(json);
+    _model->editRow(selected_index, media);
+    editMedia(selected_id, qMediaToMedia(media));
 }
 
 void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)

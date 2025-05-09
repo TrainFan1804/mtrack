@@ -20,7 +20,11 @@ private:
 
 private slots:
     void openTopLevelWindow();
-    void getTopLevelContent(const QMedia &media);
+    /**
+     * Is used to fetch the data that is send from {@link AddTopLevelWrapper}
+     * to handle process of adding a new media in the database / TreeViewModel.
+     */
+    void fetchTopLevelContent(const QMedia &media);
 
     void removeAction();
     void saveAction();

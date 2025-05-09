@@ -18,6 +18,10 @@ private:
     Ui::AddTopLevel *ui;
 
 signals:
+    /**
+     * Send a media object. Is used as a signal in {@link addBtnClicked} to send
+     * the data from this wrapper window to {@link MainWindowWrapper}.
+     */
     void submitAddContent(const QMedia &Media);
 
 private slots:
