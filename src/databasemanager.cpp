@@ -17,43 +17,33 @@ namespace
      * 
      * This is some crazy sh*t here
      */
-    int callback(void *head, int num_cols, char **row_data, char **col_name) 
+    int jsonSelectCallback(void *head, int num_cols, char **row_data, char **NOT_USED) 
     {
-        auto &h = *(reinterpret_cast<std::vector<std::vector<std::string>>*>(head));
-
-        std::vector<std::string> row;
-        // Double the size of the columns to save the column name too.
-        // Could be obsolete when just show the columns in the front end.
-
-        // TODO remove the column names from the vector -> display them in the frontend
-        // directly
-        row.reserve(num_cols * 2);
-        for (int i = 0; i < num_cols; i++)
-        {
-            row.emplace_back(col_name[i]);
-            row.emplace_back(row_data[i] ? row_data[i] : "NULL");
+        if (num_cols > 0 && row_data[0]) {
+            std::string* result = static_cast<std::string*>(head);
+            *result = row_data[0];
+        } else {
+            std::string* result = static_cast<std::string*>(head);
+            *result = "[]";
         }
-        h.emplace_back(std::move(row));
         return 0;
     }
 
     /**
-     * Execute a sql statement. Only use this directly when you now what you do.
-     * 
-     * @attention   Rather use execute_sql(const std::string&) 
-     * or execute_sql(const std::string&, std::vector<std::vector<std::string>>&)
+     * Use this when you want to add a custom callback to your SQL querry.
      */
-    void execute_sql(const std::string &sql, void *head)
+    void execute_sql(const std::string &sql, void *head, int (*callback)(void*, int, char**, char **))
     {
         char *err_msg = 0;
         int ret = sqlite3_exec(_lib_db, sql.c_str(), callback, head, &err_msg);
         if(ret != SQLITE_OK)
         {
-            debug::print::fdeberr("SQL error: %s", err_msg);
+            debug::print::fdeberr("SQL error: %s", debug::DB, err_msg);
             sqlite3_free(err_msg);
             throw std::runtime_error(err_msg);
         } 
-        debug::print::fdebprint("SQL statement executed: %s", sql.c_str());
+        debug::print::fdebprint("SQL statement executed: %s", debug::DB, sql.c_str());
+        debug::print::fdebprint("Data fetched: %s", debug::DB, static_cast<std::string*>(head)->c_str());
     }
 
     /**
@@ -62,22 +52,7 @@ namespace
      */
     void execute_sql(const std::string &sql)
     {
-        execute_sql(sql, nullptr);
-    }
-
-    /**
-     * Execute a sql statement. This should only be used when working with
-     * `SELECT` statements.
-     * 
-     * @param sql   The executed sql statement. This function should only be used with
-     * `SELECT` statements!
-     * @param head  When executing a `SELECT` statment you need to provide a container
-     * to save the response from the query.
-     */
-    void execute_sql(const std::string &sql, 
-        std::vector<std::vector<std::string>> &head)
-    {
-        execute_sql(sql, &head);
+        execute_sql(sql, nullptr, nullptr);
     }
 }
 
@@ -87,78 +62,84 @@ void initDatabase()
     // the table creation process can be skiped
     if (fileIsCreated(DB_PATH_STR))
     {
-        debug::print::debprint("Database already exists. Skip table creation.");
+        debug::print::debprint(
+            "Database already exists. Skip table creation.",
+            debug::DB
+        );
         checkTable();
         return;
     }
     openDatabase();
-    debug::print::debprint("Database created");
+    debug::print::debprint("Database created", debug::DB);
     createDatabaseTable();
-    debug::print::debprint("Tables created");
+    debug::print::debprint("Tables created", debug::DB);
     closeDatabase();
 }
 
 void checkTable()
 {
     openDatabase();
-    std::ostringstream oss;
-    oss << "PRAGMA table_info(" 
-        << TABLE_NAME << ");";
+    // std::ostringstream oss;
+    // oss << "PRAGMA table_info(" 
+    //     << TABLE_NAME << ");";
     
-    std::vector<std::vector<std::string>> select_result;
-    selectSpecialQuery(select_result, oss.str());
+    // std::vector<std::vector<std::string>> select_result;
+    // // selectSpecialQuery(select_result, oss.str());
 
-    std::vector<std::string> real_cols; // cols in the actuall table
+    // std::vector<std::string> real_cols; // cols in the actuall table
     
-    for (const auto &row : select_result)
-    {
-        real_cols.push_back(row[3]);
-    }
+    // for (const auto &row : select_result)
+    // {
+    //     real_cols.push_back(row[3]);
+    // }
     
-    // cols that should be in the table
-    const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
+    // // cols that should be in the table
+    // const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
 
-    for (auto &ex_col : EXPECTED_COLS)
-    {
-        bool col_exists = false;
-        for (auto &col: real_cols)
-        {
-            if (ex_col == col)
-            {
-                col_exists = true;
-                break;
-            }
-        }
-        if (!col_exists)
-        {
-            std::ostringstream oss;
-            oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN " << ex_col << " TEXT DEFAULT 'unknown';";
-            execute_sql(oss.str());
-        }
-    }
+    // for (auto &ex_col : EXPECTED_COLS)
+    // {
+    //     bool col_exists = false;
+    //     for (auto &col: real_cols)
+    //     {
+    //         if (ex_col == col)
+    //         {
+    //             col_exists = true;
+    //             break;
+    //         }
+    //     }
+    //     if (!col_exists)
+    //     {
+    //         std::ostringstream oss;
+    //         oss << "ALTER TABLE " << TABLE_NAME << " ADD COLUMN " << ex_col << " TEXT DEFAULT 'unknown';";
+    //         execute_sql(oss.str());
+    //     }
+    // }
     closeDatabase();
 }
 
 void openDatabase()
 {
     int ret;
-
     ret = sqlite3_open(DB_PATH_STR.c_str(), &_lib_db);
 
     if(ret)
     {
-        debug::print::fdeberr("Can't open database: %s", sqlite3_errmsg(_lib_db));
+        debug::print::fdeberr(
+            "Can't open database: %s", 
+            debug::DB, 
+            sqlite3_errmsg(_lib_db)
+        );
     }
     else
     {
-        debug::print::debprint("Opened database successfully");
+        debug::print::debprint("Opened database successfully", debug::DB);
     }
 }
 
 void closeDatabase()
 {
     sqlite3_close(_lib_db);
-    debug::print::debprint("Database closed");
+    debug::print::debprint("Database closed", debug::DB);
 }
 
 void createDatabaseTable()
@@ -166,34 +147,20 @@ void createDatabaseTable()
     execute_sql(SQL_CREATE);
 }
 
-void selectAllQuery(std::vector<std::vector<std::string>> &result)
-{
-    selectSpecialQuery(result, "SELECT * FROM " + std::string(TABLE_NAME) + ";");
-}
-
-void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
-    const std::string &statement)
-{
-    execute_sql(statement.c_str(), result);
-}
-
 nlohmann::json selectAllJsonQuery()
 {
-    std::vector<std::vector<std::string>> select_result;
-    execute_sql(SQL_JSON_SELECT_ALL, select_result);
-
-    auto raw_str = select_result[0][1];
-    auto j = nlohmann::json::parse(raw_str);
+    std::string result;
+    execute_sql(SQL_JSON_SELECT_ALL, &result, jsonSelectCallback);
+    auto j = nlohmann::json::parse(result);
     return j;
 }
 
 nlohmann::json selectJsonQuery(const std::string &statement)
 {
-    std::vector<std::vector<std::string>> select_result;
-    execute_sql(statement.c_str(), select_result);
-
-    auto raw_str = select_result[0][1];
-    auto j = nlohmann::json::parse(raw_str);
+    std::string result;
+    execute_sql(statement.c_str(), &result, nullptr);
+    auto j = nlohmann::json::parse(result);
+    printf("%s\n", result.c_str());
     return j;
 }
 
@@ -208,7 +175,6 @@ void addMedia(const media::Media &new_media)
         << ") VALUES("
         << new_media.valuesToSql()
         << ");";
-
     execute_sql(oss.str());
 }
 
@@ -220,7 +186,6 @@ void rmMedia(int rm_id)
         << " WHERE ID="
         << rm_id 
         << ";";
- 
     execute_sql(oss.str());
 }
 
@@ -235,6 +200,5 @@ void editMedia(int edit_id, const media::Media &edit_media)
         << " STATE = " << "'" << edit_media._state << "', "
         << " TYPE = " << "'" << edit_media._type << "'"
         << " WHERE ID = " << edit_id << ";";
-
     execute_sql(oss.str());
 }
