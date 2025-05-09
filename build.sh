@@ -67,13 +67,19 @@ mkdir -p $FORM_INCLUDE_DIR
 # create .h files from .ui files
 for form_file in $(find $FORM_DIR -name '*.ui'); do
     header_name="$(basename "${form_file%.ui}.h")"
-    /usr/lib/qt6/uic $form_file -o $FORM_INCLUDE_DIR/$header_name
+    full_header_name=$FORM_INCLUDE_DIR/$header_name
+    if [ $form_file -nt $full_header_name ]; then
+        /usr/lib/qt6/uic $form_file -o $full_header_name
+    fi
 done
 
 # create moc files with .h files
 for wrapper_file in $(find $INCLUDE_DIR/gui/wrapper -name '*.h'); do
     wrapper_name="$(basename "${wrapper_file%.h}.cpp")"
-    /usr/lib/qt6/moc $wrapper_file -o $SRC_DIR/gui/wrapper/moc_$wrapper_name
+    full_wrapper_name=$SRC_DIR/gui/wrapper/moc_$wrapper_name
+    if [ $wrapper_file -nt $full_wrapper_name ]; then
+        /usr/lib/qt6/moc $wrapper_file -o $full_wrapper_name
+    fi
 done
 
 # Compile .cpp files to .o files 
