@@ -2,14 +2,11 @@
 #define GLOBALS_H
 
 #include <string>
-#include <ctime>
 #include <sstream>
-#include <iomanip>
 #include <filesystem>
-#include <algorithm>
 #include <cctype>
 
-#include "json.hpp"
+#include "external/json.hpp"
 
 #include "buildenv.h"
 
@@ -17,25 +14,12 @@
 #define VERSION "unknown"
 #endif
 
-// response codes for the communication between frontend and backend
-#define ASK_DATA            100
-#define ADD_RESPONSE        101
-#define RM_RESPONSE         102
-#define EDIT_RESPONSE       103
-#define SEND_RESPONSE       200
-#define TRN_END             300
-#define SEND_ID             301
-#define WRG_FORMAT          400
-#define DB_ERROR            500
-
 // macros for SQL queries
 #define TABLE_NAME          "MEDIA"
 #define TABLE_ALL_COL       "ID", "NAME", "RATING", "STATE", "TYPE"
 
 #define DB_NAME "mtrack.db"
 #define LOG_NAME "debug.log"
-
-inline const std::string SOCKET_NAME = "./mtrack_socket";
 
 inline const std::string DB_PATH_STR = std::string(APPDATA_DIR_PATH) 
     + "/" + std::string(DB_NAME);
@@ -103,31 +87,6 @@ namespace media
             return oss.str();
         }
     };
-}
-
-inline std::string getCustomCurrentTimestamp() 
-{
-    auto time_now = std::time(nullptr);
-    auto tm = *std::localtime(&time_now);
-
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
-    return oss.str();
-}
-
-/*
-    Why isn't there a function like this is std?
-*/
-inline std::string strToLower(const std::string str)
-{
-    std::string res = str;
-    std::transform(
-        res.begin(), res.end(), res.begin(),
-        [](unsigned char c){
-            return std::tolower(c);
-        }
-    );
-    return res;
 }
 
 #endif

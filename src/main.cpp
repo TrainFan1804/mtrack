@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
         }
         catch(const std::exception& e)
         {
-            std::cerr << e.what() << '\n';
+            debug::print::deberr(e.what());
             return EXIT_FAILURE;
         }
         closeDatabase();

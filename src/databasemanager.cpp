@@ -3,7 +3,8 @@
 
 #include "databasemanager.h"
 #include "debug/debprint.h"
-#include "storage/utils.h"
+#include "utils/storage.h"
+#include "mtrack_exception/DatabaseException.h"
 
 namespace
 {
@@ -31,6 +32,8 @@ namespace
 
     /**
      * Use this when you want to add a custom callback to your SQL querry.
+     * 
+     * @throw {@link DatabaseException} when a SQL error occure.
      */
     void execute_sql(const std::string &sql, void *head, 
         int (*callback)(void*, int, char**, char **))
@@ -39,9 +42,9 @@ namespace
         int ret = sqlite3_exec(_lib_db, sql.c_str(), callback, head, &err_msg);
         if(ret != SQLITE_OK)
         {
-            debug::print::fdeberr("SQL error: %s", debug::DB, err_msg);
+            std::string e = "SQL error: " + std::string(err_msg);
             sqlite3_free(err_msg);
-            throw std::runtime_error(err_msg);
+            throw mtrack::DatabaseException(e);
         } 
         debug::print::fdebprint("SQL statement executed: %s", debug::DB, sql.c_str());
     }
@@ -60,7 +63,7 @@ void initDatabase()
 {
     // Create db only when starting for the first time so
     // the table creation process can be skiped
-    if (fileIsCreated(DB_PATH_STR))
+    if (mtrack::fileIsCreated(DB_PATH_STR))
     {
         debug::print::debprint(
             "Database already exists. Skip table creation.",
@@ -117,26 +120,23 @@ void checkTable()
 
 void openDatabase()
 {
-    int ret;
-    ret = sqlite3_open(DB_PATH_STR.c_str(), &_lib_db);
-
-    if(ret)
+    int ret = sqlite3_open(DB_PATH_STR.c_str(), &_lib_db);
+    if(ret != SQLITE_OK)
     {
-        debug::print::fdeberr(
-            "Can't open database: %s", 
-            debug::DB, 
-            sqlite3_errmsg(_lib_db)
-        );
+        throw mtrack::DatabaseException("Can't open database: " 
+            + std::string(sqlite3_errmsg(_lib_db)));
     }
-    else
-    {
-        debug::print::debprint("Opened database successfully", debug::DB);
-    }
+    debug::print::debprint("Opened database successfully", debug::DB);
 }
 
 void closeDatabase()
 {
-    sqlite3_close(_lib_db);
+    int ret = sqlite3_close(_lib_db);
+    if (ret != SQLITE_OK)
+    {
+        throw mtrack::DatabaseException("Can't close database"
+            + std::string(sqlite3_errmsg(_lib_db)));
+    }
     debug::print::debprint("Database closed", debug::DB);
 }
 

@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <sqlite3.h>
-#include "json.hpp"
+#include "external/json.hpp"
 
 #include "globals.h"
 
@@ -15,11 +15,15 @@ void checkTable();
 
 /**
  * Open the database connection.
+ * 
+ * @throw {@link DatabaseException} when can't open database.
  */
 void openDatabase();
 
 /**
  * Close the database connection.
+ *
+ * @throw {@link DatabaseException} when can't close database.
  */
 void closeDatabase();
 

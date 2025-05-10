@@ -1,12 +1,13 @@
 #include <stdexcept>
 
-#include "cxxopts.hpp"
+#include "external/cxxopts.hpp"
+#include "external/json.hpp"
 
 #include "optionparser.h"
 #include "databasemanager.h"
 #include "globals.h"
 #include "debug/debprint.h"
-#include "json.hpp"
+#include "mtrack_exception/CLIException.h"
 
 void po::parse(int argc, char *argv[])
 {
@@ -61,7 +62,7 @@ void po::parse(int argc, char *argv[])
     {
         if (result.count("add") != 4)
         {
-            throw std::runtime_error("To few/many options for add");
+            throw mtrack::CLIException("To few/many options for add");
         }
         commands::addCommand(result["add"].as<std::vector<std::string>>());
     }
@@ -74,7 +75,6 @@ void po::parse(int argc, char *argv[])
 
 void po::commands::showCommand()
 {
-    int count = 0;
     const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
     auto json = selectAllJsonQuery(); 
 

@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QMessageBox>
 
-#include "json.hpp"
+#include "external/json.hpp"
 
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"

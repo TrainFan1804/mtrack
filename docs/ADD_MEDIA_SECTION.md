@@ -10,6 +10,3 @@ backend and the frontend (If they added just code them hard in the code)):
     statements.
 - In `optionparser.cpp` add the new media section in the created media object. 
     (Don't forget to update the `--help` window)
-- In `MainFrame.py` add the name for the treeview column in `TREE_COL_LIST` 
-    and the name for the add window label and entry in `AddTopLevel.NAME_LIST`.
-    In `EditFrame.py` add a new variable to hold the data from the edit entries.

@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "debug/debprint.h"
+#include "utils/time.h"
 #include "globals.h"
 
 namespace
@@ -18,7 +19,7 @@ namespace
         _log_file.open(LOG_PATH_STR, std::ios::app);
         if (!_log_file.is_open()) throw std::runtime_error("Couldn't open log file");
 
-        std::string timestamp = getCustomCurrentTimestamp();
+        std::string timestamp = mtrack::getCustomCurrentTimestamp();
         std::string formatted_message = "[" + timestamp + "] " + toString(status) + ": " + msg; 
         _log_file << formatted_message << std::endl;
 
@@ -36,6 +37,7 @@ std::string debug::toString(debug::DEBUG_LEVEL level)
     case GUI: return "GUI";
     case BACKEND: return "BACKEND";
     }
+    return "You are f*cked";
 }
 
 void debug::print::debprint(const std::string &msg, debug::DEBUG_LEVEL level)
