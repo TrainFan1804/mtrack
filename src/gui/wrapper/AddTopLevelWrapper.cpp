@@ -1,7 +1,9 @@
 #include <QWidget>
+#include <QMessageBox>
 
 #include "external/json.hpp"
 
+#include "utils/str_manipulation.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
 
 AddTopLevelWrapper::AddTopLevelWrapper(QWidget *parent)
@@ -25,6 +27,19 @@ AddTopLevelWrapper::~AddTopLevelWrapper()
 
 void AddTopLevelWrapper::addBtnClicked()
 {
+    auto name = mtrack::trim(ui->name_edit->text().toStdString());
+    auto type = mtrack::trim(ui->type_edit->text().toStdString());
+    if (name.empty() || type.empty())
+    {
+        QMessageBox msg;
+        msg.setWindowTitle("Add warning");
+        msg.setIcon(QMessageBox::Icon::Warning);
+        msg.setText("Warning while adding a new media");
+        msg.setInformativeText("You need to fill out all entries to add a new media!");
+        msg.setStandardButtons(QMessageBox::StandardButton::Ok);
+        msg.exec();
+        return;
+    }
     // create new media from entry data
     nlohmann::json json_media;
 
