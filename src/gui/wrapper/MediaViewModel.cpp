@@ -31,7 +31,7 @@ int MediaViewModel::removeRow(int row)
     auto rm_media = _data.at(row);
     _data.removeAt(row);
     endRemoveRows();
-    return rm_media._id;
+    return rm_media.getId();
 }
 
 bool MediaViewModel::editRow(int row, const QMedia &edited_media)
@@ -59,7 +59,7 @@ int MediaViewModel::columnCount(const QModelIndex &parent) const
     Q_UNUSED(parent);
     // amount of all attributes (withoud id) of QMedia (because id should
     // not be showed inside the TableModel)
-    return 4;
+    return attributeAmount();
 }
 
 QVariant MediaViewModel::data(const QModelIndex &index, int role) const
@@ -73,10 +73,10 @@ QVariant MediaViewModel::data(const QModelIndex &index, int role) const
     {
         switch (index.column())
         {
-            case 0: return media._name;
-            case 1: return media._rating;
-            case 2: return media._state;
-            case 3: return media._type;
+            case 0: return media.name();
+            case 1: return media.rating();
+            case 2: return media.state();
+            case 3: return media.type();
         }
     }
     return QVariant();

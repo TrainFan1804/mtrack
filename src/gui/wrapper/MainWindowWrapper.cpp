@@ -81,12 +81,12 @@ void MainWindowWrapper::fetchTopLevelContent(const QMedia &media)
 {
     int last_index = _model->rowCount() - 1;
     if (last_index < 0) return;
-    int last_index_id = _model->getMediaAt(last_index)._id;
+    int last_index_id = _model->getMediaAt(last_index).getId();
     QMedia c = media;
-    c._id = last_index_id + 1;
+    c.setId(last_index_id + 1);
 
     _model->insertRow(c);
-    auto m = qMediaToMedia(c);
+    auto m = c.unwrap();
     addMedia(m);
 }
 
@@ -102,7 +102,7 @@ void MainWindowWrapper::removeAction()
 void MainWindowWrapper::saveAction()
 {
     int selected_index = ui->media_view->currentIndex().row();
-    int selected_id = _model->getMediaAt(selected_index)._id;
+    int selected_id = _model->getMediaAt(selected_index).getId();
 
     auto edit_name = ui->name_edit->text();
     auto edit_state = ui->state_box->currentText();
@@ -117,7 +117,7 @@ void MainWindowWrapper::saveAction()
     json["rating"] = edit_rating;
     QMedia media(json);
     _model->editRow(selected_index, media);
-    editMedia(selected_id, qMediaToMedia(media));
+    editMedia(selected_id, media.unwrap());
 }
 
 void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)
@@ -126,10 +126,10 @@ void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)
     if (!selected_index.isValid()) return;
     auto media = _model->getMediaAt(selected_index.row());
 
-    auto name = media._name;
-    auto state = media._state;
-    auto type = media._type;
-    auto rating = media._rating;
+    auto name = media.name();
+    auto state = media.state();
+    auto type = media.type();
+    auto rating = media.rating();
 
     ui->name_edit->setText(name);
     /*
