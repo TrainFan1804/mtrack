@@ -1,13 +1,13 @@
-#include <iostream>
-
 #include <QApplication>
 #include <QWidget>
+#include <QtGui/QAction>
 
 #include "external/json.hpp"
 
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
 #include "databasemanager.h"
+#include "globals.h"
 
 MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     : QMainWindow(parent),
@@ -53,6 +53,13 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
         SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
         this,
         SLOT(handleSelectionChanged(QItemSelection))
+    );
+
+    connect(
+        ui->log_status,
+        &QAction::toggled,
+        this,
+        &MainWindowWrapper::changeLogStatusAction
     );
 }
 
@@ -148,4 +155,9 @@ void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)
     ui->state_box->setEnabled(true);
     ui->type_edit->setEnabled(true);
     ui->rating_box->setEnabled(true);
+}
+
+void MainWindowWrapper::changeLogStatusAction(bool status)
+{
+    log_active = status;
 }

@@ -5,7 +5,9 @@
 
 #include "optionparser.h"
 #include "databasemanager.h"
-#include "globals.h"
+#include "globals/globals.h"
+#include "globals/sql_globals.h"
+#include "Media.h"
 #include "debug/debprint.h"
 #include "mtrack_exception/CLIException.h"
 

@@ -4,7 +4,7 @@
 #include <QString>
 #include <QMetaType>
 
-#include "globals.h"
+#include "Media.h"
 
 /**
  * media::Media doesn't save the id it's associated with in the DB because those 

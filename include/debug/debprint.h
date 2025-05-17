@@ -1,7 +1,10 @@
 #ifndef DEBPRINT_H
 #define DEBPRINT_H
 
+#include <iostream>
 #include <string>
+
+// #include <fmt/core.h>
 
 namespace debug
 {
@@ -35,6 +38,13 @@ namespace debug::print
     void fdebprint(const char *msg, debug::DEBUG_LEVEL level, ...);
 
     void fdeberr(const char *err, debug::DEBUG_LEVEL level, ...);
+
+    // template<typename... Args>
+    // void logf(debug::DEBUG_LEVEL level, const std::string &msg, Args&&... args)
+    // {
+    //     std::string message = fmt::format(msg, std::forward<Args>(args)...);
+    //     std::cout << message << std::endl;
+    // }
 }
 
 #endif

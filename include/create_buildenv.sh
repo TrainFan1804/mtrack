@@ -10,8 +10,6 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
-echo "Start building buildenv.h..."
-
 mkdir -p $1
 mkdir -p $2
 
@@ -19,6 +17,8 @@ if [ -f $3/buildenv.h ]; then
     echo "Skip buidling buildenv.h"
     exit 0
 fi
+
+echo "Start building buildenv.h..."
 
 # Because I am to lazy to define the path in the C++ code twice I came up with
 # this crazy stuff...

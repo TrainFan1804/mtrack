@@ -206,8 +206,43 @@
      <height>27</height>
     </rect>
    </property>
+   <widget class="QMenu" name="settings_menu">
+    <property name="title">
+     <string>settings</string>
+    </property>
+    <addaction name="log_status"/>
+   </widget>
+   <addaction name="settings_menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionddd">
+   <property name="text">
+    <string>ddd</string>
+   </property>
+  </action>
+  <action name="actiondd">
+   <property name="text">
+    <string>dd</string>
+   </property>
+  </action>
+  <action name="activate_action">
+   <property name="text">
+    <string>activate</string>
+   </property>
+  </action>
+  <action name="deactivate_action">
+   <property name="text">
+    <string>deactivate</string>
+   </property>
+  </action>
+  <action name="log_status">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>activate log</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

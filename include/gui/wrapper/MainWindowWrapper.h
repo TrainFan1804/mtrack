@@ -29,6 +29,7 @@ private slots:
     void removeAction();
     void saveAction();
     void handleSelectionChanged(const QItemSelection &selection);
+    void changeLogStatusAction(bool status);
 };
 
 #endif

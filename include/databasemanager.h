@@ -7,7 +7,7 @@
 #include <sqlite3.h>
 #include "external/json.hpp"
 
-#include "globals.h"
+#include "Media.h"
 
 void initDatabase();
 

@@ -5,6 +5,7 @@
 #include "debug/debprint.h"
 #include "utils/storage.h"
 #include "mtrack_exception/DatabaseException.h"
+#include "globals/sql_globals.h"
 
 namespace
 {
@@ -47,6 +48,7 @@ namespace
             throw mtrack::DatabaseException(e);
         } 
         debug::print::fdebprint("SQL statement executed: %s", debug::DB, sql.c_str());
+        // debug::print::logf(debug::DB, "SQL statement executed: {}", sql);
     }
 
     /**

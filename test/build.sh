@@ -8,9 +8,8 @@ set -e
 
 CXXFLAGS="-g -O0 -Wall -DDEBUG"
 
-# $1 := BUILD_TYPE
-# $2 := VERSION
-echo "Start building test for \"$1\" version \"$2\"..."
+# $1 := VERSION
+echo "Start building tests for version \"$1\"..."
 
 # software source code specific paths (needed at buildtime)
 CXX=g++

@@ -2,8 +2,6 @@
 
 set -e
 
-echo $SCRIPT_DIR
-
 BUILD_TYPE=$1
 VBASE=$(cat VERSION)
 VSUFFIX=$(git rev-parse --abbrev-ref HEAD)
@@ -101,5 +99,5 @@ echo "Successfully build"
 
 if [ "$2" = "test" ]; then
     cd test
-    /bin/bash ./build.sh $BUILD_TYPE $VERSION
+    /bin/bash ./build.sh $VERSION
 fi
