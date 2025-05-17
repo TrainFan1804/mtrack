@@ -21,27 +21,6 @@ else
     exit 1
 fi
 
-mkdir -p $APPDATA_PATH
-mkdir -p $LOG_PATH
-
-# Because I am to lazy to define the path in the C++ code twice I came up with
-# this crazy stuff...
-# Maybe I should rewrite the entire programm in just a big script that execute a big cat command...
-# This is actually crazy stuff because mTrack will use the correct data path automatically
-# cat << EOF > include/buildenv.h
-# #ifndef BUILDENV_H
-# #define BUILDENV_H
-
-# /*
-#     mTrack use a different location for the appdata itself. Right now
-#     it's just a simple sqlite database and a (optional) log.
-# */
-# #define APPDATA_DIR_PATH    "$APPDATA_PATH"
-# #define LOG_DIR_PATH        "$LOG_PATH"
-
-# #endif
-# EOF
-
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
 # software source code specific paths (needed at buildtime)
@@ -49,6 +28,9 @@ CXX=g++
 SRC_DIR="./src"
 INCLUDE_DIR="./include"
 BUILD_DIR="./build"
+
+/bin/bash $INCLUDE_DIR/create_buildenv.sh $APPDATA_PATH $LOG_PATH $INCLUDE_DIR
+
 mkdir -p $BUILD_DIR 
 
 QT_INCLUDES="-I/usr/include/qt6 -I/usr/include/qt6/QtWidgets -I/usr/include/qt6/QtCore -I/usr/include/qt6/QtGui"
