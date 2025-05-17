@@ -3,6 +3,7 @@
 
 # Build and develope stuff
 build/*
+test/build/*
 temp/*
 dev/*
 

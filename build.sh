@@ -2,22 +2,23 @@
 
 set -e
 
-BUILD_TYPE=${1:-dev}
-VERSION=$(git rev-parse --abbrev-ref HEAD)
+echo $SCRIPT_DIR
+
+BUILD_TYPE=$1
+VBASE=$(cat VERSION)
+VSUFFIX=$(git rev-parse --abbrev-ref HEAD)
+VERSION="$VBASE-$VSUFFIX"
 
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
-    APPDATA_PATH="./dev/mtrack"
+    APPDATA_PATH="$PWD/dev/mtrack"
     LOG_PATH="$APPDATA_PATH/log"
 elif [ "$BUILD_TYPE" = "release" ]; then
     CXXFLAGS=""
-    if [ "$VERSION" = "main" ]; then
-        VERSION=$(git describe --tags --abbrev=0)"-release"
-    fi
     APPDATA_PATH="$HOME/.local/share/mtrack"
     LOG_PATH="$APPDATA_PATH/log"
 else
-    echo "[ERROR]: Unknown build type "$BUILD_TYPE""
+    echo "[ERROR]: Unknown build type: "$BUILD_TYPE""
     exit 1
 fi
 
@@ -97,3 +98,8 @@ objs=$(find $BUILD_DIR -name '*.o')
 $CXX $objs -o "$BUILD_DIR/mtrack" $LNKFLAGS
 
 echo "Successfully build"
+
+if [ "$2" = "test" ]; then
+    cd test
+    /bin/bash ./build.sh $BUILD_TYPE $VERSION
+fi
