@@ -10,6 +10,10 @@ namespace mtrack
     */
     std::string strToLower(const std::string &str);
 
+    std::string &lTrim(std::string &str);
+
+    std::string &rTrim(std::string &str);
+
     /*
         Source because there isn't such easy thing in C++ by default:
         https://cplusplus.com/forum/beginner/251052/

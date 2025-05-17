@@ -2,7 +2,6 @@
 
 #include <QApplication>
 #include <QWidget>
-#include <QMessageBox>
 
 #include "external/json.hpp"
 

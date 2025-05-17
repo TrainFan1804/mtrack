@@ -27,6 +27,10 @@ AddTopLevelWrapper::~AddTopLevelWrapper()
 
 void AddTopLevelWrapper::addBtnClicked()
 {
+    /*
+        I needed literally almost 3 HOURS to insert the varable
+        names into the json correctly...
+    */
     auto name = mtrack::trim(ui->name_edit->text().toStdString());
     auto type = mtrack::trim(ui->type_edit->text().toStdString());
     if (name.empty() || type.empty())
@@ -45,9 +49,9 @@ void AddTopLevelWrapper::addBtnClicked()
 
     json_media["id"] = -1;
     json_media["rating"] = ui->rating_box->value();
-    json_media["name"] = ui->name_edit->text().toStdString();
+    json_media["name"] = name;
     json_media["state"] = ui->state_box->currentText().toStdString();
-    json_media["type"] = ui->type_edit->text().toStdString();
+    json_media["type"] = type;
     
     QMedia new_media(json_media);
     emit submitAddContent(new_media);

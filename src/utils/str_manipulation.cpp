@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <functional>
 
 #include "utils/str_manipulation.h"
 
@@ -14,10 +15,39 @@ std::string mtrack::strToLower(const std::string &str)
     return res;
 }
 
+// trim from start
+std::string &mtrack::lTrim(std::string &str)
+{
+    // str.erase(str.begin(), std::find_if(str.begin(), str.end(),
+    //             std::ptr_fun<int, int>(std::isspace)));
+
+    str.erase(str.begin(), 
+        std::find_if(
+            str.begin(), str.end(),
+            [](unsigned char c) { return !std::isspace(c); }
+        )
+    );
+    return str;
+}
+
+// trim from end
+std::string &mtrack::rTrim(std::string &str)
+{
+    // str.erase(std::find_if(str.rbegin(), str.rend(),
+    //         std::not1(std::ptr_fun<int, int>(std::isspace))).base(), str.end());
+
+    str.erase(
+        std::find_if(
+            str.rbegin(), str.rend(),
+            [](unsigned char c) { return !std::isspace(c); }
+        ).base(),
+        str.end()
+    );
+    return str;
+}
+
 std::string mtrack::trim(const std::string &str)
 {
-    const char* WHITE_SPACE = " \t\v\r\n";
-    std::size_t start = str.find_first_not_of(WHITE_SPACE);
-    std::size_t end = str.find_last_not_of(WHITE_SPACE);
-    return start == end ? std::string() : str.substr(start, end - start + 1);
+    std::string copy = str;
+    return lTrim(rTrim(copy));
 }
