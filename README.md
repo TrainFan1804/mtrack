@@ -18,10 +18,9 @@ media you consumed. You can use a simple CLI tool or a simple GUI.
 
 A C++ compiler and sqlite3 is required to install this software.
 
-- GCC
-- sqlite3
-
-GCC >= 6 **should** work and sqlite3 3.49.1 was the only version I tested.
+- GCC >= 6
+- sqlite3 >= 3.49.1
+- python3 >= 3.13.2
 
 
 # How to use
