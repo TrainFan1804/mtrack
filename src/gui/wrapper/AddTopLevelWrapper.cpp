@@ -1,5 +1,6 @@
 #include <QWidget>
 #include <QMessageBox>
+#include <QScreen>
 
 #include "external/json.hpp"
 
@@ -11,6 +12,7 @@ AddTopLevelWrapper::AddTopLevelWrapper(QWidget *parent)
     ui(new Ui::AddTopLevel)
 {
     ui->setupUi(this);
+    move(screen()->availableGeometry().center() - frameGeometry().center());
 
     connect(
         ui->add_btn, 

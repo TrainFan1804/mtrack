@@ -32,8 +32,8 @@ cat << EOF > include/buildenv.h
     mTrack use a different location for the appdata itself. Right now
     it's just a simple sqlite database and a (optional) log.
 */
-#define APPDATA_DIR_PATH    "$APPDATA_PATH"
-#define LOG_DIR_PATH        "$LOG_PATH"
+#define APPDATA_DIR_PATH    "$1"
+#define LOG_DIR_PATH        "$2"
 
 #endif
 EOF

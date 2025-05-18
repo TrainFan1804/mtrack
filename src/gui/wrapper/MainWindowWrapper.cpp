@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QWidget>
-#include <QtGui/QAction>
+#include <QAction>
+#include <QScreen>
 
 #include "external/json.hpp"
 
@@ -14,6 +15,7 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    move(screen()->availableGeometry().center() - frameGeometry().center());
 
     // fetch data from database
     auto data_json = selectAllJsonQuery();
@@ -49,10 +51,10 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     );
 
     connect(
-        ui->media_view->selectionModel(),
-        SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+        ui->media_view,
+        &QTreeView::clicked,
         this,
-        SLOT(handleSelectionChanged(QItemSelection))
+        &MainWindowWrapper::handleSelectionClick
     );
 
     connect(
@@ -126,9 +128,8 @@ void MainWindowWrapper::saveAction()
     editMedia(selected_id, media.unwrap());
 }
 
-void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)
+void MainWindowWrapper::handleSelectionClick(const QModelIndex &selected_index)
 {
-    QModelIndex selected_index = ui->media_view->currentIndex();
     if (!selected_index.isValid()) return;
     auto media = _model->getMediaAt(selected_index.row());
 

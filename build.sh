@@ -42,17 +42,7 @@ LNKFLAGS="-lsqlite3 -lQt6Widgets -lQt6Core -lQt6Gui"
 
 # this still cause trouble because the new created header will force the src files
 # that use this header to recompile even when there wasn't any change
-FORM_DIR="./forms"
-FORM_INCLUDE_DIR=$INCLUDE_DIR/gui/forms
-mkdir -p $FORM_INCLUDE_DIR
-# create .h files from .ui files
-for form_file in $(find $FORM_DIR -name '*.ui'); do
-    header_name="$(basename "${form_file%.ui}.h")"
-    full_header_name=$FORM_INCLUDE_DIR/$header_name
-    if [ $form_file -nt $full_header_name ]; then
-        /usr/lib/qt6/uic $form_file -o $full_header_name
-    fi
-done
+/bin/bash ./forms/create_header.sh
 
 # create moc files with .h files
 for wrapper_file in $(find $INCLUDE_DIR/gui/wrapper -name '*.h'); do
