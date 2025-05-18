@@ -74,9 +74,9 @@ QVariant MediaViewModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
             case 0: return media.name();
-            case 1: return media.rating();
-            case 2: return media.state();
-            case 3: return media.type();
+            case 1: return media.state();
+            case 2: return media.type();
+            case 3: return media.rating();
         }
     }
     return QVariant();
@@ -92,9 +92,9 @@ QVariant MediaViewModel::headerData(int section, Qt::Orientation orientation, in
         switch (section)
         {
             case 0: return "Name";
-            case 1: return "Rating";
-            case 2: return "State";
-            case 3: return "Type";
+            case 1: return "State";
+            case 2: return "Type";
+            case 3: return "Rating";
         }
     }
     return QVariant();

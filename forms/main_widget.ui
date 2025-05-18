@@ -56,19 +56,31 @@
            <bool>false</bool>
           </property>
           <property name="focusPolicy">
-           <enum>Qt::FocusPolicy::WheelFocus</enum>
+           <enum>Qt::FocusPolicy::NoFocus</enum>
+          </property>
+          <property name="autoScroll">
+           <bool>true</bool>
+          </property>
+          <property name="autoScrollMargin">
+           <number>16</number>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
           </property>
           <property name="tabKeyNavigation">
            <bool>true</bool>
           </property>
           <property name="showDropIndicator" stdset="0">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="alternatingRowColors">
            <bool>true</bool>
           </property>
           <property name="selectionMode">
            <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
           </property>
           <property name="rootIsDecorated">
            <bool>false</bool>
@@ -78,6 +90,9 @@
           </property>
           <property name="sortingEnabled">
            <bool>false</bool>
+          </property>
+          <property name="allColumnsShowFocus">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
