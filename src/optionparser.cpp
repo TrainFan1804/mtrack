@@ -1,11 +1,15 @@
 #include <stdexcept>
 
-#include "cxxopts.hpp"
+#include "external/cxxopts.hpp"
+#include "external/json.hpp"
 
 #include "optionparser.h"
 #include "databasemanager.h"
-#include "globals.h"
+#include "globals/globals.h"
+#include "globals/sql_globals.h"
+#include "Media.h"
 #include "debug/debprint.h"
+#include "mtrack_exception/CLIException.h"
 
 void po::parse(int argc, char *argv[])
 {
@@ -39,7 +43,7 @@ void po::parse(int argc, char *argv[])
     auto result = options.parse(argc, argv);
     if (result.count("verbose"))
     {
-      log_active = true;
+      debug::setState(true);
     }
     if (result.count("help"))
     {
@@ -58,9 +62,9 @@ void po::parse(int argc, char *argv[])
     }
     if (result.count("add"))
     {
-        if (result.count("add") != 3)
+        if (result.count("add") != 4)
         {
-            throw std::runtime_error("To few/many options for add");
+            throw mtrack::CLIException("To few/many options for add");
         }
         commands::addCommand(result["add"].as<std::vector<std::string>>());
     }
@@ -73,16 +77,15 @@ void po::parse(int argc, char *argv[])
 
 void po::commands::showCommand()
 {
-    std::vector<std::vector<std::string>> select_result;
-    selectAllQuery(select_result);
-    for (auto row : select_result)
+    const std::vector<std::string> EXPECTED_COLS = { TABLE_ALL_COL };   
+    auto json = selectAllJsonQuery(); 
+
+    for (const auto &item : json)
     {
-        for (size_t entry = 0; entry < row.size(); entry++)
-        {
-            printf(row[entry].c_str());
-            if (entry != row.size() - 1) printf((entry % 2 == 0) ? " = " : ", ");
-        }
-        printf("\n");
+        printf("name: %s, ", item["name"].get<std::string>().c_str());
+        printf("rating: %d, ", item["rating"].get<int>());
+        printf("state: %s, ", item["state"].get<std::string>().c_str());
+        printf("type: %s\n", item["type"].get<std::string>().c_str());
     }
 }
 

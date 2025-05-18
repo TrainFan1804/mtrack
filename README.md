@@ -47,5 +47,5 @@ Usage:
 # Misc
 
 I used [CXXOPTS](https://github.com/jarro2783/cxxopts) to handle command line 
-options easily and [nlohmann/json](https://github.com/nlohmann/json) for
-json handling.
+options easily, [nlohmann/json](https://github.com/nlohmann/json) for
+json handling and [fmt](https://github.com/fmtlib/fmt) for formatting.

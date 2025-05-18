@@ -3,11 +3,15 @@
 
 # Build and develope stuff
 build/*
+test/build/*
 temp/*
 dev/*
 
 # C++ stuff
 include/buildenv.h
+include/gui/forms/*
+
+src/gui/wrapper/moc_*
 
 # python stuff
 *.pyc

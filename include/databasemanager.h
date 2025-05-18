@@ -5,9 +5,9 @@
 #include <vector>
 
 #include <sqlite3.h>
-#include "json.hpp"
+#include "external/json.hpp"
 
-#include "globals.h"
+#include "Media.h"
 
 void initDatabase();
 
@@ -15,11 +15,15 @@ void checkTable();
 
 /**
  * Open the database connection.
+ * 
+ * @throw {@link DatabaseException} when can't open database.
  */
 void openDatabase();
 
 /**
  * Close the database connection.
+ *
+ * @throw {@link DatabaseException} when can't close database.
  */
 void closeDatabase();
 
@@ -29,28 +33,17 @@ void closeDatabase();
  */
 void createDatabaseTable();
 
-[[
-    deprecated
-    (
-        "Replaced by selectAllJsonQuery but "   \
-        "optionparser still use this till further replacement"
-    )
-]]
-void selectAllQuery(std::vector<std::vector<std::string>> &result);
-
-[[
-    deprecated
-    (
-        "Replaced by selectJsonQuery but " \
-        "it's still used internally till further replacement."
-    )
-]]
-void selectSpecialQuery(std::vector<std::vector<std::string>> &result,
-    const std::string &statement);
-
+/**
+ * Execute a `SELECT` statement that will fetch ALL data of the MEDIA table.
+ */
 nlohmann::json selectAllJsonQuery();
 
-nlohmann::json selectJsonQuery(const std::string &statement);
+/**
+ * Execute a `SELECT` statement that will only fetch custom data. This is part of
+ * private API.
+ */
+nlohmann::json _selectJsonQuery(const std::string &statement,
+    int (*callback)(void*, int, char**, char **));
 
 void addMedia(const media::Media &new_media);
 
