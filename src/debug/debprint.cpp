@@ -2,9 +2,9 @@
 #include <cstdarg>
 #include <cstdio>
 #include <fstream>
-// #include <format>
+#include <format>
 
-// #include <fmt/core.h>
+#include "external/fmt/format.h"
 
 #include "debug/debprint.h"
 #include "utils/time.h"
@@ -12,90 +12,69 @@
 
 namespace
 {
+    bool _log_state;
     std::ofstream _log_file;
 
     void log(const std::string &msg, debug::DEBUG_LEVEL status)
     {
-        if (!log_active)
-            return;
-
-        _log_file.open(LOG_PATH_STR, std::ios::app);
         if (!_log_file.is_open()) throw std::runtime_error("Couldn't open log file");
 
-        std::string timestamp = mtrack::getCustomCurrentTimestamp();
+        std::string timestamp = mtrack::getCustomCurrentTimestamp("%d-%m-%Y %H-%M-%S");
         std::string formatted_message = "[" + timestamp + "] " + toString(status) + ": " + msg; 
         _log_file << formatted_message << std::endl;
+    }
 
-        _log_file.close();  // this isn't pretty to close and open it so often but rn there is no other solution
+    void init()
+    {
+        auto date = mtrack::getCustomCurrentTimestamp("%Y-%m-%d");
+        std::string LOG_PATH = LOG_BASE_PATH + "/" + date + ".log";
+        _log_file.open(LOG_PATH, std::ios::app);
+    }
+    
+    void kill()
+    {
+        _log_file.close();
     }
 }
 
-std::string debug::toString(debug::DEBUG_LEVEL level)
+void debug::setState(bool state)
+{
+    _log_state = state;
+    if (_log_state)
+    {
+        init();
+    }
+    else
+    {
+        kill();
+    }
+}
+
+std::string debug::toString(DEBUG_LEVEL level)
 {
     switch (level)
     {
-    case INFO: return "INFO";
     case ERROR: return "ERROR";
-    case DB: return "DB";
-    case GUI: return "GUI";
-    case BACKEND: return "BACKEND";
+    case WARNING: return "WARNING";
+    case INFO: return "INFO";
     }
     return "You are f*cked";
 }
 
-void debug::print::debprint(const std::string &msg, debug::DEBUG_LEVEL level)
+void debug::print::debprint(const std::string &msg, DEBUG_LEVEL level)
 {
+    if (_log_state)
+    {
+        log(msg, level);
+    }
+    if (level == ERROR)
+    {
+        std::cerr << "[" << debug::toString(level) << "] " 
+            << msg << "\n";
+        return;
+    }
     #ifdef DEBUG
         std::cout << "[" << debug::toString(level) << "] " 
             << msg << "\n";
     #endif
-    if (log_active)
-    {
-        log(msg, level);
-    }
-}
-
-void debug::print::deberr(const std::string &err, debug::DEBUG_LEVEL level)
-{
-    std::cerr << "[" << debug::toString(ERROR) 
-        << "/" << debug::toString(level) << "] " 
-        << err << "\n";
-    if (log_active)
-    {
-        log(err, level);
-    }
-}
-
-void debug::print::fdebprint(const char *msg, debug::DEBUG_LEVEL level, ...)
-{
-    #ifdef DEBUG
-        va_list args;
-        va_start(args, msg);
-
-        char buffer[1024];
-        vsnprintf(buffer, sizeof(buffer), msg, args);
-
-        va_end(args);
-        debprint(std::string(buffer), level);
-    #endif
-    if (log_active)
-    {
-        log(msg, level);
-    }
-}
-
-void debug::print::fdeberr(const char *err, debug::DEBUG_LEVEL level, ...)
-{
-    va_list args;
-    va_start(args, err);
-
-    char buffer[1024];
-    vsnprintf(buffer, sizeof(buffer), err, args);
-
-    va_end(args);
-    deberr(std::string(buffer), level);
-    if (log_active)
-    {
-        log(err, ERROR);
-    }
 }

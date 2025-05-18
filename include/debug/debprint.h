@@ -1,22 +1,24 @@
 #ifndef DEBPRINT_H
 #define DEBPRINT_H
 
-#include <iostream>
 #include <string>
 
-// #include <fmt/core.h>
+#include "external/fmt/format.h"
 
 namespace debug
 {
     enum DEBUG_LEVEL
     {
-        INFO,
         ERROR,
-        DB,
-        GUI,
-        BACKEND
+        WARNING,
+        INFO,
     };
 
+    /**
+     * Call this function to de-/activate the logger. Will also handle
+     * log file opening and closing.
+     */
+    void setState(bool state);
     std::string toString(DEBUG_LEVEL level);
 }
 
@@ -31,20 +33,16 @@ namespace debug
  */
 namespace debug::print
 {
-    void debprint(const std::string &msg, debug::DEBUG_LEVEL level = INFO);
+    void debprint(const std::string &msg, DEBUG_LEVEL level = INFO);
 
-    void deberr(const std::string &err, debug::DEBUG_LEVEL level = INFO);
-
-    void fdebprint(const char *msg, debug::DEBUG_LEVEL level, ...);
-
-    void fdeberr(const char *err, debug::DEBUG_LEVEL level, ...);
-
-    // template<typename... Args>
-    // void logf(debug::DEBUG_LEVEL level, const std::string &msg, Args&&... args)
-    // {
-    //     std::string message = fmt::format(msg, std::forward<Args>(args)...);
-    //     std::cout << message << std::endl;
-    // }
+    template<typename... Args>
+    void debprintf(DEBUG_LEVEL level, 
+        const fmt::format_string<Args...> msg,
+        Args&&... args)
+    {
+        std::string message = fmt::format(msg, std::forward<Args>(args)...);
+        debug::print::debprint(message, level);
+    }
 }
 
 #endif

@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
         }
         catch(const std::exception& e)
         {
-            debug::print::deberr(e.what());
+            debug::print::debprint(e.what(), debug::DEBUG_LEVEL::ERROR);
             return EXIT_FAILURE;
         }
         closeDatabase();
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     }
     catch(const std::exception &ex)
     {
-        debug::print::deberr(ex.what());
+        debug::print::debprint(ex.what(), debug::DEBUG_LEVEL::ERROR);
         debug::print::debprint("Exit sofware. Close CLI.");
         return EXIT_FAILURE;
     }

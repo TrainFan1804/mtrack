@@ -47,8 +47,7 @@ namespace
             sqlite3_free(err_msg);
             throw mtrack::DatabaseException(e);
         } 
-        debug::print::fdebprint("SQL statement executed: %s", debug::DB, sql.c_str());
-        // debug::print::logf(debug::DB, "SQL statement executed: {}", sql);
+        debug::print::debprintf(debug::INFO, "SQL statement executed: {}", sql);
     }
 
     /**
@@ -69,15 +68,15 @@ void initDatabase()
     {
         debug::print::debprint(
             "Database already exists. Skip table creation.",
-            debug::DB
+            debug::WARNING
         );
         checkTable();
         return;
     }
     openDatabase();
-    debug::print::debprint("Database created", debug::DB);
+    debug::print::debprint("Database created", debug::INFO);
     createDatabaseTable();
-    debug::print::debprint("Tables created", debug::DB);
+    debug::print::debprint("Tables created", debug::INFO);
     closeDatabase();
 }
 
@@ -128,7 +127,7 @@ void openDatabase()
         throw mtrack::DatabaseException("Can't open database: " 
             + std::string(sqlite3_errmsg(_lib_db)));
     }
-    debug::print::debprint("Opened database successfully", debug::DB);
+    debug::print::debprint("Opened database successfully", debug::INFO);
 }
 
 void closeDatabase()
@@ -139,7 +138,7 @@ void closeDatabase()
         throw mtrack::DatabaseException("Can't close database"
             + std::string(sqlite3_errmsg(_lib_db)));
     }
-    debug::print::debprint("Database closed", debug::DB);
+    debug::print::debprint("Database closed", debug::INFO);
 }
 
 void createDatabaseTable()
@@ -152,7 +151,7 @@ nlohmann::json selectAllJsonQuery()
     std::string result;
     execute_sql(SQL_JSON_SELECT_ALL, &result, jsonSelectCallback);
     auto j = nlohmann::json::parse(result);
-    debug::print::fdebprint("Data fetched: %s", debug::DB, result.c_str());
+    debug::print::debprintf(debug::INFO, "Data fetched: {}", result);
     return j;
 }
 
@@ -162,7 +161,7 @@ nlohmann::json _selectJsonQuery(const std::string &statement,
     std::string result;
     execute_sql(statement.c_str(), &result, callback);
     auto j = nlohmann::json::parse(result);
-    debug::print::fdebprint("Data fetched: %s", debug::DB, result.c_str());
+    debug::print::debprintf(debug::INFO, "Data fetched: {}", result);
     return j;
 }
 

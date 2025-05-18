@@ -9,11 +9,6 @@
 #define VERSION "unknown"
 #endif
 
-#define LOG_NAME "debug.log"
-
-inline const std::string LOG_PATH_STR = std::string(LOG_DIR_PATH)
-    + "/" +  std::string(LOG_NAME);
-
-inline bool log_active = false;
+inline const std::string LOG_BASE_PATH = std::string(LOG_DIR_PATH);
 
 #endif

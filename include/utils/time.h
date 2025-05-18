@@ -5,7 +5,7 @@
 
 namespace mtrack
 {
-    std::string getCustomCurrentTimestamp();
+    std::string getCustomCurrentTimestamp(const std::string &format);
 }
 
 #endif

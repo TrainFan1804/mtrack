@@ -6,7 +6,7 @@
 
 int launch(int argc, char *argv[])
 {
-    debug::print::debprint("Open gui", debug::BACKEND);
+    debug::print::debprint("Open gui", debug::INFO);
     QApplication app(argc, argv);
     MainWindowWrapper w;
     w.show();

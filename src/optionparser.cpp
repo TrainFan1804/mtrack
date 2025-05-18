@@ -43,7 +43,7 @@ void po::parse(int argc, char *argv[])
     auto result = options.parse(argc, argv);
     if (result.count("verbose"))
     {
-      log_active = true;
+      debug::setState(true);
     }
     if (result.count("help"))
     {

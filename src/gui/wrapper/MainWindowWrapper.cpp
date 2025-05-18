@@ -7,7 +7,7 @@
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
 #include "databasemanager.h"
-#include "globals.h"
+#include "debug/debprint.h"
 
 MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     : QMainWindow(parent),
@@ -159,5 +159,5 @@ void MainWindowWrapper::handleSelectionChanged(const QItemSelection &selection)
 
 void MainWindowWrapper::changeLogStatusAction(bool status)
 {
-    log_active = status;
+    debug::setState(status);
 }
