@@ -4,7 +4,7 @@
 > This software is **NOT** supported for windows!
 
 With this software you can organize your watched movies, read books or any other
-media you consumed. You can use a simple CLI tool or a simple GUI.
+media you consumed. You can choose between a CLI tool or a GUI.
 
 
 # Installation
@@ -13,14 +13,20 @@ media you consumed. You can use a simple CLI tool or a simple GUI.
 2. Enter the repository.
 3. Run `chmod +x install.h`
 4. Run `./install.sh`
+
+Now you can run `mtrack` in your terminal to use it.
+
+> [!NOTE]
+> You may need to change your `$PATH` to use `mtrack` via your terminal.
     
 ## Requirements
 
-A C++ compiler and sqlite3 is required to install this software.
+A C++ compiler, sqlite3 and Qt6 is required to install this software. All other requirements are shipped
+with the software.
 
 - GCC >= 6
 - sqlite3 >= 3.49.1
-- python3 >= 3.13.2
+- Qt >= 6.8.2
 
 
 # How to use

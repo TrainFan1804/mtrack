@@ -8,7 +8,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Start installing.."
+echo "Start installing..."
 
 # Installing mTrack will move the executable into the users bin directory
 # to access the software via the terminal
