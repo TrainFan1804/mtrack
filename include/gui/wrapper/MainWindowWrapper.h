@@ -30,6 +30,7 @@ private slots:
     void saveAction();
     void handleSelectionClick(const QModelIndex &selected_index);
     void changeLogStatusAction(bool status);
+    void createDatabaseBackup();
 };
 
 #endif

@@ -4,16 +4,18 @@ set -e
 
 # $1 := APPDATA_PATH
 # $2 := LOG_PATH 
-# $3 := INCLUDE_DIR
-if [ "$#" -ne 3 ]; then
+# $3 := BACKUP_PATH
+# $4 := INCLUDE_DIR
+if [ "$#" -ne 4 ]; then
     echo "Something went wrong trying to build buildenv.h"
     exit 1
 fi
 
 mkdir -p $1
 mkdir -p $2
+mkdir -p $3
 
-if [ -f $3/buildenv.h ]; then
+if [ -f $4/buildenv.h ]; then
     echo "Skip buidling buildenv.h"
     exit 0
 fi
@@ -34,6 +36,7 @@ cat << EOF > include/buildenv.h
 */
 #define APPDATA_DIR_PATH    "$1"
 #define LOG_DIR_PATH        "$2"
+#define BACKUP_DIR_PATH     "$3" 
 
 #endif
 EOF

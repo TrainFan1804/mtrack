@@ -10,15 +10,16 @@ VERSION="$VBASE-$VSUFFIX"
 if [ "$BUILD_TYPE" = "dev" ]; then
     CXXFLAGS="-g -O0 -Wall -DDEBUG"
     APPDATA_PATH="$PWD/dev/mtrack"
-    LOG_PATH="$APPDATA_PATH/log"
 elif [ "$BUILD_TYPE" = "release" ]; then
     CXXFLAGS=""
     APPDATA_PATH="$HOME/.local/share/mtrack"
-    LOG_PATH="$APPDATA_PATH/log"
 else
     echo "[ERROR]: Unknown build type: "$BUILD_TYPE""
     exit 1
 fi
+
+LOG_PATH="$APPDATA_PATH/log"
+BACKUP_PATH="$APPDATA_PATH/backup"
 
 echo "Start building \"$BUILD_TYPE\" version \"$VERSION\"..."
 
@@ -28,7 +29,7 @@ SRC_DIR="./src"
 INCLUDE_DIR="./include"
 BUILD_DIR="./build"
 
-/bin/bash $INCLUDE_DIR/create_buildenv.sh $APPDATA_PATH $LOG_PATH $INCLUDE_DIR
+/bin/bash $INCLUDE_DIR/create_buildenv.sh $APPDATA_PATH $LOG_PATH $BACKUP_PATH $INCLUDE_DIR
 
 mkdir -p $BUILD_DIR 
 

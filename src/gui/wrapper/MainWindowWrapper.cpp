@@ -2,6 +2,7 @@
 #include <QWidget>
 #include <QAction>
 #include <QScreen>
+#include <QMessageBox>
 
 #include "external/json.hpp"
 
@@ -62,6 +63,13 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
         &QAction::toggled,
         this,
         &MainWindowWrapper::changeLogStatusAction
+    );
+
+    connect(
+        ui->as_database_action,
+        &QAction::triggered,
+        this,
+        &MainWindowWrapper::createDatabaseBackup
     );
 }
 
@@ -161,4 +169,15 @@ void MainWindowWrapper::handleSelectionClick(const QModelIndex &selected_index)
 void MainWindowWrapper::changeLogStatusAction(bool status)
 {
     debug::setState(status);
+}
+
+void MainWindowWrapper::createDatabaseBackup()
+{
+    QMessageBox msg;
+    msg.setWindowTitle("Add warning");
+    msg.setIcon(QMessageBox::Icon::Information);
+    msg.setText("Backup created successfully!");
+    msg.setInformativeText("The backup is located at: <FILL WITH BACKUP_DIR_PATH>");
+    msg.setStandardButtons(QMessageBox::StandardButton::Ok);
+    msg.exec();
 }
