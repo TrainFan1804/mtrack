@@ -38,6 +38,7 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
         this, 
         &MainWindowWrapper::openTopLevelWindow
     );
+
     connect(
         ui->rm_button, 
         &QPushButton::clicked, 
@@ -82,7 +83,6 @@ MainWindowWrapper::~MainWindowWrapper()
 void MainWindowWrapper::openTopLevelWindow()
 {
     AddTopLevelWrapper *top_level = new AddTopLevelWrapper();
-
     connect(
         top_level, 
         &AddTopLevelWrapper::submitAddContent, 
@@ -95,9 +95,13 @@ void MainWindowWrapper::openTopLevelWindow()
 
 void MainWindowWrapper::fetchTopLevelContent(const QMedia &media)
 {
-    int last_index = _model->rowCount() - 1;
-    if (last_index < 0) return;
-    int last_index_id = _model->getMediaAt(last_index).getId();
+    int last_row = _model->rowCount();
+    if (last_row < 0) return;
+
+    int last_index_id;
+    if (last_row == 0) last_index_id = 0;
+    else last_index_id = _model->getMediaAt(last_row - 1).getId();
+
     QMedia c = media;
     c.setId(last_index_id + 1);
 

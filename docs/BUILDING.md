@@ -10,7 +10,6 @@ subfolder `dev/mtrack` and `dev/mtrack/log`.
 When using `install.sh` you will be able to access mTrack via the terminal but
 only for your user only. The appdata will located at `$HOME/.local/share/mtrack`.
 
-
 ## Development
 
 This is a note for other developer. When you running mTrack locally and develop

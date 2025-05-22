@@ -6,6 +6,8 @@
 # ---------------------------
 set -e
 
+echo "Start building Qt headers forms..."
+
 # this still cause trouble because the new created header will force the src files
 # that use this header to recompile even when there wasn't any change
 FORM_INCLUDE_DIR=./include/gui/forms
