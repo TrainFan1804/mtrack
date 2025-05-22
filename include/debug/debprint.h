@@ -35,6 +35,13 @@ namespace debug::print
 {
     void debprint(const std::string &msg, DEBUG_LEVEL level = INFO);
 
+    /**
+     * To print a message like `printf` use this function. To format the message
+     * correctly `msg` need to look something like this: {@code "I am {} years old!"}
+     * "{}" will be replaced by the inserted format.
+     * 
+     * When using multiple "{}" the values in `args` will be set from left to right.
+     */
     template<typename... Args>
     void debprintf(DEBUG_LEVEL level, 
         const fmt::format_string<Args...> msg,

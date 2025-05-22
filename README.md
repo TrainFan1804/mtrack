@@ -21,6 +21,10 @@ Now you can run `mtrack` in your terminal to use it.
     
 ## Requirements
 
+> [!IMPORTANT]
+> When using wayland as communication protocol you need to install the `qt6-wayland` 
+> package for your distrobution.
+
 A C++ compiler, sqlite3 and Qt6 is required to install this software. All other requirements are shipped
 with the software.
 
@@ -41,6 +45,7 @@ sudo apt install build-essential sqlit3 qt6-base-dev
 > and `uic` under `/usr/lib/qt6` because the actuall execuables where under
 > `/usr/lib/qt6/libexec`. My workaround are two symbolic links in the 
 > qt6 directory pointing to the executables in libexec.
+
 
 # How to use
 
