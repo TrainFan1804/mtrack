@@ -9,13 +9,13 @@
 
 AddTopLevelWrapper::AddTopLevelWrapper(QWidget *parent)
     : QWidget(parent),
-    ui(new Ui::AddTopLevel)
+    _ui(new Ui::AddTopLevel)
 {
-    ui->setupUi(this);
+    _ui->setupUi(this);
     move(screen()->availableGeometry().center() - frameGeometry().center());
 
     connect(
-        ui->add_btn, 
+        _ui->add_btn, 
         &QPushButton::clicked, 
         this, 
         &AddTopLevelWrapper::addBtnClicked
@@ -24,7 +24,7 @@ AddTopLevelWrapper::AddTopLevelWrapper(QWidget *parent)
 
 AddTopLevelWrapper::~AddTopLevelWrapper()
 {
-    delete ui;
+    delete _ui;
 }
 
 void AddTopLevelWrapper::addBtnClicked()
@@ -33,8 +33,8 @@ void AddTopLevelWrapper::addBtnClicked()
         I needed literally almost 3 HOURS to insert the varable
         names into the json correctly...
     */
-    auto name = mtrack::trim(ui->name_edit->text().toStdString());
-    auto type = mtrack::trim(ui->type_edit->text().toStdString());
+    auto name = mtrack::trim(_ui->name_edit->text().toStdString());
+    auto type = mtrack::trim(_ui->type_edit->text().toStdString());
     if (name.empty() || type.empty())
     {
         QMessageBox msg;
@@ -50,9 +50,9 @@ void AddTopLevelWrapper::addBtnClicked()
     nlohmann::json json_media;
 
     json_media["id"] = -1;
-    json_media["rating"] = ui->rating_box->value();
+    json_media["rating"] = _ui->rating_box->value();
     json_media["name"] = name;
-    json_media["state"] = ui->state_box->currentText().toStdString();
+    json_media["state"] = _ui->state_box->currentText().toStdString();
     json_media["type"] = type;
     
     QMedia new_media(json_media);

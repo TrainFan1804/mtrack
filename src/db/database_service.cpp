@@ -1,0 +1,84 @@
+#include <sstream>
+
+#include "db/database_service.h"
+#include "db/database_manager.h"
+#include "db/custom_callbacks.h"
+#include "globals/sql_globals.h"
+#include "debug/debprint.h"
+
+namespace
+{
+    sqlite3 *_db;
+}
+
+void initDatabase()
+{
+    initDatabase(_db);
+}
+
+void openDatabase()
+{
+    openDatabase(&_db);
+    debug::print::debprint("Opened database successfully", debug::INFO);
+}
+
+void closeDatabase()
+{
+    closeDatabase(_db);
+    debug::print::debprint("Database closed", debug::INFO);
+}
+
+void addMedia(const media::Media &new_media)
+{
+    // scary SQL injection BOOO 
+    std::ostringstream oss;
+    oss << "INSERT INTO " 
+        << TABLE_NAME 
+        << " (" 
+        << new_media.attributesToSql() 
+        << ") VALUES("
+        << new_media.valuesToSql()
+        << ");";
+    execute_sql(_db, oss.str());
+}
+
+void rmMedia(int rm_id)
+{
+    std::ostringstream oss;
+    oss << "DELETE FROM "
+        << TABLE_NAME 
+        << " WHERE ID="
+        << rm_id 
+        << ";";
+    execute_sql(_db, oss.str());
+}
+
+void editMedia(int edit_id, const media::Media &edit_media)
+{
+    std::ostringstream oss;
+    oss << "UPDATE " 
+        << TABLE_NAME 
+        << " SET " 
+        << " NAME = " << "'" << edit_media._name << "', "
+        << " RATING  ="<< "'" << edit_media._rating << "', "
+        << " STATE = " << "'" << edit_media._state << "', "
+        << " TYPE = " << "'" << edit_media._type << "'"
+        << " WHERE ID = " << edit_id << ";";
+    execute_sql(_db, oss.str());
+}
+
+nlohmann::json selectAllJsonQuery()
+{
+    std::string result;
+    execute_sql(_db, SQL_JSON_SELECT_ALL, &result, jsonSelectCallback);
+    auto j = nlohmann::json::parse(result);
+    debug::print::debprintf(debug::INFO, "Data fetched: {}", result);
+    return j;
+}
+
+void dumpDatabase(IDatabaseExtractor *extractor)
+{
+    debug::print::debprint("Start dumping database...");
+    extractor->exportDatabase(_db);
+    debug::print::debprint("Dumping database complete");
+}

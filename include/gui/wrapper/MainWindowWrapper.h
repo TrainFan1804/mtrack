@@ -16,7 +16,7 @@ public:
     ~MainWindowWrapper();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *_ui;
     MediaViewModel *_model;
 
 private slots:
