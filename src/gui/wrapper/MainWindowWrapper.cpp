@@ -15,6 +15,7 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    top_level = new AddTopLevelWrapper();
     move(screen()->availableGeometry().center() - frameGeometry().center());
 
     // fetch data from database
@@ -37,6 +38,14 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
         this, 
         &MainWindowWrapper::openTopLevelWindow
     );
+
+    connect(
+        top_level, 
+        &AddTopLevelWrapper::submitAddContent, 
+        this, 
+        &MainWindowWrapper::fetchTopLevelContent
+    );
+
     connect(
         ui->rm_button, 
         &QPushButton::clicked, 
@@ -73,23 +82,19 @@ MainWindowWrapper::~MainWindowWrapper()
 
 void MainWindowWrapper::openTopLevelWindow()
 {
-    AddTopLevelWrapper *top_level = new AddTopLevelWrapper();
-
-    connect(
-        top_level, 
-        &AddTopLevelWrapper::submitAddContent, 
-        this, 
-        &MainWindowWrapper::fetchTopLevelContent
-    );
     top_level->setAttribute(Qt::WA_DeleteOnClose);
     top_level->show();
 }
 
 void MainWindowWrapper::fetchTopLevelContent(const QMedia &media)
 {
-    int last_index = _model->rowCount() - 1;
-    if (last_index < 0) return;
-    int last_index_id = _model->getMediaAt(last_index).getId();
+    int last_row = _model->rowCount();
+    if (last_row < 0) return;
+
+    int last_index_id;
+    if (last_row == 0) last_index_id = 0;
+    else last_index_id = _model->getMediaAt(last_row).getId();
+
     QMedia c = media;
     c.setId(last_index_id + 1);
 

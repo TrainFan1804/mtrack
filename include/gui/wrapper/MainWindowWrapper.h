@@ -5,6 +5,7 @@
 
 #include "gui/forms/main_widget.h"
 #include "gui/wrapper/MediaViewModel.h"
+#include "gui/wrapper/AddTopLevelWrapper.h"
 
 class MainWindowWrapper : public QMainWindow 
 {
@@ -17,6 +18,7 @@ public:
 private:
     Ui::MainWindow *ui;
     MediaViewModel *_model;
+    AddTopLevelWrapper *top_level;
 
 private slots:
     void openTopLevelWindow();
