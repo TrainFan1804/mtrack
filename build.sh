@@ -32,7 +32,17 @@ BUILD_DIR="./build"
 
 mkdir -p $BUILD_DIR 
 
-QT_INCLUDES="-I/usr/include/qt6 -I/usr/include/qt6/QtWidgets -I/usr/include/qt6/QtCore -I/usr/include/qt6/QtGui"
+# under debian path /usr/include/x86_64-linux-gnu will store qt6 headers
+QT_INCLUDE_DIR="/usr/include/qt6"
+if [ ! -d "$QT_INCLUDE_DIR" ]; then
+    QT_INCLUDE_DIR="/usr/include/x86_64-linux-gnu/qt6"
+    if [ ! -d "$QT_INCLUDE_DIR" ]; then
+        echo "Qt6 headers not found."
+        exit 1
+    fi
+fi
+
+QT_INCLUDES="-I$QT_INCLUDE_DIR -I$QT_INCLUDE_DIR/QtWidgets -I$QT_INCLUDE_DIR/QtCore -I$QT_INCLUDE_DIR/QtGui"
 ALL_INCLUDES="-I$INCLUDE_DIR $QT_INCLUDES"
 
 CPPFLAGS="-MMD -MP -fPIC -DVERSION="\"$VERSION\"" $ALL_INCLUDES"

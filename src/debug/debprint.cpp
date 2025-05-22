@@ -2,7 +2,6 @@
 #include <cstdarg>
 #include <cstdio>
 #include <fstream>
-#include <format>
 
 #include "external/fmt/format.h"
 

@@ -28,6 +28,19 @@ with the software.
 - sqlite3 >= 3.49.1
 - Qt >= 6.8.2
 
+### Debian
+
+Run this command to install al requirements:
+
+```
+sudo apt install build-essential sqlit3 qt6-base-dev
+```
+
+> [!WARNING]
+> While testing this software on debian the `build.sh` could not find `moc` 
+> and `uic` under `/usr/lib/qt6` because the actuall execuables where under
+> `/usr/lib/qt6/libexec`. My workaround are two symbolic links in the 
+> qt6 directory pointing to the executables in libexec.
 
 # How to use
 
