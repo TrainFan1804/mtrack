@@ -28,7 +28,7 @@ void DumpExtractor::exportDatabase(sqlite3 *db)
     {
         if (sqlite3_step(stmt) == SQLITE_ROW) 
         {
-            const char* sql = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            const char *sql = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
             off << sql << ";\n";
         }
     }
@@ -48,9 +48,6 @@ void DumpExtractor::exportDatabase(sqlite3 *db)
                 {
                 case SQLITE_INTEGER:
                     off << sqlite3_column_int64(stmt, i);
-                    break;
-                case SQLITE_FLOAT:
-                    off << sqlite3_column_double(stmt, i);
                     break;
                 case SQLITE_TEXT:
                     off << "'" << sqlite3_column_text(stmt, i) << "'";
