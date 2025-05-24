@@ -2,7 +2,7 @@
 
 
 MediaViewModel::MediaViewModel(QObject *parent, const QList<QMedia> &list)
-    : QAbstractTableModel()
+    : QAbstractTableModel(parent)
 {
     beginResetModel();
     _data = list;

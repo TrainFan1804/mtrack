@@ -2,15 +2,13 @@
 #include <QWidget>
 #include <QAction>
 #include <QScreen>
-#include <QMessageBox>
 
 #include "external/json.hpp"
 
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
+#include "gui/wrapper/MenubarHandler.h"
 #include "db/database_service.h"
-#include "db/extractor/DumpExtractor.h"
-#include "debug/debprint.h"
 
 MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     : QMainWindow(parent),
@@ -18,6 +16,13 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
 {
     _ui->setupUi(this);
     move(screen()->availableGeometry().center() - frameGeometry().center());
+
+    MenubarHandler *menu_handler = new MenubarHandler(this);
+    menu_handler->connectAction(
+        _ui->log_status,
+        _ui->as_database_action,
+        _ui->import_action
+    );
 
     // fetch data from database
     auto data_json = selectAllJsonQuery();
@@ -61,17 +66,10 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     );
 
     connect(
-        _ui->log_status,
-        &QAction::toggled,
-        this,
-        &MainWindowWrapper::changeLogStatusAction
-    );
-
-    connect(
-        _ui->as_database_action,
-        &QAction::triggered,
-        this,
-        &MainWindowWrapper::createDatabaseBackup
+        menu_handler, 
+        &MenubarHandler::backupFinished, 
+        this, 
+        &MainWindowWrapper::updateMediaModel
     );
 }
 
@@ -171,21 +169,17 @@ void MainWindowWrapper::handleSelectionClick(const QModelIndex &selected_index)
     _ui->rating_box->setEnabled(true);
 }
 
-void MainWindowWrapper::changeLogStatusAction(bool status)
+void MainWindowWrapper::updateMediaModel()
 {
-    debug::setState(status);
-}
-
-void MainWindowWrapper::createDatabaseBackup()
-{
-    IDatabaseExtractor *e = new DumpExtractor();
-    dumpDatabase(e);
-    delete e;
-    QMessageBox msg;
-    msg.setWindowTitle("Backup created");
-    msg.setIcon(QMessageBox::Icon::Information);
-    msg.setText("Backup created successfully!");
-    msg.setInformativeText("The backup is located at: <FILL WITH BACKUP_DIR_PATH>");
-    msg.setStandardButtons(QMessageBox::StandardButton::Ok);
-    msg.exec();
+    auto data_json = selectAllJsonQuery();
+    QList<QMedia> view_data;
+    for (auto json_obj : data_json)
+    {
+        QMedia media(json_obj);
+        view_data << media;
+    }
+    // put data in MediaViewModel
+    _model = new MediaViewModel(this, view_data);
+    // put MediaViewModel into ui->mediaView
+    _ui->media_view->setModel(_model);
 }

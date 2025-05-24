@@ -5,6 +5,7 @@
 #include "db/custom_callbacks.h"
 #include "globals/sql_globals.h"
 #include "debug/debprint.h"
+#include "utils/time.h"
 
 namespace
 {
@@ -79,6 +80,19 @@ nlohmann::json selectAllJsonQuery()
 void dumpDatabase(IDatabaseExtractor *extractor)
 {
     debug::print::debprint("Start dumping database...");
-    extractor->exportDatabase(_db);
+
+    std::string time_stamp = mtrack::getCustomCurrentTimestamp("%Y-%m-%d");
+    std::string dump_file = std::string(BACKUP_DIR_PATH)
+        + "/" + time_stamp;
+
+    extractor->exportDatabase(_db, dump_file);
     debug::print::debprint("Dumping database complete");
+}
+
+void restoreDatabase(IDatabaseImporter *importer, const std::string &restore_file)
+{
+    debug::print::debprint("Start restoring database...");
+    importer->importDatabase(_db, restore_file);
+
+    debug::print::debprint("Restoring database complete");
 }

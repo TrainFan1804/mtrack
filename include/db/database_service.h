@@ -2,6 +2,7 @@
 
 #include "Media.h"
 #include "db/extractor/IDatabaseExtractor.h"
+#include "db/importer/IDatabaseImporter.h"
 
 void initDatabase();
 
@@ -21,3 +22,5 @@ void editMedia(int edit_id, const media::Media &edit_media);
 nlohmann::json selectAllJsonQuery();
 
 void dumpDatabase(IDatabaseExtractor *extractor);
+
+void restoreDatabase(IDatabaseImporter *importer, const std::string &retore_file);
