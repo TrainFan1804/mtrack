@@ -55,7 +55,9 @@ void MenubarHandler::createDatabaseBackup()
     msg.setWindowTitle("Backup created");
     msg.setIcon(QMessageBox::Icon::Information);
     msg.setText("Backup created successfully!");
-    msg.setInformativeText("The backup is located at: <FILL WITH BACKUP_DIR_PATH>");
+    QString inf_text = "The backup is located in: " 
+        + QString::fromUtf8(BACKUP_DIR_PATH);
+    msg.setInformativeText(inf_text);
     msg.setStandardButtons(QMessageBox::StandardButton::Ok);
     msg.exec();
 }
@@ -67,7 +69,6 @@ void MenubarHandler::importDatabaseBackup()
         qobject_cast<QWidget*>(parent()),
         "Open Document", 
         BACKUP_DIR_PATH,
-        // QDir::currentPath(), 
         "Backup files (*.dump *.sql);;All files (*.*)", 
         0, 
         QFileDialog::DontUseNativeDialog
