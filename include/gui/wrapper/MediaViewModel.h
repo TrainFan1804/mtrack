@@ -5,8 +5,12 @@
 
 #include "gui/QMedia.h"
 
-/*
+/** 
  * This was mainly reused from an older project of myself.
+ * 
+ * @note Because this model is designed for MVC pattern in Qt style
+ * the model will update the media data / interact with the db
+ * itself.
  */
 class MediaViewModel : public QAbstractTableModel
 {
@@ -19,13 +23,7 @@ public:
 
     bool insertRow(const QMedia &new_media);
 
-    /**
-     * Remove a row from the view model.
-     * 
-     * @return The id of the removed media. When non media was removed this method
-     * will return -1.
-     */
-    int removeRow(int row);
+    void removeRow(int row);
 
     bool editRow(int row, const QMedia &edited_media);
 

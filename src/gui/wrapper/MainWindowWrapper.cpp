@@ -8,7 +8,6 @@
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
 #include "gui/handler/MenubarHandler.h"
-#include "db/database_service.h"
 
 MainWindowWrapper::MainWindowWrapper(QWidget *parent)
     : QMainWindow(parent),
@@ -98,17 +97,12 @@ void MainWindowWrapper::fetchTopLevelContent(const QMedia &media)
     c.setId(last_index_id + 1);
 
     _model->insertRow(c);
-    auto m = c.unwrap();
-    addMedia(m);
 }
 
 void MainWindowWrapper::removeAction()
 {
     int rm_index = _ui->media_view->currentIndex().row();
-    int del_id = _model->removeRow(rm_index);
-    // this is just temp to avoid access the database when none is selected
-    if (del_id <= -1) return;
-    rmMedia(del_id);
+    _model->removeRow(rm_index);
 }
 
 void MainWindowWrapper::saveAction()
@@ -129,7 +123,6 @@ void MainWindowWrapper::saveAction()
     json["rating"] = edit_rating;
     QMedia media(json);
     _model->editRow(selected_index, media);
-    editMedia(selected_id, media.unwrap());
 }
 
 void MainWindowWrapper::handleSelectionClick(const QModelIndex &selected_index)

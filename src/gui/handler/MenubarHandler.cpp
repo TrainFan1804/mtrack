@@ -78,6 +78,8 @@ void MenubarHandler::importDatabaseBackup()
     {
         auto i = createImporter("sql");
         importDatabase(i.get(), file_name);
+        
+        emit backupFinished();
 
         QMessageBox msg;
         msg.setWindowTitle("Backup imported");
@@ -85,7 +87,5 @@ void MenubarHandler::importDatabaseBackup()
         msg.setText("Backup successfully imported!");
         msg.setStandardButtons(QMessageBox::StandardButton::Ok);
         msg.exec();
-
-        emit backupFinished();
     }
 }

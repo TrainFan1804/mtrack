@@ -41,7 +41,7 @@ public:
      * to work with the database API, not to change the internal state of
      * QMedia directly.
      */
-    media::Media unwrap() { return _media; }
+    media::Media unwrap() const { return _media; }
 
 private:
     int _id;
