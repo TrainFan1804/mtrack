@@ -13,6 +13,7 @@ class MainWindowWrapper : public QMainWindow
 public:
     MainWindowWrapper(QWidget *parent = nullptr);
     ~MainWindowWrapper();
+    void setModel(MediaViewModel *model);
 
 private:
     Ui::MainWindow *_ui;

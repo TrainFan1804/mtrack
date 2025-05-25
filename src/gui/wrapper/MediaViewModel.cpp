@@ -1,7 +1,7 @@
 #include "gui/wrapper/MediaViewModel.h"
+#include "db/database_service.h"
 
-
-MediaViewModel::MediaViewModel(QObject *parent, const QList<QMedia> &list)
+MediaViewModel::MediaViewModel(const QList<QMedia> &list, QObject *parent)
     : QAbstractTableModel(parent)
 {
     beginResetModel();
@@ -98,4 +98,17 @@ QVariant MediaViewModel::headerData(int section, Qt::Orientation orientation, in
         }
     }
     return QVariant();
+}
+
+MediaViewModel *createLatestMediaViewModel()
+{
+    // fetch data from database
+    auto data_json = selectAllJsonQuery();
+    QList<QMedia> view_data;
+    for (auto json_obj : data_json)
+    {
+        QMedia media(json_obj);
+        view_data << media;
+    }
+    return new MediaViewModel(view_data);
 }

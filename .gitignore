@@ -11,7 +11,7 @@ dev/*
 include/buildenv.h
 include/gui/forms/*
 
-src/gui/wrapper/moc_*
+moc_*
 
 # python stuff
 *.pyc

@@ -2,6 +2,7 @@
 
 #include <sqlite3.h>
 
+#include "db/database_manager.h"
 #include "db/importer/SqlImporter.h"
 
 void SqlImporter::importDatabase(sqlite3 *db, const std::string &dump_file)
@@ -10,17 +11,13 @@ void SqlImporter::importDatabase(sqlite3 *db, const std::string &dump_file)
 
     std::string sql;
     std::string line;
-    char* errMsg = nullptr;
 
     while (std::getline(in, line))
     {
-        sql += line + "\n";
+        sql += line;
         if (line.find(';') != std::string::npos) 
         {
-            if (sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg) != SQLITE_OK) 
-            {
-                sqlite3_free(errMsg);
-            }
+            execute_sql(db, sql.c_str());
             sql.clear();
         }
     }

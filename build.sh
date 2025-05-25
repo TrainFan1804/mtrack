@@ -56,6 +56,13 @@ LNKFLAGS="-lsqlite3 -lQt6Widgets -lQt6Core -lQt6Gui"
 /bin/bash ./forms/create_header.sh
 
 # create moc files with .h files
+for wrapper_file in $(find $INCLUDE_DIR/gui/handler -name '*.h'); do
+    wrapper_name="$(basename "${wrapper_file%.h}.cpp")"
+    full_wrapper_name=$SRC_DIR/gui/handler/moc_$wrapper_name
+    if [ $wrapper_file -nt $full_wrapper_name ]; then
+        /usr/lib/qt6/moc $wrapper_file -o $full_wrapper_name
+    fi
+done
 for wrapper_file in $(find $INCLUDE_DIR/gui/wrapper -name '*.h'); do
     wrapper_name="$(basename "${wrapper_file%.h}.cpp")"
     full_wrapper_name=$SRC_DIR/gui/wrapper/moc_$wrapper_name

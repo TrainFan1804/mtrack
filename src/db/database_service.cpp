@@ -79,20 +79,22 @@ nlohmann::json selectAllJsonQuery()
 
 void dumpDatabase(IDatabaseExtractor *extractor)
 {
-    debug::print::debprint("Start dumping database...");
+    debug::print::debprint("Start dumping database to file...");
 
     std::string time_stamp = mtrack::getCustomCurrentTimestamp("%Y-%m-%d");
     std::string dump_file = std::string(BACKUP_DIR_PATH)
         + "/" + time_stamp;
 
     extractor->exportDatabase(_db, dump_file);
-    debug::print::debprint("Dumping database complete");
+    debug::print::debprint("Dumping database to file complete");
 }
 
-void restoreDatabase(IDatabaseImporter *importer, const std::string &restore_file)
+void importDatabase(IDatabaseImporter *importer, const std::string &import_file)
 {
-    debug::print::debprint("Start restoring database...");
-    importer->importDatabase(_db, restore_file);
+    debug::print::debprint("Start importing database...");
+    std::string sql_dropatable = "DROP TABLE IF EXISTS MEDIA";   
+    execute_sql(_db, sql_dropatable);
+    importer->importDatabase(_db, import_file);
 
-    debug::print::debprint("Restoring database complete");
+    debug::print::debprint("Importing database complete");
 }

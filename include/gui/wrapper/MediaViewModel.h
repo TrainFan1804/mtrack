@@ -13,7 +13,7 @@ class MediaViewModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    MediaViewModel(QObject *parent, const QList <QMedia> &list);
+    MediaViewModel(const QList <QMedia> &list, QObject *parent = nullptr);
 
     const QMedia &getMediaAt(int row) const;
 
@@ -40,5 +40,7 @@ public:
 private:
     QList<QMedia> _data;
 };
+
+MediaViewModel *createLatestMediaViewModel();
 
 #endif

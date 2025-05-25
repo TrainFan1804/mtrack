@@ -7,7 +7,7 @@
 
 #include "gui/wrapper/MainWindowWrapper.h"
 #include "gui/wrapper/AddTopLevelWrapper.h"
-#include "gui/wrapper/MenubarHandler.h"
+#include "gui/handler/MenubarHandler.h"
 #include "db/database_service.h"
 
 MainWindowWrapper::MainWindowWrapper(QWidget *parent)
@@ -23,19 +23,6 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
         _ui->as_database_action,
         _ui->import_action
     );
-
-    // fetch data from database
-    auto data_json = selectAllJsonQuery();
-    QList<QMedia> view_data;
-    for (auto json_obj : data_json)
-    {
-        QMedia media(json_obj);
-        view_data << media;
-    }
-    // put data in MediaViewModel
-    _model = new MediaViewModel(this, view_data);
-    // put MediaViewModel into ui->mediaView
-    _ui->media_view->setModel(_model);
 
     // setup custom slots
     connect(
@@ -77,6 +64,12 @@ MainWindowWrapper::~MainWindowWrapper()
 {
     delete _ui;
     delete _model;
+}
+
+void MainWindowWrapper::setModel(MediaViewModel *model)
+{
+    _model = model;
+    _ui->media_view->setModel(_model);
 }
 
 void MainWindowWrapper::openTopLevelWindow()
@@ -171,15 +164,5 @@ void MainWindowWrapper::handleSelectionClick(const QModelIndex &selected_index)
 
 void MainWindowWrapper::updateMediaModel()
 {
-    auto data_json = selectAllJsonQuery();
-    QList<QMedia> view_data;
-    for (auto json_obj : data_json)
-    {
-        QMedia media(json_obj);
-        view_data << media;
-    }
-    // put data in MediaViewModel
-    _model = new MediaViewModel(this, view_data);
-    // put MediaViewModel into ui->mediaView
-    _ui->media_view->setModel(_model);
+    setModel(createLatestMediaViewModel());
 }

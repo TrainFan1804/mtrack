@@ -1,7 +1,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include "gui/wrapper/MenubarHandler.h"
+#include "gui/handler/MenubarHandler.h"
 #include "debug/debprint.h"
 #include "db/database_service.h"
 #include "db/extractor/IDatabaseExtractor.h"
@@ -74,7 +74,18 @@ void MenubarHandler::importDatabaseBackup()
         QFileDialog::DontUseNativeDialog
     ).toStdString();
 
-    auto i = createImporter("sql");
-    restoreDatabase(i.get(), file_name);
-    emit backupFinished();
+    if (!file_name.empty())
+    {
+        auto i = createImporter("sql");
+        importDatabase(i.get(), file_name);
+
+        QMessageBox msg;
+        msg.setWindowTitle("Backup imported");
+        msg.setIcon(QMessageBox::Icon::Information);
+        msg.setText("Backup successfully imported!");
+        msg.setStandardButtons(QMessageBox::StandardButton::Ok);
+        msg.exec();
+
+        emit backupFinished();
+    }
 }

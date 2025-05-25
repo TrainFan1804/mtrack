@@ -23,4 +23,10 @@ nlohmann::json selectAllJsonQuery();
 
 void dumpDatabase(IDatabaseExtractor *extractor);
 
-void restoreDatabase(IDatabaseImporter *importer, const std::string &retore_file);
+/**
+ * This will import the database with a selected `IDatabaseImporter` and the
+ * path of the file that should be restored.
+ * 
+ * @warning This will delete all entries in the current database.
+ */
+void importDatabase(IDatabaseImporter *importer, const std::string &import_file);
