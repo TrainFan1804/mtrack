@@ -12,6 +12,7 @@ include/buildenv.h
 include/gui/forms/*
 
 moc_*
+qrc_*
 
 # python stuff
 *.pyc

@@ -15,6 +15,7 @@ MainWindowWrapper::MainWindowWrapper(QWidget *parent)
 {
     _ui->setupUi(this);
     move(screen()->availableGeometry().center() - frameGeometry().center());
+    setWindowIcon(QIcon(":/icons/app_icon.ico"));
 
     MenubarHandler *menu_handler = new MenubarHandler(this);
     menu_handler->connectAction(

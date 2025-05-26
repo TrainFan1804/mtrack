@@ -13,6 +13,7 @@ AddTopLevelWrapper::AddTopLevelWrapper(QWidget *parent)
 {
     _ui->setupUi(this);
     move(screen()->availableGeometry().center() - frameGeometry().center());
+    setWindowIcon(QIcon(":/icons/app_icon.ico"));
 
     connect(
         _ui->add_btn, 
