@@ -15,8 +15,6 @@ if [ -f include/buildenv.h ]; then
     exit 0
 fi
 
-info "Start building buildenv.h..."
-
 LOG_PATH="$1/log"
 BACKUP_PATH="$1/backup"
 

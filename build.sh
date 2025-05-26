@@ -32,7 +32,7 @@ function check_build_type() {
         CXXFLAGS=""
         APPDATA_PATH="$HOME/.local/share/mtrack"
     else
-        error "[ERROR]: Unknown build type: "$BUILD_TYPE""
+        error "Unknown build type: "$BUILD_TYPE""
         exit 1
     fi
 }
@@ -43,7 +43,7 @@ function determine_qt_include_path() {
     if [ ! -d "$QT_INCLUDE_DIR" ]; then
         QT_INCLUDE_DIR="/usr/include/x86_64-linux-gnu/qt6"
         if [ ! -d "$QT_INCLUDE_DIR" ]; then
-            error "Qt6 headers not found."
+            error "Qt6 headers not found"
             exit 1
         fi
     fi
@@ -122,7 +122,6 @@ function link_object() {
 
     local LNKFLAGS="-lsqlite3 -lQt6Widgets -lQt6Core -lQt6Gui"
 
-
     objs=$(find $BUILD_DIR -name '*.o')
     $CXX $objs -o "$BUILD_DIR/mtrack" $LNKFLAGS
 }
@@ -133,17 +132,18 @@ function link_object() {
 
 check_build_type
 determine_qt_include_path
-info "Start building \"$BUILD_TYPE\"version $BOLD\"$VERSION\"$RESET$BLUE..."
+info "Start building \"$BUILD_TYPE\" version $BOLD\"$VERSION\"$RESET$BLUE..."
 
 pre_build
 generate_moc_files
 compile_source
 
-info "Linking files..."
 link_object
 success "Successfully build"
 
 if [ "$2" = "test" ]; then
     cd test
+    info "Start building tests for version $BOLD\"$VERSION\"$RESET$BLUE..."
     /bin/bash ./build.sh $VERSION
+    success "Successfully build test"
 fi
