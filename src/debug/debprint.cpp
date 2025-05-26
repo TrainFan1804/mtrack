@@ -20,7 +20,7 @@ namespace
     {
         if (!_log_file.is_open()) throw std::runtime_error("Couldn't open log file");
 
-        std::string timestamp = mtrack::getCustomCurrentTimestamp("%d-%m-%Y %H-%M-%S");
+        std::string timestamp = mtrack::getCustomCurrentTimestamp("%d-%m-%Y %H:%M:%S");
         std::string formatted_message = "[" + timestamp + "] " + toString(status) + ": " + msg; 
         _log_file << formatted_message << std::endl;
     }
