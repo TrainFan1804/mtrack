@@ -2,23 +2,25 @@
 
 set -e
 
+source scripts/pretty_print.sh
+
 # $1 := APPDATA_PATH
-# $2 := LOG_PATH 
-# $3 := INCLUDE_DIR
-if [ "$#" -ne 3 ]; then
-    echo "Something went wrong trying to build buildenv.h"
+if [ "$#" -ne 1 ]; then
+    error "Something went wrong trying to build buildenv.h"
     exit 1
 fi
 
-mkdir -p $1
-mkdir -p $2
-
-if [ -f $3/buildenv.h ]; then
-    echo "Skip buidling buildenv.h"
+if [ -f include/buildenv.h ]; then
+    info "Skip buidling buildenv.h"
     exit 0
 fi
 
-echo "Start building buildenv.h..."
+LOG_PATH="$1/log"
+BACKUP_PATH="$1/backup"
+
+mkdir -p $1
+mkdir -p $LOG_PATH
+mkdir -p $BACKUP_PATH
 
 # Because I am to lazy to define the path in the C++ code twice I came up with
 # this crazy stuff...
@@ -33,9 +35,10 @@ cat << EOF > include/buildenv.h
     it's just a simple sqlite database and a (optional) log.
 */
 #define APPDATA_DIR_PATH    "$1"
-#define LOG_DIR_PATH        "$2"
+#define LOG_DIR_PATH        "$LOG_PATH"
+#define BACKUP_DIR_PATH     "$BACKUP_PATH" 
 
 #endif
 EOF
 
-echo "Building buildenv.h successfully"
+success "Building buildenv.h successfully"

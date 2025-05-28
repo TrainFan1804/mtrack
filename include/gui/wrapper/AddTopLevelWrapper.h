@@ -15,7 +15,7 @@ public:
     ~AddTopLevelWrapper();
 
 private:
-    Ui::AddTopLevel *ui;
+    Ui::AddTopLevel *_ui;
 
 signals:
     /**

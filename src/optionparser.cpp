@@ -4,7 +4,7 @@
 #include "external/json.hpp"
 
 #include "optionparser.h"
-#include "databasemanager.h"
+#include "db/database_service.h"
 #include "globals/globals.h"
 #include "globals/sql_globals.h"
 #include "Media.h"

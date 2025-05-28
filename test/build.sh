@@ -4,28 +4,24 @@
 # This script is part of /build.sh and shouldn't 
 # be executed on it's own
 # ---------------------------
+
 set -e
 
+# ---------------------------
+# Globals
+# ---------------------------
 CXXFLAGS="-g -O0 -Wall -DDEBUG"
-
-# $1 := VERSION
-echo "Start building tests for version \"$1\"..."
-
-# software source code specific paths (needed at buildtime)
 CXX=g++
 TEST_SRC_DIR="./src"
 TEST_INCLUDE_DIR="./include"
 TEST_BUILD_DIR="./build"
-
 PROD_INCLUDE_DIR="../include"
-
-mkdir -p $TEST_BUILD_DIR 
-
+LNKFLAGS="-lsqlite3 -lQt6Widgets -lQt6Core -lQt6Gui"
 QT_INCLUDES="-I/usr/include/qt6 -I/usr/include/qt6/QtWidgets -I/usr/include/qt6/QtCore -I/usr/include/qt6/QtGui"
 ALL_INCLUDES="-I$TEST_INCLUDE_DIR -I$PROD_INCLUDE_DIR $QT_INCLUDES"
-
 CPPFLAGS="-MMD -MP -fPIC $ALL_INCLUDES"
-LNKFLAGS="-lsqlite3 -lQt6Widgets -lQt6Core -lQt6Gui"
+
+mkdir -p $TEST_BUILD_DIR 
 
 # Compile .cpp files to .o files 
 for src_file in $(find $TEST_SRC_DIR -name '*.cpp'); do
@@ -55,13 +51,9 @@ for src_file in $(find $TEST_SRC_DIR -name '*.cpp'); do
     fi
 done
 
-echo "Linking files..."
-
 test_objs=$(find $TEST_BUILD_DIR -name '*.o')
 
 PROD_BUILD_DIR="../build"
 prod_test_objs=$(find $PROD_BUILD_DIR -name '*.o' ! -name 'main.o')
 
 $CXX $prod_test_objs $test_objs -o "$TEST_BUILD_DIR/mtrack_test" $LNKFLAGS
-
-echo "Successfully build test"

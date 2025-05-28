@@ -16,6 +16,10 @@ This is a note for other developer. When you running mTrack locally and develop
 at the same time you should always use the database inside the projects directory
 for testing unless you know what you do.
 
+> [!TIP]
+> If you want to develop this software further it may be helpfull to use the
+> Qt-Designer to design the GUI.
+
 ### Testing
 
 You can build test with `build.sh <BUILD_TYPE> test` and run them with

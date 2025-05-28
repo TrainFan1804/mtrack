@@ -1,14 +1,15 @@
 #include <QApplication>
 
-#include "debug/debprint.h"
 #include "gui/launcher.h"
 #include "gui/wrapper/MainWindowWrapper.h"
+#include "gui/wrapper/MediaViewModel.h"
 
 int launch(int argc, char *argv[])
 {
-    debug::print::debprint("Open gui", debug::INFO);
     QApplication app(argc, argv);
     MainWindowWrapper w;
+
+    w.setModel(createLatestMediaViewModel());
     w.show();
     return app.exec();
 }

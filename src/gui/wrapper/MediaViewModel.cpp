@@ -1,8 +1,8 @@
 #include "gui/wrapper/MediaViewModel.h"
+#include "db/database_service.h"
 
-
-MediaViewModel::MediaViewModel(QObject *parent, const QList<QMedia> &list)
-    : QAbstractTableModel()
+MediaViewModel::MediaViewModel(const QList<QMedia> &list, QObject *parent)
+    : QAbstractTableModel(parent)
 {
     beginResetModel();
     _data = list;
@@ -16,22 +16,27 @@ const QMedia &MediaViewModel::getMediaAt(int row) const
 
 bool MediaViewModel::insertRow(const QMedia &new_media)
 {
-   beginInsertRows(QModelIndex(), rowCount(), rowCount());
-   _data.append(new_media);
-   endInsertRows();
-   return true;
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    _data.append(new_media);
+    endInsertRows();
+    addMedia(new_media.unwrap());
+    return true;
 }
 
-int MediaViewModel::removeRow(int row)
+void MediaViewModel::removeRow(int row)
 {
     if (row < 0 || row >= _data.size())
-        return -1;
+        return;
 
     beginRemoveRows(QModelIndex(), row, row);
     auto rm_media = _data.at(row);
     _data.removeAt(row);
     endRemoveRows();
-    return rm_media.getId();
+
+    int del_id = rm_media.getId();
+    // this is just temp to avoid access the database when none is selected
+    if (del_id <= -1) return;
+    rmMedia(del_id);
 }
 
 bool MediaViewModel::editRow(int row, const QMedia &edited_media)
@@ -45,6 +50,8 @@ bool MediaViewModel::editRow(int row, const QMedia &edited_media)
     QModelIndex edited_row_left_index = index(row, 0);
     QModelIndex edited_row_right_index = index(row, columnCount() - 1);
     emit dataChanged(edited_row_left_index, edited_row_right_index);
+
+    editMedia(edited_media.getId(), edited_media.unwrap());
     return true;
 }
 
@@ -98,4 +105,17 @@ QVariant MediaViewModel::headerData(int section, Qt::Orientation orientation, in
         }
     }
     return QVariant();
+}
+
+MediaViewModel *createLatestMediaViewModel()
+{
+    // fetch data from database
+    auto data_json = selectAllJsonQuery();
+    QList<QMedia> view_data;
+    for (auto json_obj : data_json)
+    {
+        QMedia media(json_obj);
+        view_data << media;
+    }
+    return new MediaViewModel(view_data);
 }

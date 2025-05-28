@@ -310,7 +310,15 @@
     <property name="title">
      <string>settings</string>
     </property>
+    <widget class="QMenu" name="create_backup_menu">
+     <property name="title">
+      <string>create backup...</string>
+     </property>
+     <addaction name="as_database_action"/>
+    </widget>
     <addaction name="log_status"/>
+    <addaction name="create_backup_menu"/>
+    <addaction name="import_action"/>
    </widget>
    <addaction name="settings_menu"/>
   </widget>
@@ -342,6 +350,16 @@
     <string>activate log</string>
    </property>
   </action>
+  <action name="as_database_action">
+   <property name="text">
+    <string>as database</string>
+   </property>
+  </action>
+  <action name="import_action">
+   <property name="text">
+    <string>import backup...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -352,8 +370,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>357</x>
-     <y>499</y>
+     <x>441</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
