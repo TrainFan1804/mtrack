@@ -2,17 +2,11 @@
 .vscode/*
 
 # Build and develope stuff
-build/*
-test/build/*
-temp/*
-dev/*
+**/build/*
 
 # C++ stuff
 include/buildenv.h
 include/gui/forms/*
 
-moc_*
-qrc_*
-
-# python stuff
-*.pyc
+src/gui/**/moc_*
+src/gui/resources/qrc_*

@@ -52,7 +52,7 @@ function determine_qt_include_path() {
 function pre_build() {
 
     local SCRIPT_DIR="./scripts"
-    /bin/bash $SCRIPT_DIR/create_buildenv.sh $APPDATA_PATH
+    /bin/bash $SCRIPT_DIR/create_appdata.sh $APPDATA_PATH
     # this still cause trouble because the new created header will force the src files
     # that use this header to recompile even when there wasn't any change
     /bin/bash $SCRIPT_DIR/create_qtheader.sh
