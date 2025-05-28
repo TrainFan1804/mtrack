@@ -20,6 +20,8 @@ namespace po::commands
     void addCommand(const std::vector<std::string> &args);
 
     void rmCommand(int id);
+
+    void editCommand(int edit_id, const std::vector<std::string> &args);
 }
 
 #endif

@@ -12,10 +12,10 @@ int main(int argc, char *argv[])
     {
         debug::print::debprint("Start software");
         initDatabase();
+        openDatabase();
         if (argc <= 1)
         {
             debug::print::debprint("Open gui");
-            openDatabase();
             launch(argc, argv);
             debug::print::debprint("Exit sofware. Close GUI.");
         }

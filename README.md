@@ -16,7 +16,7 @@ media you consumed. You can choose between a CLI tool or a GUI.
 
 Now you can run `mtrack` in your terminal to use it.
 
-> [!NOTE]
+> [!TIP]
 > You may need to change your `$PATH` to use `mtrack` via your terminal.
     
 ## Requirements
@@ -55,17 +55,27 @@ To run inside the terminal just enter`mtrack --help` to show all available
 commands. Running mtrack without any options will launch the GUI.
 
 ```
+mtrack: A simple tool to track your media consume
 Usage:
-  mtrack [OPTION...] [optional args]
+  ./build/mtrack [OPTION...]
 
   -s, --show                    Show the content of the libary
   -a, --add <NAME> <RATING> <STATE> <TYPE>
                                 Add a new media to your libary
   -r, --remove <id>             Remove a media by id
+  -e, --edit <EDITED_ID> <NEW_NAME> <NEW_RATING> <NEW_STATE> <NEW_TYPE>
+                                Edit a entry with the new parameter
       --verbose                 Activate log
   -v, --version                 Show version
   -h, --help                    Show this page
 ```
+
+> [!NOTE]
+> When using `--add` or `--edit` you need to enter the values like this:
+> ```
+> mtrack --add=<NAME>,<RATING>,<STATE>,<TYPE>
+> mtrack --edit=<EDITED_ID>,<NEW_NAME>,<NEW_RATING>,<NEW_STATE>,<NEW_TYPE>
+> ```
 
 
 # Misc

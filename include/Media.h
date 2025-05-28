@@ -12,16 +12,6 @@ namespace media
         std::string _state;
         std::string _type;
 
-        [[deprecated("After the CLI works with JSON dataformat this will be removed")]]
-        Media(const std::string &name, int rating,
-            const std::string &state, const std::string &type)
-        {
-            _rating = rating;
-            _name = name;
-            _state = state;
-            _type = type;
-        }
-
         Media(const nlohmann::json json)
         {
             _rating = json["rating"];
