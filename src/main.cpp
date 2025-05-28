@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    int ret = EXIT_SUCCESS;
+    int ret;
     try
     {
         debug::print::debprint("Start software");
@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
             po::parse(argc, argv);
             debug::print::debprint("Exit sofware. Close CLI.");
         }
+        ret = EXIT_SUCCESS;
     }
     catch(const std::exception &ex)
     {
