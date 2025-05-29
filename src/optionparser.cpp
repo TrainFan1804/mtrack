@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "external/cxxopts.hpp"
 
 #include "optionparser.h"
@@ -43,12 +45,12 @@ void po::parse(int argc, char *argv[])
     }
     if (result.count("help"))
     {
-        printf(options.help({"", "misc"}).c_str());
+        std::cout << options.help({"", "misc"});
         return;
     }
     if (result.count("version"))
     {
-        printf("mTrack: %s\n", std::string(VERSION).c_str());
+        std::cout << "mtrack: " << VERSION << "\n";
         return;
     }
     if (result.count("show"))
@@ -84,11 +86,11 @@ void po::commands::showCommand()
 
     for (const auto &item : json)
     {
-        printf("id: %d, ", item["id"].get<int>());
-        printf("name: %s, ", item["name"].get<std::string>().c_str());
-        printf("rating: %d, ", item["rating"].get<int>());
-        printf("state: %s, ", item["state"].get<std::string>().c_str());
-        printf("type: %s\n", item["type"].get<std::string>().c_str());
+        std::cout << "id: " << item["id"].get<int>() << ", ";
+        std::cout << "name: " << item["name"].get<std::string>() << ", ";
+        std::cout << "rating: " << item["rating"].get<int>() << ", ";
+        std::cout << "state: " << item["state"].get<std::string>() << ", ";
+        std::cout << "type: " << item["type"].get<std::string>() << "\n";
     }
 }
 
