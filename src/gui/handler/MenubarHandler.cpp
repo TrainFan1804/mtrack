@@ -1,42 +1,35 @@
-#include <QMessageBox>
-#include <QFileDialog>
-
 #include "gui/handler/MenubarHandler.h"
-#include "debug/debprint.h"
+
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include "buildenv.h"
 #include "db/database_service.h"
 #include "db/extractor/IDatabaseExtractor.h"
-#include "buildenv.h"
+#include "debug/debprint.h"
 
 MenubarHandler::MenubarHandler(QObject *parent)
     : QObject(parent)
 {
-
 }
 
 void MenubarHandler::connectAction(
-    QAction *status_action,
-    QAction *create_backup_action,
+    QAction *status_action, QAction *create_backup_action,
     QAction *import_action
 )
 {
     connect(
-        status_action,
-        &QAction::toggled,
-        this,
+        status_action, &QAction::toggled, this,
         &MenubarHandler::changeLogStatusAction
     );
 
     connect(
-        create_backup_action,
-        &QAction::triggered,
-        this,
+        create_backup_action, &QAction::triggered, this,
         &MenubarHandler::createDatabaseBackup
     );
 
     connect(
-        import_action,
-        &QAction::triggered,
-        this,
+        import_action, &QAction::triggered, this,
         &MenubarHandler::importDatabaseBackup
     );
 }
@@ -55,8 +48,8 @@ void MenubarHandler::createDatabaseBackup()
     msg.setWindowTitle("Backup created");
     msg.setIcon(QMessageBox::Icon::Information);
     msg.setText("Backup created successfully!");
-    QString inf_text = "The backup is located in: " 
-        + QString::fromUtf8(BACKUP_DIR_PATH);
+    QString inf_text
+        = "The backup is located in: " + QString::fromUtf8(BACKUP_DIR_PATH);
     msg.setInformativeText(inf_text);
     msg.setStandardButtons(QMessageBox::StandardButton::Ok);
     msg.exec();
@@ -65,20 +58,19 @@ void MenubarHandler::createDatabaseBackup()
 void MenubarHandler::importDatabaseBackup()
 {
     // is this cast ugly? Yes. Do I care? No.
-    auto file_name = QFileDialog::getOpenFileName(
-        qobject_cast<QWidget*>(parent()),
-        "Open Document", 
-        BACKUP_DIR_PATH,
-        "Backup files (*.dump *.sql);;All files (*.*)", 
-        0, 
-        QFileDialog::DontUseNativeDialog
-    ).toStdString();
+    auto file_name
+        = QFileDialog::getOpenFileName(
+              qobject_cast<QWidget *>(parent()), "Open Document",
+              BACKUP_DIR_PATH, "Backup files (*.dump *.sql);;All files (*.*)",
+              0, QFileDialog::DontUseNativeDialog
+        )
+              .toStdString();
 
     if (!file_name.empty())
     {
         auto i = createImporter("sql");
         importDatabase(i.get(), file_name);
-        
+
         emit backupFinished();
 
         QMessageBox msg;

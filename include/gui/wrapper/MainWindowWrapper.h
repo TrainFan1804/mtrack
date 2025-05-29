@@ -6,7 +6,7 @@
 #include "gui/forms/main_window.h"
 #include "gui/wrapper/MediaViewModel.h"
 
-class MainWindowWrapper : public QMainWindow 
+class MainWindowWrapper : public QMainWindow
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ private slots:
     void removeAction();
     void saveAction();
     void handleSelectionClick(const QModelIndex &selected_index);
-    
+
     /**
      * To update the model after a import the media model is replaced
      * by a new media model. This isn't a nice solution because the view

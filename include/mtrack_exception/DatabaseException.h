@@ -1,8 +1,8 @@
 #ifndef DATABASEEXCEPTION_H
 #define DATABASEEXCEPTION_H
 
-#include <string>
 #include <exception>
+#include <string>
 
 namespace mtrack
 {
@@ -10,8 +10,7 @@ namespace mtrack
     {
     public:
         DatabaseException(const std::string &msg)
-            : _msg(msg) 
-        {};
+            : _msg(msg) {};
 
         virtual const char *what() const throw()
         {
@@ -21,6 +20,6 @@ namespace mtrack
     private:
         std::string _msg;
     };
-}
+} // namespace mtrack
 
 #endif

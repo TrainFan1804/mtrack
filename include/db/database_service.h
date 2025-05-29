@@ -26,7 +26,9 @@ void dumpDatabase(IDatabaseExtractor *extractor);
 /**
  * This will import the database with a selected `IDatabaseImporter` and the
  * path of the file that should be restored.
- * 
+ *
  * @warning This will delete all entries in the current database.
  */
-void importDatabase(IDatabaseImporter *importer, const std::string &import_file);
+void importDatabase(
+    IDatabaseImporter *importer, const std::string &import_file
+);

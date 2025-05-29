@@ -1,24 +1,22 @@
-#include <QWidget>
+#include "gui/wrapper/AddTopLevelWrapper.h"
+
 #include <QMessageBox>
 #include <QScreen>
+#include <QWidget>
 
 #include "external/json.hpp"
-
 #include "utils/str_manipulation.h"
-#include "gui/wrapper/AddTopLevelWrapper.h"
 
 AddTopLevelWrapper::AddTopLevelWrapper(QWidget *parent)
     : QWidget(parent),
-    _ui(new Ui::AddTopLevel)
+      _ui(new Ui::AddTopLevel)
 {
     _ui->setupUi(this);
     move(screen()->availableGeometry().center() - frameGeometry().center());
     setWindowIcon(QIcon(":/icons/app_icon.ico"));
 
     connect(
-        _ui->add_btn, 
-        &QPushButton::clicked, 
-        this, 
+        _ui->add_btn, &QPushButton::clicked, this,
         &AddTopLevelWrapper::addBtnClicked
     );
 }
@@ -42,7 +40,9 @@ void AddTopLevelWrapper::addBtnClicked()
         msg.setWindowTitle("Add warning");
         msg.setIcon(QMessageBox::Icon::Warning);
         msg.setText("Warning while adding a new media");
-        msg.setInformativeText("You need to fill out all entries to add a new media!");
+        msg.setInformativeText(
+            "You need to fill out all entries to add a new media!"
+        );
         msg.setStandardButtons(QMessageBox::StandardButton::Ok);
         msg.exec();
         return;
@@ -50,13 +50,13 @@ void AddTopLevelWrapper::addBtnClicked()
     // create new media from entry data
     nlohmann::json json_media;
 
-    json_media["id"] = -1;
+    json_media["id"]     = -1;
     json_media["rating"] = _ui->rating_box->value();
-    json_media["name"] = name;
-    json_media["state"] = _ui->state_box->currentText().toStdString();
-    json_media["type"] = type;
-    
+    json_media["name"]   = name;
+    json_media["state"]  = _ui->state_box->currentText().toStdString();
+    json_media["type"]   = type;
+
     QMedia new_media(json_media);
-    emit submitAddContent(new_media);
+    emit   submitAddContent(new_media);
     this->close();
 }
