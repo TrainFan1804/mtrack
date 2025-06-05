@@ -18,7 +18,8 @@ Using `build.sh clean <BUILD_OPTION>` will build the entire project from the
 beginning. May take a few moments to finish. Running `clean` without any build
 option will just remove all build artefacts.
 
-**IMPORTANT**: `clean` will **NOT** remove any stuff that is created via `install.sh`!
+> [!IMPORTANT] 
+> `clean` will **NOT** remove any stuff that is created via `install.sh`!
 
 > [!TIP]
 > When you running mTrack locally and develop at the same time you should always use the
