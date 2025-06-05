@@ -1,8 +1,5 @@
 # mTrack
 
-> [!NOTE]
-> This software is **NOT** supported for windows!
-
 With this software you can organize your watched movies, read books or any other
 media you consumed. You can choose between a CLI tool or a GUI.
 
@@ -18,12 +15,14 @@ Now you can run `mtrack` in your terminal to use it.
 
 > [!TIP]
 > You may need to change your `$PATH` to use `mtrack` via your terminal.
+
     
 ## Requirements
 
 > [!IMPORTANT]
 > When using wayland as communication protocol you need to install the `qt6-wayland` 
-> package for your distrobution.
+> package for your distribution.
+> Using wayland might lead to some minor frontend bugs e.g. missing icons, etc.
 
 A C++ compiler, sqlite3 and Qt6 is required to install this software. All other requirements are shipped
 with the software.
@@ -31,6 +30,13 @@ with the software.
 - GCC >= 6
 - sqlite3 >= 3.49.1
 - Qt >= 6.8.2
+
+
+### Windows
+
+I didn't test this software on windows but executing the `install.sh` using **WSL** 
+should work as expected.
+
 
 ### Debian
 

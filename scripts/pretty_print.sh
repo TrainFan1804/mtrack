@@ -20,5 +20,5 @@ function success() {
 }
 
 function error() {
-    echo -e "$RED [ERROR] $1 $RESET"
+    echo -e "$RED [ERROR] $1 $RESET" >&2
 }

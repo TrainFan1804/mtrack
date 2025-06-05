@@ -7,15 +7,20 @@ source scripts/pretty_print.sh
 # ---------------------------
 # Globals
 # ---------------------------
-# software source code specific paths (needed at buildtime)
 CXX=g++
+CXXFLAGS=""
+
+# software source code specific paths (needed at buildtime)
 SRC_DIR="./src"
 INCLUDE_DIR="./include"
 BUILD_DIR="./build"
 
 QT_INCLUDE_DIR="/usr/include/qt6"
 
-BUILD_TYPE=$1
+# Build options
+BUILD_TEST=false
+IS_CLEAN=false
+
 VBASE=$(cat VERSION)
 VSUFFIX=$(git rev-parse --abbrev-ref HEAD)
 VERSION="$VBASE-$VSUFFIX"
@@ -23,13 +28,59 @@ VERSION="$VBASE-$VSUFFIX"
 # ---------------------------
 # Functions
 # ---------------------------
+
+# Both "has_argument" and "extract_argument" are copied from
+# https://medium.com/@wujido20/handling-flags-in-bash-scripts-4b06b4d0ed04
+has_argument() {
+    [[ ("$1" == *=* && -n ${1#*=}) || ( ! -z "$2" && "$2" != -*)  ]];
+}
+
+extract_argument() {
+  echo "${2:-${1#*=}}"
+}
+
+function parse_args() {
+
+    while [ $# -gt 0 ]; do
+        case $1 in
+            clean)
+                IS_CLEAN=true
+                ;;
+            --dev)
+                if [ "$BUILD_TYPE" = "release" ]; then
+                    error "You can't set dev after set release"
+                    exit 1
+                fi
+                BUILD_TYPE="dev"
+                if has_argument $@; then
+                    if [ $(extract_argument $@) = "test" ]; then
+                        BUILD_TEST=true
+                        shift
+                    fi
+                fi
+                ;;
+            --release)
+                if [ "$BUILD_TYPE" = "dev" ]; then
+                    error "You can't set release after set dev"
+                    exit 1
+                fi
+                BUILD_TYPE="release"
+                ;;
+            *)
+                error "Invalid option: $1"
+                exit 1
+                ;;
+        esac
+        shift
+    done
+}
+
 function check_build_type() {
 
     if [ "$BUILD_TYPE" = "dev" ]; then
         CXXFLAGS="-g -O0 -Wall -DDEBUG"
         APPDATA_PATH="$PWD/dev/mtrack"
     elif [ "$BUILD_TYPE" = "release" ]; then
-        CXXFLAGS=""
         APPDATA_PATH="$HOME/.local/share/mtrack"
     else
         error "Unknown build type: "$BUILD_TYPE""
@@ -130,18 +181,32 @@ function link_object() {
 # Main
 # ---------------------------
 
+parse_args $@
+if $IS_CLEAN; then
+    info "Start cleanup build artefacts..."
+
+    success "Successfully cleanup build artefacts"
+    if [ "$BUILD_TYPE" = "" ]; then
+        exit 0
+    fi
+fi
+
 check_build_type
 determine_qt_include_path
 info "Start building \"$BUILD_TYPE\" version $BOLD\"$VERSION\"$RESET$BLUE..."
 
 pre_build
 generate_moc_files
+info "Start compiling source files..."
 compile_source
+success "Compiling source files successfully"
 
+info "Start linking project..."
 link_object
+success "Linking project successfully"
 success "Successfully build"
 
-if [ "$2" = "test" ]; then
+if $BUILD_TEST; then
     cd test
     info "Start building tests for version $BOLD\"$VERSION\"$RESET$BLUE..."
     /bin/bash ./build.sh $VERSION
