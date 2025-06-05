@@ -4,7 +4,7 @@ set -e
 
 source scripts/pretty_print.sh
 
-./build.sh release
+./build.sh --release
 if [ $? -ne 0 ]; then
     error "Abort installation because build failed!"
     exit 1
