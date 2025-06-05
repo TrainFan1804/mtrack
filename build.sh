@@ -75,6 +75,15 @@ function parse_args() {
     done
 }
 
+function cleanup() {
+
+    rm -rf **/$BUILD_DIR
+    rm -f $INCLUDE_DIR/buildenv.h
+    rm -rf $INCLUDE_DIR/gui/forms
+    rm -f $SRC_DIR/gui/**/moc_*
+    rm -f $SRC_DIR/gui/resources/qrc_*
+}
+
 function check_build_type() {
 
     if [ "$BUILD_TYPE" = "dev" ]; then
@@ -184,7 +193,7 @@ function link_object() {
 parse_args $@
 if $IS_CLEAN; then
     info "Start cleanup build artefacts..."
-
+    cleanup
     success "Successfully cleanup build artefacts"
     if [ "$BUILD_TYPE" = "" ]; then
         exit 0
