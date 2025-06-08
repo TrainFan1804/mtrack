@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ---------------------------
+# This script will build the appdata directory that is determined by `dev` or 
+# `release` version
+# ---------------------------
 set -e
 
 source scripts/pretty_print.sh
@@ -10,17 +14,21 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-if [ -f include/buildenv.h ]; then
-    info "Skip buidling buildenv.h"
-    exit 0
-fi
-
 LOG_PATH="$1/log"
 BACKUP_PATH="$1/backup"
 
 mkdir -p $1
 mkdir -p $LOG_PATH
 mkdir -p $BACKUP_PATH
+
+if [ ! -f "$1/.gitignore" ]; then
+    echo "*" >> $1/.gitignore
+fi
+
+if [ -f include/buildenv.h ]; then
+    info "Skip buidling buildenv.h"
+    exit 0
+fi
 
 # Because I am to lazy to define the path in the C++ code twice I came up with
 # this crazy stuff...

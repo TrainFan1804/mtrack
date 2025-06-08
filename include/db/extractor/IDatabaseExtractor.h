@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <memory>
+#include <string>
 
 struct sqlite3;
 
@@ -10,10 +10,12 @@ class DumpExtractor;
 class IDatabaseExtractor
 {
 public:
-    virtual ~IDatabaseExtractor() {}
+    virtual ~IDatabaseExtractor()
+    {
+    }
     /**
      * This virtual method need to be overwritten by child classes.
-     * 
+     *
      * @attention When enter `dump_file` as argument the file should contain NO
      * file extension. The child class will append the correct file extension by
      * it's own.

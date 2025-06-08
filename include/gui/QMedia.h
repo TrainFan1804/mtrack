@@ -1,19 +1,19 @@
 #ifndef QMEDIA_H
 #define QMEDIA_H
 
-#include <QString>
 #include <QMetaType>
+#include <QString>
 
 #include "Media.h"
 
 /**
- * media::Media doesn't save the id it's associated with in the DB because those 
+ * media::Media doesn't save the id it's associated with in the DB because those
  * where originally designed for CLI only and CLI doens't need information about
  * the media id.
- * 
- * But there is the need for internal id's for media to save and remove them from
- * the DB correctly when using the GUI. It's also a wrapper for QString to let
- * them display easily in the Qt GUI.
+ *
+ * But there is the need for internal id's for media to save and remove them
+ * from the DB correctly when using the GUI. It's also a wrapper for QString to
+ * let them display easily in the Qt GUI.
  */
 class QMedia
 {
@@ -24,27 +24,48 @@ public:
         _id = json["id"];
     }
 
-    int getId() const { return _id; }
-    
-    void setId(int id) { _id = id; }
+    int getId() const
+    {
+        return _id;
+    }
 
-    int rating() const { return _media._rating; }
+    void setId(int id)
+    {
+        _id = id;
+    }
 
-    QString name() const { return QString::fromStdString(_media._name); }
+    int rating() const
+    {
+        return _media._rating;
+    }
 
-    QString state() const { return QString::fromStdString(_media._state); }
+    QString name() const
+    {
+        return QString::fromStdString(_media._name);
+    }
 
-    QString type() const { return QString::fromStdString(_media._type); }
+    QString state() const
+    {
+        return QString::fromStdString(_media._state);
+    }
+
+    QString type() const
+    {
+        return QString::fromStdString(_media._type);
+    }
 
     /**
      * This should only be used when you want to extract the wrapped media
      * to work with the database API, not to change the internal state of
      * QMedia directly.
      */
-    media::Media unwrap() const { return _media; }
+    media::Media unwrap() const
+    {
+        return _media;
+    }
 
 private:
-    int _id;
+    int          _id;
     media::Media _media;
 };
 

@@ -1,13 +1,12 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <sqlite3.h>
 #include <string>
 #include <vector>
 
-#include <sqlite3.h>
-#include "external/json.hpp"
-
 #include "Media.h"
+#include "external/json.hpp"
 
 void initDatabase(sqlite3 *db);
 
@@ -19,7 +18,7 @@ void checkTableCompletion(sqlite3 *db);
 
 /**
  * Open the database connection.
- * 
+ *
  * @throw `DatabaseException` when can't open database.
  */
 void openDatabase(sqlite3 **db);
@@ -39,11 +38,13 @@ void createDatabaseTable(sqlite3 *db);
 
 /**
  * Use this when you want to add a custom callback to your SQL querry.
- * 
+ *
  * @throw `DatabaseException` when a SQL error occure.
  */
-void execute_sql(sqlite3 *db, const std::string &sql, void *head, 
-    int (*callback)(void*, int, char**, char **));
+void execute_sql(
+    sqlite3 *db, const std::string &sql, void *head,
+    int (*callback)(void *, int, char **, char **)
+);
 
 /**
  * Execute a sql statement. This should be used when working with NON

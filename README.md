@@ -1,8 +1,5 @@
 # mTrack
 
-> [!NOTE]
-> This software is **NOT** supported for windows!
-
 With this software you can organize your watched movies, read books or any other
 media you consumed. You can choose between a CLI tool or a GUI.
 
@@ -16,14 +13,16 @@ media you consumed. You can choose between a CLI tool or a GUI.
 
 Now you can run `mtrack` in your terminal to use it.
 
-> [!NOTE]
+> [!TIP]
 > You may need to change your `$PATH` to use `mtrack` via your terminal.
+
     
 ## Requirements
 
 > [!IMPORTANT]
 > When using wayland as communication protocol you need to install the `qt6-wayland` 
-> package for your distrobution.
+> package for your distribution.
+> Using wayland might lead to some minor frontend bugs e.g. missing icons, etc.
 
 A C++ compiler, sqlite3 and Qt6 is required to install this software. All other requirements are shipped
 with the software.
@@ -31,6 +30,13 @@ with the software.
 - GCC >= 6
 - sqlite3 >= 3.49.1
 - Qt >= 6.8.2
+
+
+### Windows
+
+I didn't test this software on windows but executing the `install.sh` using **WSL** 
+should work as expected.
+
 
 ### Debian
 
@@ -55,17 +61,27 @@ To run inside the terminal just enter`mtrack --help` to show all available
 commands. Running mtrack without any options will launch the GUI.
 
 ```
+mtrack: A simple tool to track your media consume
 Usage:
-  mtrack [OPTION...] [optional args]
+  ./build/mtrack [OPTION...]
 
   -s, --show                    Show the content of the libary
   -a, --add <NAME> <RATING> <STATE> <TYPE>
                                 Add a new media to your libary
   -r, --remove <id>             Remove a media by id
+  -e, --edit <EDITED_ID> <NEW_NAME> <NEW_RATING> <NEW_STATE> <NEW_TYPE>
+                                Edit a entry with the new parameter
       --verbose                 Activate log
   -v, --version                 Show version
   -h, --help                    Show this page
 ```
+
+> [!NOTE]
+> When using `--add` or `--edit` you need to enter the values like this:
+> ```
+> mtrack --add=<NAME>,<RATING>,<STATE>,<TYPE>
+> mtrack --edit=<EDITED_ID>,<NEW_NAME>,<NEW_RATING>,<NEW_STATE>,<NEW_TYPE>
+> ```
 
 
 # Misc

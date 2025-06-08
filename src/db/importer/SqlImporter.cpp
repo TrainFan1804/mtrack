@@ -1,9 +1,9 @@
-#include <fstream>
+#include "db/importer/SqlImporter.h"
 
+#include <fstream>
 #include <sqlite3.h>
 
 #include "db/database_manager.h"
-#include "db/importer/SqlImporter.h"
 
 void SqlImporter::importDatabase(sqlite3 *db, const std::string &dump_file)
 {
@@ -15,7 +15,7 @@ void SqlImporter::importDatabase(sqlite3 *db, const std::string &dump_file)
     while (std::getline(in, line))
     {
         sql += line;
-        if (line.find(';') != std::string::npos) 
+        if (line.find(';') != std::string::npos)
         {
             execute_sql(db, sql.c_str());
             sql.clear();

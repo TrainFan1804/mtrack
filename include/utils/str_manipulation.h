@@ -19,6 +19,6 @@ namespace mtrack
         https://cplusplus.com/forum/beginner/251052/
      */
     std::string trim(const std::string &str);
-}
+} // namespace mtrack
 
 #endif

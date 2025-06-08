@@ -1,42 +1,43 @@
-#include <iostream>
+#include "debug/debprint.h"
+
 #include <cstdarg>
 #include <cstdio>
 #include <fstream>
+#include <iostream>
 
 #include "external/fmt/format.h"
-
-#include "external/fmt/format.h"
-
-#include "debug/debprint.h"
-#include "utils/time.h"
 #include "globals/globals.h"
+#include "utils/time.h"
 
 namespace
 {
-    bool _log_state;
+    bool          _log_state;
     std::ofstream _log_file;
 
     void log(const std::string &msg, debug::DEBUG_LEVEL status)
     {
-        if (!_log_file.is_open()) throw std::runtime_error("Couldn't open log file");
+        if (!_log_file.is_open())
+            throw std::runtime_error("Couldn't open log file");
 
-        std::string timestamp = mtrack::getCustomCurrentTimestamp("%d-%m-%Y %H:%M:%S");
-        std::string formatted_message = "[" + timestamp + "] " + toString(status) + ": " + msg; 
+        std::string timestamp
+            = mtrack::getCustomCurrentTimestamp("%d-%m-%Y %H:%M:%S");
+        std::string formatted_message
+            = "[" + timestamp + "] " + toString(status) + ": " + msg;
         _log_file << formatted_message << std::endl;
     }
 
     void init()
     {
-        auto date = mtrack::getCustomCurrentTimestamp("%Y-%m-%d");
+        auto        date     = mtrack::getCustomCurrentTimestamp("%Y-%m-%d");
         std::string LOG_PATH = LOG_BASE_PATH + "/" + date + ".log";
         _log_file.open(LOG_PATH, std::ios::app);
     }
-    
+
     void kill()
     {
         _log_file.close();
     }
-}
+} // namespace
 
 void debug::setState(bool state)
 {
@@ -70,12 +71,10 @@ void debug::print::debprint(const std::string &msg, DEBUG_LEVEL level)
     }
     if (level == ERROR)
     {
-        std::cerr << "[" << debug::toString(level) << "] " 
-            << msg << "\n";
+        std::cerr << "[" << debug::toString(level) << "] " << msg << "\n";
         return;
     }
-    #ifdef DEBUG
-        std::cout << "[" << debug::toString(level) << "] " 
-            << msg << "\n";
-    #endif
+#ifdef DEBUG
+    std::cout << "[" << debug::toString(level) << "] " << msg << "\n";
+#endif
 }

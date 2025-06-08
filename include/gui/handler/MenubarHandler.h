@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QObject>
 #include <QAction>
+#include <QObject>
 
 /**
  * Wrapper class to connect menu bar actions seperate from the MainWindowWrapper
@@ -14,8 +14,7 @@ public:
     MenubarHandler(QObject *parent = nullptr);
 
     void connectAction(
-        QAction *status_action,
-        QAction *create_backup_action,
+        QAction *status_action, QAction *create_backup_action,
         QAction *import_action
     );
 

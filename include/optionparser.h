@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace po    // po := program options 
+namespace po // po := program options
 {
     void parse(int argc, char *argv[]);
 }
@@ -20,6 +20,8 @@ namespace po::commands
     void addCommand(const std::vector<std::string> &args);
 
     void rmCommand(int id);
-}
+
+    void editCommand(int edit_id, const std::vector<std::string> &args);
+} // namespace po::commands
 
 #endif
